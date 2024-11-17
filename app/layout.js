@@ -1,6 +1,8 @@
 import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
+import Sidebar from "./components/Sidebar";
+import {Box} from "@mui/material";
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -11,12 +13,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-
         <UserProvider>
-          {children}
+          <Box sx={{ display: 'flex', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            <Sidebar />
+            <Box sx={{ p: 2 }}>
+                {children}
+            </Box>
+          </Box>
         </UserProvider>
-
-      </body>
+    </body>
     </html>
   );
 }

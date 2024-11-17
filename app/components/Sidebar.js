@@ -1,7 +1,20 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Avatar, ListItemAvatar
+} from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupIcon from '@mui/icons-material/Group';
 import EventIcon from '@mui/icons-material/Event';
@@ -11,11 +24,16 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
 import { ReportProblem } from '@mui/icons-material';
+// For authentication
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 function Sidebar() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // Zustand für die Sidebar-Erweiterung
   const router = useRouter();
+
+  // For auth
+  const {user, isLoading} = useUser();
 
   const handleMouseEnter = () => {
     setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
@@ -28,6 +46,10 @@ function Sidebar() {
   const handleLogoutClick = () => {
     setOpenLogoutDialog(true);
   };
+
+  const handleUsers = () => {
+    router.push('/users');
+  }
 
   const handleAnouncements = () => {
     router.push('/adminAnouncements');
@@ -49,6 +71,10 @@ function Sidebar() {
   const handleLogoutCancel = () => {
     setOpenLogoutDialog(false);
   };
+
+  const handleLogin = () => {
+    console.log(user);
+  }
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -73,7 +99,7 @@ function Sidebar() {
             </ListItemIcon>
             {isExpanded && <ListItemText primary="Dashboard" />}
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton onClick={handleUsers}>
             <ListItemIcon>
               <GroupIcon style={{ color: '#ccc' }} />
             </ListItemIcon>
@@ -99,11 +125,13 @@ function Sidebar() {
           </ListItemButton>
         </List>
         <List>
+          {user ? (
+              <>
           <ListItemButton onClick={handleProfileClick}>
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            {isExpanded && <ListItemText primary="Profil" />}
+            <ListItemAvatar>
+              <Avatar src = {user.picture} alt={user.name} sx={{ width: 30, height: 30 }}/>
+            </ListItemAvatar>
+            {isExpanded && <ListItemText primary={user.name} />}
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
@@ -111,12 +139,21 @@ function Sidebar() {
             </ListItemIcon>
             {isExpanded && <ListItemText primary="Einstellungen" />}
           </ListItemButton>
-          <ListItemButton onClick={handleLogoutClick}>
+          <ListItemButton href="/api/auth/logout">
             <ListItemIcon>
               <ExitToAppIcon style={{ color: '#ccc' }} />
             </ListItemIcon>
             {isExpanded && <ListItemText primary="Logout" />}
           </ListItemButton>
+          </>
+              ) : (
+          <ListItemButton href="/api/auth/login">
+            <ListItemIcon>
+              <AccountCircleIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Login" />}
+          </ListItemButton>
+              )}
         </List>
       </Box>
 
