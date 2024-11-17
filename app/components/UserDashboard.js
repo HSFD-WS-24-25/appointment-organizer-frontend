@@ -27,6 +27,10 @@ function UserDashboard() {
     router.push('/userProfile');
   };
 
+  const handleUserSettingsClick = () => {
+    router.push('/userSettings');
+  };
+
   const handleLogoutCancel = () => {
     setOpenLogoutDialog(false);
   };
@@ -71,7 +75,7 @@ function UserDashboard() {
             </ListItemIcon>
             <ListItemText primary="Profil" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton onClick={handleUserSettingsClick}>
             <ListItemIcon>
               <SettingsIcon style={{ color: '#ccc' }} />
             </ListItemIcon>
