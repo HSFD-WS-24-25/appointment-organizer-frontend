@@ -1,5 +1,6 @@
 "use client"; // important or else search doesn't work
 
+import Sidebar from './Sidebar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
@@ -25,37 +26,10 @@ const data = [
   // add more data examples here
 ];
 
+//test
 export default function AdminAnnouncements() {
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
-  const router = useRouter();
-
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    router.push('/');
-  };
-
-  const handleAnouncements = () => {
-    router.push('/adminAnouncements');
-  };
-
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const handleProfileClick = () => {
-    router.push('/adminProfile');
-  };
-
-  const handleTerminClick = () => {
-    router.push('/adminTermin');
-  };
 
   useEffect(() => {
     setFilteredData(
@@ -67,71 +41,8 @@ export default function AdminAnnouncements() {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Sidebar */}
-      <Box
-        sx={{
-          width: 250,
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <List>
-          <ListItemButton>
-            <ListItemIcon>
-              <DashboardIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <GroupIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Benutzerverwaltung" />
-          </ListItemButton>
-          <ListItemButton onClick={handleTerminClick}>
-            <ListItemIcon>
-              <EventIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Terminmanagement" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <NotificationsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Benachrichtigungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleAnouncements}>
-            <ListItemIcon>
-              <ReportProblem style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Ankündigungen" />
-          </ListItemButton>
-        </List>
-        <List>
-          <ListItemButton onClick={handleProfileClick}>
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Profil" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Einstellungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleLogoutClick}>
-            <ListItemIcon>
-              <ExitToAppIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </List>
-      </Box>
+        <Sidebar />
+
 
       {/* Main Content */}
       <Box sx={{ flex: 1, backgroundColor: '#f5f5f5', padding: 3 }}>
@@ -186,27 +97,6 @@ export default function AdminAnnouncements() {
           <Button variant="contained" color="primary" href="/admin-create-announcements">Neue Ankündigung</Button>
         </Box>
       </Box>
-
-      {/* Logout-Bestätigungsdialog */}
-      <Dialog
-        open={openLogoutDialog}
-        onClose={handleLogoutCancel}
-      >
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Möchten Sie sich wirklich abmelden?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">
-            Nein
-          </Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>
-            Ja
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }
