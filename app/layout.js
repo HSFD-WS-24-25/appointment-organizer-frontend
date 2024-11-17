@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -11,7 +12,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
       <AppRouterCacheProvider>
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
       </AppRouterCacheProvider>
       </body>
     </html>
