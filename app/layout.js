@@ -11,11 +11,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-      <AppRouterCacheProvider>
+
         <UserProvider>
           {children}
         </UserProvider>
-      </AppRouterCacheProvider>
+
       </body>
     </html>
   );
