@@ -1,5 +1,5 @@
 "use client";
-
+import Sidebar from './Sidebar';
 import React, { useState } from 'react';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -13,36 +13,8 @@ import { useRouter } from 'next/navigation';
 import { ReportProblem } from '@mui/icons-material';
 
 function AdminProfile() {
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const router = useRouter();
-
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    router.push('/');
-  };
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const handleProfileClick = () => {
-    router.push('/adminProfile');
-  };
-
-  const handleTerminClick = () => {
-    router.push('/adminTermin');
-  };
-
-
-  const handleAnouncements = () => {
-    router.push('/adminAnouncements');
-  };
 
   const handleImageChange = (event) => {
     setProfileImage(URL.createObjectURL(event.target.files[0]));
@@ -64,70 +36,7 @@ function AdminProfile() {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Box
-        sx={{
-          width: 250,
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <List>
-          <ListItemButton onClick={() => router.push('/admin')}>
-            <ListItemIcon>
-              <DashboardIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <GroupIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Benutzerverwaltung" />
-          </ListItemButton>
-          <ListItemButton onClick={handleTerminClick}>
-            <ListItemIcon>
-              <EventIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Terminmanagement" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <NotificationsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Benachrichtigungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleAnouncements}>
-            <ListItemIcon>
-              <ReportProblem style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Ankündigungen" />
-          </ListItemButton>
-        </List>
-        <List>
-          <ListItemButton onClick={handleProfileClick}>
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Profil" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Einstellungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleLogoutClick}>
-            <ListItemIcon>
-              <ExitToAppIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </List>
-      </Box>
+      <Sidebar />
       
       <Box sx={{ flex: 1, backgroundColor: '#f5f5f5', padding: 3 }}>
         <Typography variant="h4">Profil</Typography>
@@ -165,20 +74,6 @@ function AdminProfile() {
           </Button>
         </Box>
       </Box>
-
-      {/* Logout-Bestätigungsdialog */}
-      <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Möchten Sie sich wirklich abmelden?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">Nein</Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>Ja</Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Änderungen speichern Bestätigungsdialog */}
       <Dialog open={openSaveDialog} onClose={handleSaveCancel}>
