@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Avatar, TextField, Typography } from '@mui/material';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
@@ -9,10 +9,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 
-function UserProfile() {
+function UserSettings() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
-  const [profileImage, setProfileImage] = useState(null); // Für das Profilbild
   const router = useRouter();
 
   const handleLogoutClick = () => {
@@ -25,7 +29,7 @@ function UserProfile() {
   };
 
   const handleUserProfilClick = () => {
-    router.push('/userProfile'); // Navigiert explizit zur Profilseite
+    router.push('/userProfile');
   };
 
   const handleUserSettingsClick = () => {
@@ -36,20 +40,25 @@ function UserProfile() {
     setOpenLogoutDialog(false);
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  {/* Einstellungen */ }
+  const handleSaveChangesClick = (event) => {
+    alert("Änderungen erfolgreich gespeichert.");
+  }
+
+  const handleGoBackClick = (event) => {
+    router.push("/user");
+  }
+
+  const [language, setLanguage] = React.useState('');
+
+  const handleChangeLanguage = (event) => {
+    setLanguage(event.target.value);
   };
 
-  const handleSaveClick = () => {
-    alert("Änderungen wurden gespeichert!");
-    // Hier kannst du die eigentliche Speichern-Funktion implementieren
+  const [timezone, setTimezone] = React.useState('');
+
+  const handleChangeTimezone = (event) => {
+    setTimezone(event.target.value);
   };
 
   return (
@@ -86,7 +95,7 @@ function UserProfile() {
           </ListItemButton>
         </List>
         <List>
-          <ListItemButton onClick={handleUserProfilClick}> 
+          <ListItemButton onClick={handleUserProfilClick}>
             <ListItemIcon>
               <AccountCircleIcon style={{ color: '#ccc' }} />
             </ListItemIcon>
@@ -106,43 +115,60 @@ function UserProfile() {
           </ListItemButton>
         </List>
       </Box>
-      
-      {/* Profil Inhalt */}
-      <Box sx={{ flex: 1, backgroundColor: '#f5f5f5', padding: 3 }}>
-        <Typography variant="h4">Profil</Typography>
-        
-        {/* Profilbild und Ändern-Button */}
-        <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
-          <Avatar src={profileImage} sx={{ width: 100, height: 100, mr: 2 }} />
-          <Button 
-            variant="outlined" 
-            component="label" 
-            sx={{ color: '#333', borderColor: '#333' }}
-          >
-            Profilbild ändern
-            <input type="file" hidden onChange={handleImageChange} />
-          </Button>
+
+      {/* Einstellungen */}
+      <Box sx={{ flex: 1, justifyContent: "center", backgroundColor: '#f5f5f5' }}>
+
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "center", padding: 3, fontSize: 30 }}>
+          <h1>Einstellungen</h1>
+        </Box>
+        <div>
+          <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' }, flex: 1, display: "flex", justifyContent: "center" }}>
+            <FormControl fullWidth>
+              <InputLabel id="language-label">Sprache</InputLabel>
+              <Select
+                labelId="language-label"
+                id="language"
+                value={language}
+                label="Language"
+                onChange={handleChangeLanguage}
+              >
+                <MenuItem value="German">Deutsch</MenuItem>
+                <MenuItem value="English">Englisch</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </div>
+        <div>
+          <Box sx={{ '& > :not(style)': { m: 1, width: '25ch' }, flex: 1, display: "flex", justifyContent: "center" }}>
+            <FormControl fullWidth>
+              <InputLabel id="timezone-label">Zeitzone</InputLabel>
+              <Select
+                labelId="timezone-label"
+                id="timezone"
+                value={timezone}
+                label="Timezone"
+                onChange={handleChangeTimezone}
+              >
+                <MenuItem value="CET">CET</MenuItem>
+                <MenuItem value="UTC">UTC</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </div>
+
+        {/* Buttons */}
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "center", padding: 3 }}>
+          <Stack direction="row" spacing={2}>
+            <Button onClick={handleGoBackClick} variant="outlined" color="error">
+              Zurück
+            </Button>
+            <Button onClick={handleSaveChangesClick} variant="contained" color="success">
+              Änderungen speichern
+            </Button>
+          </Stack>
         </Box>
 
-        {/* Persönliche Informationen */}
-        <Box component="form" sx={{ display: 'grid', gap: 2, width: '50%' }}>
-          <TextField label="Name" variant="outlined" fullWidth />
-          <TextField label="Vorname" variant="outlined" fullWidth />
-          <TextField label="Personalnummer" variant="outlined" fullWidth />
-          <TextField label="E-Mail" variant="outlined" fullWidth />
-          <TextField label="Telefonnummer" variant="outlined" fullWidth />
-        </Box>
-
-        {/* Änderungen speichern Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-          <Button 
-            variant="contained" 
-            sx={{ backgroundColor: '#333', color: '#fff' }} 
-            onClick={handleSaveClick}
-          >
-            Änderungen speichern
-          </Button>
-        </Box>
       </Box>
 
       {/* Logout-Bestätigungsdialog */}
@@ -169,4 +195,4 @@ function UserProfile() {
   );
 }
 
-export default UserProfile;
+export default UserSettings;
