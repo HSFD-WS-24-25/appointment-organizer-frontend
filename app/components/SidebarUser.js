@@ -133,10 +133,22 @@ function SidebarUser() {
       </Box>
 
       {/* Mobile Hamburger Menu */}
-      <Box sx={{ display: { xs: 'flex', sm: 'none' }, padding: 1 }}>
-        <IconButton onClick={toggleDrawer} sx={{ color: '#black' }}>
-          <MenuIcon />
-        </IconButton>
+      <Box 
+        sx={{ 
+          display: { xs: 'flex', sm: 'none' }, 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          zIndex: 1300, 
+          width: '100%', 
+          padding: 1 
+        }}
+      >
+        {!drawerOpen && ( // Icon nur anzeigen, wenn Drawer nicht geöffnet ist
+          <IconButton onClick={toggleDrawer} sx={{ color: '#black', marginLeft: 1 }}>
+            <MenuIcon />
+          </IconButton>
+        )}
         <Drawer
           anchor="left"
           open={drawerOpen}
