@@ -116,7 +116,7 @@ function AdminTermin() {
         </Box>
 
         {/* Download Buttons */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+        <Box sx={{ display: 'flex', mt: 3 }}>
           <Button onClick={handleDownloadICS} variant="contained" color="primary" sx={{ mr: 2 }}>
             Liste als .ics herunterladen
           </Button>

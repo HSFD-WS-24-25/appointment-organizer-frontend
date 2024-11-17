@@ -1,5 +1,5 @@
 import "./globals.css";
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { ChatProvider } from "./components/ChatContext";
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -10,9 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-      <AppRouterCacheProvider>
-        {children}
-      </AppRouterCacheProvider>
+        <ChatProvider>{children}</ChatProvider>
       </body>
     </html>
   );

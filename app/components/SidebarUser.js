@@ -17,54 +17,43 @@ import {
   Drawer,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupIcon from '@mui/icons-material/Group';
 import EventIcon from '@mui/icons-material/Event';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import ChatBoxUser from './ChatBoxUser';
 import { useRouter } from 'next/navigation';
-import { ReportProblem } from '@mui/icons-material';
-import ChatboxAdmin from './ChatBoxAdmin';
 
-function Sidebar() {
+function SidebarUser() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isExpanded, setIsExpanded] = useState(false); // Zustand für die Sidebar-Erweiterung
   const router = useRouter();
 
-  const handleMouseEnter = () => {
-    setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
+  const handleLogoutClick = () => {
+    setOpenLogoutDialog(true);
   };
 
   const handleMouseLeave = () => {
     setIsExpanded(false); // Verkleinert die Sidebar bei Mouseleave
   };
 
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
-
-  const handleAnouncements = () => {
-    router.push('/adminAnouncements');
-  };
-
-  const handleProfileClick = () => {
-    router.push('/adminProfile');
-  };
-
-  const handleTerminClick = () => {
-    router.push('/adminTermin');
-  };
-
-  const notificationClick = () => {
-    router.push('/adminNotification');
+  const handleMouseEnter = () => {
+    setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
   };
 
   const handleLogoutConfirm = () => {
     setOpenLogoutDialog(false);
     router.push('/');
+  };
+
+  const handleUserProfilClick = () => {
+    router.push('/userProfile');
+  };
+
+  const handleUserSettingsClick = () => {
+    router.push('/userSettings');
   };
 
   const handleLogoutCancel = () => {
@@ -76,22 +65,20 @@ function Sidebar() {
   };
 
   const mainMenuItems = [
-    { icon: <DashboardIcon style={{ color: '#ccc' }} />, text: "Dashboard", action: () => {} },
-    { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Benutzerverwaltung", action: () => {} },
-    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Terminmanagement", action: handleTerminClick },
-    { icon: <NotificationsIcon style={{ color: '#ccc' }} />, text: "Benachrichtigungen", action: notificationClick },
-    { icon: <ReportProblem style={{ color: '#ccc' }} />, text: "Ankündigungen", action: handleAnouncements },
+    { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Veranstaltung erstellen", action: () => {} },
+    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: () => {} },
+    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Teilnahmen", action: () => {} },
   ];
 
   const bottomMenuItems = [
-    { icon: <AccountCircleIcon style={{ color: '#ccc' }} />, text: "Profil", action: handleProfileClick },
-    { icon: <SettingsIcon style={{ color: '#ccc' }} />, text: "Einstellungen", action: () => {} },
+    { icon: <AccountCircleIcon style={{ color: '#ccc' }} />, text: "Profil", action: handleUserProfilClick },
+    { icon: <SettingsIcon style={{ color: '#ccc' }} />, text: "Einstellungen", action: handleUserSettingsClick },
     { icon: <ExitToAppIcon style={{ color: '#ccc' }} />, text: "Logout", action: handleLogoutClick },
   ];
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      <ChatboxAdmin />
+      <ChatBoxUser />
       <Box
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -109,9 +96,18 @@ function Sidebar() {
         {/* Main Menu */}
         <List>
           {mainMenuItems.map((item, index) => (
-            <ListItemButton key={index} onClick={item.action}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              {isExpanded && <ListItemText primary={item.text} />}
+            <ListItemButton key={index} onClick={item.action} sx={{ justifyContent: isExpanded ? 'initial' : 'center' }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: isExpanded ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
+              <ListItemText
+                primary={item.text}
+                sx={{
+                  opacity: isExpanded ? 1 : 0,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  transition: 'opacity 0.3s ease, max-width 0.3s ease',
+                  maxWidth: isExpanded ? '200px' : '0px',
+                }}
+              />
             </ListItemButton>
           ))}
         </List>
@@ -119,9 +115,18 @@ function Sidebar() {
         {/* Bottom Menu */}
         <List>
           {bottomMenuItems.map((item, index) => (
-            <ListItemButton key={index} onClick={item.action}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              {isExpanded && <ListItemText primary={item.text} />}
+            <ListItemButton key={index} onClick={item.action} sx={{ justifyContent: isExpanded ? 'initial' : 'center' }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: isExpanded ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
+              <ListItemText
+                primary={item.text}
+                sx={{
+                  opacity: isExpanded ? 1 : 0,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  transition: 'opacity 0.3s ease, max-width 0.3s ease',
+                  maxWidth: isExpanded ? '200px' : '0px',
+                }}
+              />
             </ListItemButton>
           ))}
         </List>
@@ -159,7 +164,7 @@ function Sidebar() {
         </Drawer>
       </Box>
 
-      {/* Logout-Bestätigungsdialog */}
+      {/* Logout Confirmation Dialog */}
       <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
         <DialogTitle>Abmelden</DialogTitle>
         <DialogContent>
@@ -174,4 +179,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default SidebarUser;
