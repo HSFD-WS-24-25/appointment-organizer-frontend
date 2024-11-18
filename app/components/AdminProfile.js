@@ -1,16 +1,8 @@
 "use client";
+
 import Sidebar from './Sidebar';
 import React, { useState } from 'react';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import GroupIcon from '@mui/icons-material/Group';
-import EventIcon from '@mui/icons-material/Event';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useRouter } from 'next/navigation';
-import { ReportProblem } from '@mui/icons-material';
+import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography, Paper } from '@mui/material';
 
 function AdminProfile() {
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
@@ -35,47 +27,71 @@ function AdminProfile() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#white', color: '#fff' }}>
       <Sidebar />
-      
-      <Box sx={{ flex: 1, backgroundColor: '#f5f5f5', padding: 3 }}>
-        <Typography variant="h4">Profil</Typography>
-        
-        {/* Profilbild und Ändern-Button */}
-        <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
-          <Avatar src={profileImage} sx={{ width: 100, height: 100, mr: 2 }} />
-          <Button 
-            variant="outlined" 
-            component="label" 
-            sx={{ color: '#333', borderColor: '#333' }}
-          >
-            Profilbild ändern
-            <input type="file" hidden onChange={handleImageChange} />
-          </Button>
-        </Box>
+      <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', color: 'black'}}>
+        <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, marginBottom: 4 }}>
+          Profil
+        </Typography>
 
-        {/* Persönliche Informationen */}
-        <Box component="form" sx={{ display: 'grid', gap: 2, width: '50%' }}>
-          <TextField label="Name" variant="outlined" fullWidth />
-          <TextField label="Vorname" variant="outlined" fullWidth />
-          <TextField label="Personalnummer" variant="outlined" fullWidth />
-          <TextField label="E-Mail" variant="outlined" fullWidth />
-          <TextField label="Telefonnummer" variant="outlined" fullWidth />
-        </Box>
+        {/* Profile Image Section */}
+        <Box
+          component={Paper}
+          elevation={4}
+          sx={{
+            maxWidth: { xs: '100%', sm: '1000px' },
+            width: '100%',
+            margin: "auto",
+            marginTop: 6,
+            padding: 4,
+            borderRadius: 3,
+            bgcolor: '#ffffff',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4, flexDirection: { xs: 'column', sm: 'row' } }}>
+            <Avatar src={profileImage} sx={{ width: 120, height: 120, marginRight: { sm: 2, xs: 0 }, marginBottom: { xs: 2, sm: 0 } }} />
+            <Button
+              variant="outlined"
+              component="label"
+              sx={{ color: '#333', borderColor: '#333' }}
+            >
+              Profilbild ändern
+              <input type="file" hidden onChange={handleImageChange} />
+            </Button>
+          </Box>
 
-        {/* Änderungen speichern Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-          <Button 
-            variant="contained" 
-            sx={{ backgroundColor: '#333', color: '#fff' }} 
-            onClick={handleSaveClick}
+          {/* Personal Information Section */}
+          <Box component="form" sx={{ display: 'grid', gap: 3, width: '100%' }}>
+            <TextField label="Name" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <TextField label="Vorname" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <TextField label="Personalnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <TextField label="E-Mail" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <TextField label="Telefonnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+          </Box>
+
+          {/* Save Button */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: { xs: 'center', sm: 'flex-end' },
+              gap: 2,
+              marginTop: 4,
+              flexWrap: 'wrap'
+            }}
           >
-            Änderungen speichern
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
+              onClick={handleSaveClick}
+            >
+              Änderungen speichern
+            </Button>
+          </Box>
         </Box>
       </Box>
 
-      {/* Änderungen speichern Bestätigungsdialog */}
+      {/* Save Confirmation Dialog */}
       <Dialog open={openSaveDialog} onClose={handleSaveCancel}>
         <DialogTitle>Änderungen speichern</DialogTitle>
         <DialogContent>
