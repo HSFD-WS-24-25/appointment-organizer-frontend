@@ -4,19 +4,10 @@ import Sidebar from './Sidebar';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Box, Autocomplete, Typography, TextField, FormControlLabel,
-  Checkbox, Paper, Button, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle, List, ListItemButton,
-  ListItemIcon, ListItemText
+  Box, Typography, TextField, FormControlLabel,
+  Checkbox, Paper, Button
+
 } from "@mui/material";
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import GroupIcon from '@mui/icons-material/Group';
-import EventIcon from '@mui/icons-material/Event';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import ReportProblem from '@mui/icons-material/ReportProblem';
 
 export default function AdminCreateAnnouncements() {
   return (
@@ -24,7 +15,7 @@ export default function AdminCreateAnnouncements() {
       <Sidebar />
 
       {/* Main Content */}
-      <Box sx={{ flex: 1, backgroundColor: '#f5f5f5', padding: 3 }}>
+      <Box sx={{ flex: 1, backgroundColor: '#white', padding: 3 }}>
         <Typography variant="h4" gutterBottom>
       
         </Typography>
@@ -50,7 +41,7 @@ export default function AdminCreateAnnouncements() {
             variant="h5"
             align="center"
             fontWeight="bold"
-            color="blue"
+            color="black"
             gutterBottom
           >
             Ankündigung Erstellen

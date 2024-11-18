@@ -1,23 +1,12 @@
+// src/components/AdminAnnouncements.js
 "use client"; // important or else search doesn't work
 
 import Sidebar from './Sidebar';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, Button, Box, Stack, Autocomplete, Dialog, DialogActions, 
-  DialogContent, DialogContentText, DialogTitle, List, ListItemButton, 
-  ListItemIcon, ListItemText, Typography
+  Paper, TextField, Button, Box, Stack, Autocomplete, Typography
 } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import GroupIcon from '@mui/icons-material/Group';
-import EventIcon from '@mui/icons-material/Event';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import ReportProblem from '@mui/icons-material/ReportProblem';
 
 const data = [
   { title: 'Closed for Server Maintenance', method: 'On Login', startDate: '12.11.2024', endDate: '-', status: 'Active' },
@@ -40,19 +29,19 @@ export default function AdminAnnouncements() {
   }, [searchTerm]);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-        <Sidebar />
 
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#white', color: '#fff' }}>
+      <Sidebar />
 
       {/* Main Content */}
-      <Box sx={{ flex: 1, backgroundColor: '#f5f5f5', padding: 3 }}>
-        <Typography variant="h4" gutterBottom>
+      <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column',color: 'black' }}>
+        <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, marginBottom: 4 }}>
           Ankündigungen
         </Typography>
 
         {/* Search and Table */}
         <Box sx={{ mb: 4 }}>
-          <Stack spacing={2}>
+          <Stack spacing={2} sx={{ maxWidth: { xs: '100%', sm: '50%' }, margin: 'auto' }}>
             <Autocomplete
               id="search-input"
               freeSolo
@@ -61,21 +50,27 @@ export default function AdminAnnouncements() {
                 setSearchTerm(newInputValue);
               }}
               renderInput={(params) => (
-                <TextField {...params} label="Search" variant="outlined" fullWidth />
+                <TextField
+                  {...params}
+                  label="Suche"
+                  variant="outlined"
+                  fullWidth
+                  sx={{ backgroundColor: '#fff', color: '#000', borderRadius: 1, '& .MuiInputLabel-root': { color: '#555' }, '& .MuiOutlinedInput-root': { color: '#000', '& fieldset': { borderColor: '#aaa' }, '&:hover fieldset': { borderColor: '#888' } } }}
+                />
               )}
             />
           </Stack>
         </Box>
 
-        <TableContainer component={Paper} sx={{ mt: 4 }}>
+        <TableContainer component={Paper} sx={{ flex: 1, overflowY: 'auto', borderRadius: 2, backgroundColor: '#fff' }}>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>Titel</TableCell>
-                <TableCell>Methode</TableCell>
-                <TableCell>Start Datum</TableCell>
-                <TableCell>End Datum</TableCell>
-                <TableCell>Status</TableCell>
+              <TableRow sx={{ backgroundColor: '#444' }}>
+                <TableCell sx={{ color: '#fff' }}>Titel</TableCell>
+                <TableCell sx={{ color: '#fff' }}>Methode</TableCell>
+                <TableCell sx={{ color: '#fff' }}>Start Datum</TableCell>
+                <TableCell sx={{ color: '#fff' }}>End Datum</TableCell>
+                <TableCell sx={{ color: '#fff' }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -92,9 +87,32 @@ export default function AdminAnnouncements() {
           </Table>
         </TableContainer>
 
-        <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-          <Button variant="contained" color="error">Ankündigung Deaktivieren</Button>
-          <Button variant="contained" color="primary" href="/admin-create-announcements">Neue Ankündigung</Button>
+        <Box
+          sx={{
+            mt: 2,
+            display: 'flex',
+            justifyContent: { xs: 'center', sm: 'flex-start' },
+            gap: 2,
+            flexWrap: 'wrap',
+            paddingBottom: 4,
+          }}
+        >
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#d32f2f', '&:hover': { backgroundColor: '#b71c1c' } }}
+          >
+            Ankündigung Deaktivieren
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            href="/admin-create-announcements"
+            sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
+          >
+            Neue Ankündigung
+          </Button>
+
         </Box>
       </Box>
     </Box>

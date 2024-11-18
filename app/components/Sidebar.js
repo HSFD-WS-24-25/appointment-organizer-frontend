@@ -13,8 +13,12 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
-  Avatar, ListItemAvatar
+  Avatar, 
+  ListItemAvatar,
+  IconButton,
+  Drawer,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupIcon from '@mui/icons-material/Group';
 import EventIcon from '@mui/icons-material/Event';
@@ -24,6 +28,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
 import { ReportProblem } from '@mui/icons-material';
+
 // For authentication
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -34,6 +39,7 @@ function Sidebar() {
 
   // For auth
   const {user, isLoading} = useUser();
+
 
   const handleMouseEnter = () => {
     setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
@@ -61,6 +67,10 @@ function Sidebar() {
 
   const handleTerminClick = () => {
     router.push('/adminTermin');
+  };
+
+  const notificationClick = () => {
+    router.push('/adminNotification');
   };
 
   const handleLogoutConfirm = () => {

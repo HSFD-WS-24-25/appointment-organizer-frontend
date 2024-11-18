@@ -1,8 +1,11 @@
 import "./globals.css";
+
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import Sidebar from "./components/Sidebar";
 import {Box} from "@mui/material";
+import { ChatProvider } from "./components/ChatContext";
+
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -21,7 +24,8 @@ export default function RootLayout({ children }) {
             </Box>
           </Box>
         </UserProvider>
-    </body>
+        <ChatProvider>{children}</ChatProvider>
+      </body>
     </html>
   );
 }
