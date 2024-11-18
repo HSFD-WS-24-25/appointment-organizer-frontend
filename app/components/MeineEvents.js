@@ -12,25 +12,9 @@ import {
   Badge,
   Grid,
   Alert,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from '@mui/material';
-
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import EventNoteIcon from '@mui/icons-material/EventNote';
+import SidebarUser from './SidebarUser';
 import EditIcon from '@mui/icons-material/Edit';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import EventIcon from '@mui/icons-material/Event';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function EventCard({ count }) {
@@ -43,8 +27,8 @@ function EventCard({ count }) {
     <Paper
       sx={{
         position: 'relative',
-        width: 350, // Increased width
-        height: 350, // Increased height
+        width: '100%', // Responsive width
+        height: 200, // Adjusted height for better responsiveness
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -78,7 +62,6 @@ function EventCard({ count }) {
 
 function UserDashboard() {
   const [view, setView] = useState('grid');
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false); // State for logout dialog
 
   const handleViewChange = (event, nextView) => {
     if (nextView !== null) {
@@ -86,75 +69,24 @@ function UserDashboard() {
     }
   };
 
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    // Navigate to the homepage or perform logout actions here
-  };
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
   const eventCounts = [60, 20, 30, 10, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' }, // Stack on small screens
+        height: '100vh',
+      }}
+    >
       {/* Sidebar */}
-      <Box
-        sx={{
-          width: 250,
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <List>
-          <ListItemButton>
-            <ListItemIcon>
-              <GroupAddIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Veranstaltung erstellen" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <EventAvailableIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Meine Veranstaltungen" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <EventNoteIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Meine Veranstaltungen als Teilnehmer" />
-          </ListItemButton>
-        </List>
-        <List>
-          <ListItemButton>
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Profil" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Einstellungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleLogoutClick}>
-            <ListItemIcon>
-              <ExitToAppIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </List>
+      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <SidebarUser />
+      </Box>
+
+      {/* Mobile Sidebar */}
+      <Box sx={{ display: { xs: 'block', sm: 'none' }, width: '100%' }}>
+        <SidebarUser />
       </Box>
 
       {/* Main Content */}
@@ -162,7 +94,7 @@ function UserDashboard() {
         sx={{
           flex: 1,
           backgroundColor: '#f5f5f5',
-          padding: 3,
+          padding: { xs: 2, sm: 3 },
           overflowY: 'auto',
         }}
       >
@@ -172,13 +104,32 @@ function UserDashboard() {
         </Alert>
 
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            marginBottom: 2,
+            gap: { xs: 1, sm: 0 },
+          }}
+        >
           <Typography variant="h5">Meine Veranstaltungen:</Typography>
-          <Button variant="outlined" size="large">Neue Veranstaltung</Button>
+          <Button variant="outlined" size="large">
+            Neue Veranstaltung
+          </Button>
         </Box>
 
         {/* View Toggle & File Creation Link */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: 'center',
+            gap: 2,
+            marginBottom: 3,
+          }}
+        >
           <ToggleButtonGroup
             value={view}
             exclusive
@@ -195,32 +146,20 @@ function UserDashboard() {
         </Box>
 
         {/* Grid of Events */}
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            flexDirection: { xs: 'column', sm: 'row' }, // Stack cards on small screens
+          }}
+        >
           {eventCounts.map((count, index) => (
-            <Grid item key={index} xs={3}> {/* Adjusted grid size */}
+            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
               <EventCard count={count} />
             </Grid>
           ))}
         </Grid>
       </Box>
-
-      {/* Logout Confirmation Dialog */}
-      <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Möchten Sie sich wirklich abmelden?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">
-            Nein
-          </Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>
-            Ja
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }
