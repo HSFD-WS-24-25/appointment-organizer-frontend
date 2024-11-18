@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { ReportProblem } from '@mui/icons-material';
 import dynamic from 'next/dynamic';
 import 'react-calendar/dist/Calendar.css';
-import Sidebar from './Sidebar';
+import Sidebar from '../../components/Sidebar';
 
 // Dynamischer Import von react-calendar zur Vermeidung von Hydration-Problemen
 const Calendar = dynamic(() => import('react-calendar'), { ssr: false });

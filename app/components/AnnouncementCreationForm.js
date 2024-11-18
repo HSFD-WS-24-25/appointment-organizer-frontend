@@ -1,26 +1,12 @@
-"use client";
-
-import Sidebar from './Sidebar';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Box, Typography, TextField, FormControlLabel,
   Checkbox, Paper, Button
 
 } from "@mui/material";
 
-export default function AdminCreateAnnouncements() {
-  return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Sidebar />
-      {/* Main Content */}
-      <Box sx={{ flex: 1, backgroundColor: '#white', padding: 3 }}>
-        <Typography variant="h4" gutterBottom>
-      
-        </Typography>
-
-        {/* Announcement Creation Form */}
-        <Box
+function AnnouncementCreationFrom() {
+  return(
+      <Box
           component={Paper}
           elevation={4}
           sx={{
@@ -75,6 +61,7 @@ export default function AdminCreateAnnouncements() {
             <Button
               variant="contained"
               color="error"
+              href="/admin/announcements"
               sx={{ width: { xs: "100%", sm: "auto" } }}
             >
               Abbrechen
@@ -89,7 +76,8 @@ export default function AdminCreateAnnouncements() {
             </Button>
           </Box>
         </Box>
-      </Box>
-    </Box>
+
   );
 }
+
+export default AnnouncementCreationFrom;

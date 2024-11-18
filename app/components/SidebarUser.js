@@ -49,11 +49,11 @@ function SidebarUser() {
   };
 
   const handleUserProfilClick = () => {
-    router.push('/userProfile');
+    router.push('/user/profile');
   };
 
   const handleUserSettingsClick = () => {
-    router.push('/userSettings');
+    router.push('/user/settings');
   };
 
   const handleLogoutCancel = () => {

@@ -47,19 +47,19 @@ function Sidebar() {
   };
 
   const handleAnouncements = () => {
-    router.push('/adminAnouncements');
+    router.push('/admin/announcements');
   };
 
   const handleProfileClick = () => {
-    router.push('/adminProfile');
+    router.push('/admin/profile');
   };
 
   const handleTerminClick = () => {
-    router.push('/adminTermin');
+    router.push('/admin/termin');
   };
 
   const notificationClick = () => {
-    router.push('/adminNotification');
+    router.push('/admin/notification');
   };
 
   const handleLogoutConfirm = () => {
