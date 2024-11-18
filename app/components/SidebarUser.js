@@ -24,6 +24,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChatBoxUser from './ChatBoxUser';
 import { useRouter } from 'next/navigation';
+import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
 
 function SidebarUser() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -64,10 +65,15 @@ function SidebarUser() {
     setDrawerOpen(!drawerOpen);
   };
 
+  const handleUserDraftClick = () => {
+    router.push('/meinEntwurf');
+  };
+
   const mainMenuItems = [
     { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Veranstaltung erstellen", action: () => {} },
     { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: () => {} },
     { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Teilnahmen", action: () => {} },
+    { icon: <Bookmark style={{ color: '#ccc' }} />, text: "Mein Entwurf", action: handleUserDraftClick },
   ];
 
   const bottomMenuItems = [
