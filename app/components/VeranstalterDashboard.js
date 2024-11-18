@@ -12,9 +12,13 @@ function UserDashboard() {
   const [checkedInPerson, setCheckedInPerson] = useState(false);
   const router = useRouter();
   
-    const getInvitesList = () => {
+  const getInvitesList = () => {
     router.push('/invites');
-   };
+  };
+
+  const getPreviewPage = () => {
+    router.push('/preview');
+  };
     
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -128,7 +132,7 @@ function UserDashboard() {
             {/* Action Buttons */}
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
               <Button variant="contained" color="error">Abbrechen</Button>
-              <Button variant="contained" color="info">Vorschau</Button>
+              <Button onClick={getPreviewPage} variant="contained" color="info">Vorschau</Button>
               <Button variant="contained" color="success">Speichern</Button>
             </Grid>
           </Grid>
