@@ -96,7 +96,6 @@ function Sidebar() {
           backgroundColor: '#333',
           color: '#ccc',
           paddingTop: 2,
-          paddingLeft: 0,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
