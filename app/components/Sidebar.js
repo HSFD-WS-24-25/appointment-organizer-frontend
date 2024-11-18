@@ -27,7 +27,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
-import { ReportProblem } from '@mui/icons-material';
+import { CenterFocusStrong, ReportProblem } from '@mui/icons-material';
 
 // For authentication
 import { useUser } from '@auth0/nextjs-auth0/client';
@@ -99,7 +99,13 @@ function Sidebar() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          transition: 'width 0.3s ease', // Übergangsanimation für die Breite
+          transition: 'width 0.3s ease', 
+          '& .MuiListItemIcon-root': {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minWidth: 40, 
+          },
         }}
       >
         <List>
@@ -138,7 +144,7 @@ function Sidebar() {
           {user ? (
               <>
           <ListItemButton onClick={handleProfileClick}>
-            <ListItemAvatar>
+            <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: 40 }}>
               <Avatar src = {user.picture} alt={user.name} sx={{ width: 30, height: 30 }}/>
             </ListItemAvatar>
             {isExpanded && <ListItemText primary={user.name} />}
