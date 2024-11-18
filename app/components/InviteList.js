@@ -1,7 +1,28 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  Paper,
+} from '@mui/material';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
@@ -25,10 +46,6 @@ function UserDashboard() {
 
   const handleLogoutCancel = () => {
     setOpenLogoutDialog(false);
-  };
-
-  const newEvent = () => {
-    router.push('/event');
   };
 
   return (
@@ -95,27 +112,72 @@ function UserDashboard() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           padding: 3,
         }}
       >
-        <h1>Willkommen ... (User) !</h1>
-        <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+        <Typography variant="h4" gutterBottom>Einladungsliste</Typography>
+
+        {/* Section for guests who have participated before */}
+        <Typography variant="h6" gutterBottom>Gäste die schon an anderen Veranstaltungen teilgenommen haben:</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+          <TextField variant="outlined" placeholder="Search" size="small" sx={{ marginRight: 2 }} />
+        </Box>
+        <TableContainer component={Paper} sx={{ width: '80%', marginBottom: 4 }}>
+          <Table sx={{ minWidth: 650, border: '1px solid #ddd' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>Gast-Informationen</TableCell>
+                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>Email</TableCell>
+                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>Teilgenommen</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {["Max Mustermann", "Alice Müller", "Tom Gast"].map((name, index) => (
+                <TableRow key={index}>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{name}</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{name.toLowerCase().replace(" ", ".")}@beispiel.de</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}><input type="checkbox" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Section for new guest email input */}
+        <Typography variant="h6" gutterBottom>Für Neue Gäste tragen Sie bitte die Emails ein:</Typography>
+        <TableContainer component={Paper} sx={{ width: '80%', marginBottom: 3 }}>
+          <Table sx={{ minWidth: 650, border: '1px solid #ddd' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>Gast-Informationen</TableCell>
+                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>Email</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {["Julia Schmidt", "Peter Neumann", "Franz Gast"].map((name, index) => (
+                <TableRow key={index}>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{name}</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>{name.toLowerCase().replace(" ", ".")}@beispiel.de</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', gap: 2 }}>
           <Button
             variant="contained"
-            size="large"
-            onClick={newEvent}
             sx={{ backgroundColor: 'green', color: '#fff', '&:hover': { backgroundColor: 'darkgreen' } }}
           >
-            Neue Veranstaltung
+            Zurück zu Veranstaltungs
           </Button>
           <Button
             variant="contained"
-            size="large"
-            sx={{ backgroundColor: 'orange', color: '#fff', '&:hover': { backgroundColor: 'darkorange' } }}
-            
+            sx={{ backgroundColor: 'red', color: '#fff', '&:hover': { backgroundColor: 'darkred' } }}
           >
-            Meine Veranstaltungen
+            Abbrechen
           </Button>
         </Box>
       </Box>
