@@ -13,10 +13,33 @@ import {
   TextField,
   Typography,
   Paper,
+  InputAdornment,
 } from '@mui/material';
 import SidebarUser from './SidebarUser';
+import FilterListIcon from '@mui/icons-material/FilterList'; // Import the filter icon
 
 function UserDashboard() {
+  const [searchText, setSearchText] = useState('');
+  const [filteredGuests, setFilteredGuests] = useState(["Max Mustermann", "Alice Müller", "Tom Gast", "Julia Schmidt", "Peter Neumann", "Franz Gast"]);
+  
+  // Handle search filter action
+  const handleSearch = () => {
+    // Filtering based on the search text and matching guests' names
+    if (searchText) {
+      setFilteredGuests(filteredGuests.filter(name => name.toLowerCase().includes(searchText.toLowerCase())));
+    } else {
+      setFilteredGuests(["Max Mustermann", "Alice Müller", "Tom Gast", "Julia Schmidt", "Peter Neumann", "Franz Gast"]); // Reset when search is empty
+    }
+  };
+
+  // Function to highlight the search text within the names
+  const highlightText = (text) => {
+    const regex = new RegExp(`(${searchText})`, 'gi');
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === searchText.toLowerCase() ? <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span> : part
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -31,7 +54,7 @@ function UserDashboard() {
       </Box>
       
       {/* Mobile Sidebar */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' }, width: '100%' }}>
+      <Box sx={{ display: { xs: 'block', sm: 'none' }, width: '100%' }} >
         <SidebarUser />
       </Box>
 
@@ -65,13 +88,27 @@ function UserDashboard() {
             justifyContent: 'center',
           }}
         >
+          {/* Search Bar with Filter Icon on the Right */}
           <TextField
             variant="outlined"
             placeholder="Search"
             size="small"
             sx={{ width: { xs: '100%', sm: '80%' }, marginRight: { sm: 2 } }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <FilterListIcon 
+                    onClick={handleSearch}
+                    sx={{ cursor: 'pointer' }} 
+                  />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
+
         <TableContainer
           component={Paper}
           sx={{ width: { xs: '100%', sm: '80%' }, marginBottom: 4 }}
@@ -91,9 +128,12 @@ function UserDashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {["Max Mustermann", "Alice Müller", "Tom Gast"].map((name, index) => (
+              {filteredGuests.map((name, index) => (
                 <TableRow key={index}>
-                  <TableCell sx={{ border: '1px solid #ddd' }}>{name}</TableCell>
+                  <TableCell sx={{ border: '1px solid #ddd' }}>
+                    {/* Highlight matching text */}
+                    {highlightText(name)}
+                  </TableCell>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
                     {name.toLowerCase().replace(" ", ".")}@beispiel.de
                   </TableCell>
@@ -149,6 +189,28 @@ function UserDashboard() {
             alignItems: 'center',
           }}
         >
+           <Button
+              variant="contained"
+              sx={{
+              backgroundColor: 'red',
+              color: '#fff',
+              '&:hover': { backgroundColor: 'darkred' },
+              width: { xs: '100%', sm: 'auto' },
+             }}
+           >
+             Abbrechen
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#20488c',
+              color: '#fff',
+              '&:hover': { backgroundColor: 'darkblue' },
+              width: { xs: '100%', sm: 'auto' },
+            }}
+          >
+            Einladung Schicken
+          </Button>
           <Button
             variant="contained"
             sx={{
@@ -159,17 +221,6 @@ function UserDashboard() {
             }}
           >
             Zurück zu Veranstaltungs
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: 'red',
-              color: '#fff',
-              '&:hover': { backgroundColor: 'darkred' },
-              width: { xs: '100%', sm: 'auto' },
-            }}
-          >
-            Abbrechen
           </Button>
         </Box>
       </Box>
