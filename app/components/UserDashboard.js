@@ -6,6 +6,7 @@ import SidebarUser from './SidebarUser';
 import { useRouter } from 'next/navigation';
 
 function UserDashboard() {
+  
   const router = useRouter();
 
   const newEvent = () => {
@@ -15,7 +16,7 @@ function UserDashboard() {
   const myEvent = () => {
     router.push('/myevent');
   };
-  
+
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <SidebarUser />

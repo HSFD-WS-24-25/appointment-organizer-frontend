@@ -15,6 +15,7 @@ const data = [
   // add more data examples here
 ];
 
+//test
 export default function AdminAnnouncements() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
@@ -28,8 +29,9 @@ export default function AdminAnnouncements() {
   }, [searchTerm]);
 
   return (
+
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#white', color: '#fff' }}>
-      <Sidebar />
+
 
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column',color: 'black' }}>
@@ -110,6 +112,7 @@ export default function AdminAnnouncements() {
           >
             Neue Ankündigung
           </Button>
+
         </Box>
       </Box>
     </Box>
