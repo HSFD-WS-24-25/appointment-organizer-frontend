@@ -62,7 +62,7 @@ function Sidebar() {
   };
 
   const handleProfileClick = () => {
-    router.push('/adminProfile');
+    router.push('/profile');
   };
 
   const handleTerminClick = () => {

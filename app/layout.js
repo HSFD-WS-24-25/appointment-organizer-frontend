@@ -24,7 +24,6 @@ export default function RootLayout({ children }) {
             </Box>
           </Box>
         </UserProvider>
-        <ChatProvider>{children}</ChatProvider>
       </body>
     </html>
   );
