@@ -17,12 +17,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <UserProvider>
+          <ChatProvider>
           <Box sx={{ display: 'flex', gridTemplateColumns: 'repeat(2, 1fr)' }}>
             <Sidebar />
             <Box sx={{ p: 2 }}>
                 {children}
             </Box>
           </Box>
+          </ChatProvider>
         </UserProvider>
       </body>
     </html>

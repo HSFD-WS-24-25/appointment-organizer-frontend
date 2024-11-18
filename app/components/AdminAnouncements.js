@@ -31,7 +31,7 @@ export default function AdminAnnouncements() {
   return (
 
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#white', color: '#fff' }}>
-      <Sidebar />
+
 
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column',color: 'black' }}>

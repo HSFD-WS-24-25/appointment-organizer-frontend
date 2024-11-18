@@ -12,7 +12,7 @@ import {
 export default function AdminCreateAnnouncements() {
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Sidebar />
+
 
       {/* Main Content */}
       <Box sx={{ flex: 1, backgroundColor: '#white', padding: 3 }}>
