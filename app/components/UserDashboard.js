@@ -5,7 +5,6 @@ import { Box } from '@mui/material';
 import SidebarUser from './SidebarUser';
 
 function UserDashboard() {
-
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <SidebarUser />

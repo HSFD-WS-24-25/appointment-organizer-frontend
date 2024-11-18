@@ -13,6 +13,8 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  Avatar, 
+  ListItemAvatar,
   IconButton,
   Drawer,
 } from '@mui/material';
@@ -26,13 +28,18 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
 import { ReportProblem } from '@mui/icons-material';
-import ChatboxAdmin from './ChatBoxAdmin';
+
+// For authentication
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 function Sidebar() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isExpanded, setIsExpanded] = useState(false); // Zustand für die Sidebar-Erweiterung
   const router = useRouter();
+
+  // For auth
+  const {user, isLoading} = useUser();
+
 
   const handleMouseEnter = () => {
     setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
@@ -46,12 +53,16 @@ function Sidebar() {
     setOpenLogoutDialog(true);
   };
 
+  const handleUsers = () => {
+    router.push('/users');
+  }
+
   const handleAnouncements = () => {
     router.push('/adminAnouncements');
   };
 
   const handleProfileClick = () => {
-    router.push('/adminProfile');
+    router.push('/profile');
   };
 
   const handleTerminClick = () => {
@@ -71,92 +82,89 @@ function Sidebar() {
     setOpenLogoutDialog(false);
   };
 
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
-  };
-
-  const mainMenuItems = [
-    { icon: <DashboardIcon style={{ color: '#ccc' }} />, text: "Dashboard", action: () => {} },
-    { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Benutzerverwaltung", action: () => {} },
-    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Terminmanagement", action: handleTerminClick },
-    { icon: <NotificationsIcon style={{ color: '#ccc' }} />, text: "Benachrichtigungen", action: notificationClick },
-    { icon: <ReportProblem style={{ color: '#ccc' }} />, text: "Ankündigungen", action: handleAnouncements },
-  ];
-
-  const bottomMenuItems = [
-    { icon: <AccountCircleIcon style={{ color: '#ccc' }} />, text: "Profil", action: handleProfileClick },
-    { icon: <SettingsIcon style={{ color: '#ccc' }} />, text: "Einstellungen", action: () => {} },
-    { icon: <ExitToAppIcon style={{ color: '#ccc' }} />, text: "Logout", action: handleLogoutClick },
-  ];
+  const handleLogin = () => {
+    console.log(user);
+  }
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      <ChatboxAdmin />
       <Box
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         sx={{
-          display: { xs: 'none', sm: 'flex' },
-          width: isExpanded ? 250 : 80,
+          width: isExpanded ? 250 : 80, // Erweiterung der Sidebar bei Mouseover
           backgroundColor: '#333',
           color: '#ccc',
           paddingTop: 2,
+          display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          transition: 'width 0.3s ease',
+          transition: 'width 0.3s ease', // Übergangsanimation für die Breite
         }}
       >
-        {/* Main Menu */}
         <List>
-          {mainMenuItems.map((item, index) => (
-            <ListItemButton key={index} onClick={item.action}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              {isExpanded && <ListItemText primary={item.text} />}
-            </ListItemButton>
-          ))}
+          <ListItemButton>
+            <ListItemIcon>
+              <DashboardIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Dashboard" />}
+          </ListItemButton>
+          <ListItemButton onClick={handleUsers}>
+            <ListItemIcon>
+              <GroupIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Benutzerverwaltung" />}
+          </ListItemButton>
+          <ListItemButton onClick={handleTerminClick}>
+            <ListItemIcon>
+              <EventIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Terminmanagement" />}
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemIcon>
+              <NotificationsIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Benachrichtigungen" />}
+          </ListItemButton>
+          <ListItemButton onClick={handleAnouncements}>
+            <ListItemIcon>
+              <ReportProblem style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Ankündigungen" />}
+          </ListItemButton>
         </List>
-
-        {/* Bottom Menu */}
         <List>
-          {bottomMenuItems.map((item, index) => (
-            <ListItemButton key={index} onClick={item.action}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              {isExpanded && <ListItemText primary={item.text} />}
-            </ListItemButton>
-          ))}
+          {user ? (
+              <>
+          <ListItemButton onClick={handleProfileClick}>
+            <ListItemAvatar>
+              <Avatar src = {user.picture} alt={user.name} sx={{ width: 30, height: 30 }}/>
+            </ListItemAvatar>
+            {isExpanded && <ListItemText primary={user.name} />}
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemIcon>
+              <SettingsIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Einstellungen" />}
+          </ListItemButton>
+          <ListItemButton href="/api/auth/logout">
+            <ListItemIcon>
+              <ExitToAppIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Logout" />}
+          </ListItemButton>
+          </>
+              ) : (
+          <ListItemButton href="/api/auth/login">
+            <ListItemIcon>
+              <AccountCircleIcon style={{ color: '#ccc' }} />
+            </ListItemIcon>
+            {isExpanded && <ListItemText primary="Login" />}
+          </ListItemButton>
+              )}
         </List>
-      </Box>
-
-      {/* Mobile Hamburger Menu */}
-      <Box sx={{ display: { xs: 'flex', sm: 'none' }, padding: 1 }}>
-        <IconButton onClick={toggleDrawer} sx={{ color: '#black' }}>
-          <MenuIcon />
-        </IconButton>
-        <Drawer
-          anchor="left"
-          open={drawerOpen}
-          onClose={toggleDrawer}
-          PaperProps={{
-            sx: { width: 250, backgroundColor: '#333', color: '#ccc' },
-          }}
-        >
-          <List>
-            {mainMenuItems.map((item, index) => (
-              <ListItemButton key={index} onClick={item.action}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            ))}
-          </List>
-          <List>
-            {bottomMenuItems.map((item, index) => (
-              <ListItemButton key={index} onClick={item.action}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            ))}
-          </List>
-        </Drawer>
       </Box>
 
       {/* Logout-Bestätigungsdialog */}
