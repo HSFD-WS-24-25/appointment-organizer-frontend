@@ -1,6 +1,6 @@
 "use client";
 
-import SidebarUser from './SidebarUser';
+import SidebarUser from '../../components/SidebarUser';
 import React, { useState } from 'react';
 import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography, Paper } from '@mui/material';
 

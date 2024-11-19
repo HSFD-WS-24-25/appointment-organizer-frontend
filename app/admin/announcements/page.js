@@ -1,7 +1,6 @@
-// src/components/AdminAnnouncements.js
 "use client"; // important or else search doesn't work
 
-import Sidebar from './Sidebar';
+import Sidebar from '../../components/Sidebar';
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -107,7 +106,7 @@ export default function AdminAnnouncements() {
           <Button
             variant="contained"
             color="primary"
-            href="/admin-create-announcements"
+            href="/admin/create-announcements"
             sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
           >
             Neue Ankündigung

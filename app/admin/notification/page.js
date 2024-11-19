@@ -1,6 +1,6 @@
 "use client";
 
-import Sidebar from './Sidebar';
+import Sidebar from '../../components/Sidebar';
 import React, { useState } from 'react';
 import {
   Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
