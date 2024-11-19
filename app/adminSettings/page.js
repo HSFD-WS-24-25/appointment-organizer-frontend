@@ -1,5 +1,5 @@
 import AdminSettings from '../components/AdminSettings';
 
-export default function AdminSettingsPage() {
+export default function AdminPage() {
     return <AdminSettings />;
 }

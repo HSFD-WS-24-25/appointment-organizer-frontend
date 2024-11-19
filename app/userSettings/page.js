@@ -1,5 +1,5 @@
 import UserSettings from '../components/UserSettings';
 
-export default function UserSettingsPage() {
+export default function UserPage() {
   return <UserSettings />;
 }
