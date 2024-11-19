@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import SidebarUser from './SidebarUser';
+import SidebarUser from '../../components/SidebarUser';
 
 function UserSettings() {
   const router = useRouter();
