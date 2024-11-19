@@ -65,6 +65,10 @@ function Sidebar() {
     router.push('/profile');
   };
 
+  const handleSettingsClick = () => {
+    router.push('/adminSettings');
+  };
+
   const handleTerminClick = () => {
     router.push('/adminTermin');
   };
