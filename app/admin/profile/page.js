@@ -27,8 +27,8 @@ function AdminProfile() {
   };
 
   return (
+
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#white', color: '#fff' }}>
-      <Sidebar />
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', color: 'black'}}>
         <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, marginBottom: 4 }}>
           Profil
@@ -92,6 +92,7 @@ function AdminProfile() {
       </Box>
 
       {/* Save Confirmation Dialog */}
+
       <Dialog open={openSaveDialog} onClose={handleSaveCancel}>
         <DialogTitle>Änderungen speichern</DialogTitle>
         <DialogContent>
