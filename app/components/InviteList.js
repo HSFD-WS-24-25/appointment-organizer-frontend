@@ -15,7 +15,6 @@ import {
   Paper,
   InputAdornment,
 } from '@mui/material';
-import SidebarUser from './SidebarUser';
 import FilterListIcon from '@mui/icons-material/FilterList'; // Import the filter icon
 
 function UserDashboard() {
@@ -48,15 +47,6 @@ function UserDashboard() {
         height: '100vh',
       }}
     >
-      {/* Sidebar */}
-      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-        <SidebarUser />
-      </Box>
-      
-      {/* Mobile Sidebar */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' }, width: '100%' }} >
-        <SidebarUser />
-      </Box>
 
       {/* Main Content */}
       <Box

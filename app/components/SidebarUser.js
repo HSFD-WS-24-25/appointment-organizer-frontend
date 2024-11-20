@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import React, { useState } from 'react';
 import {
@@ -25,11 +25,37 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChatBoxUser from './ChatBoxUser';
 import { useRouter } from 'next/navigation';
 import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
+ import * as PropTypes from "prop-types";
 
-function SidebarUser() {
+ function SidebarItem(props) {
+     return <ListItemButton onClick={props.item.action} sx={{justifyContent: props.expanded ? "initial" : "center"}}>
+         <ListItemIcon sx={{
+             minWidth: 0,
+             mr: props.expanded ? 3 : "auto",
+             justifyContent: "center"
+         }}>{props.item.icon}</ListItemIcon>
+         <ListItemText
+             primary={props.item.text}
+             sx={{
+                 opacity: props.expanded ? 1 : 0,
+                 whiteSpace: "nowrap",
+                 overflow: "hidden",
+                 transition: "opacity 0.3s ease, max-width 0.3s ease",
+                 maxWidth: props.expanded ? "200px" : "0px",
+             }}
+         />
+     </ListItemButton>;
+ }
+
+ SidebarItem.propTypes = {
+     item: PropTypes.any,
+     expanded: PropTypes.bool
+ };
+
+ function SidebarUser() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
-  const [isExpanded, setIsExpanded] = useState(false); // Zustand für die Sidebar-Erweiterung
+  const [isExpanded, setIsExpanded] = useState(false); // Zustand für die SidebarAdmin-Erweiterung
   const router = useRouter();
 
   const handleLogoutClick = () => {
@@ -37,11 +63,11 @@ function SidebarUser() {
   };
 
   const handleMouseLeave = () => {
-    setIsExpanded(false); // Verkleinert die Sidebar bei Mouseleave
+    setIsExpanded(false); // Verkleinert die SidebarAdmin bei Mouseleave
   };
 
   const handleMouseEnter = () => {
-    setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
+    setIsExpanded(true); // Erweitert die SidebarAdmin bei Mouseover
   };
 
   const handleLogoutConfirm = () => {
@@ -66,12 +92,16 @@ function SidebarUser() {
   };
 
   const handleUserDraftClick = () => {
-    router.push('/meinEntwurf');
+    router.push('/user/meinEntwurf');
   };
+
+    const handleUserEventsClick = () => {
+        router.push('/user/myevent');
+    };
 
   const mainMenuItems = [
     { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Veranstaltung erstellen", action: () => {} },
-    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: () => {} },
+    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: handleUserEventsClick },
     { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Teilnahmen", action: () => {} },
     { icon: <Bookmark style={{ color: '#ccc' }} />, text: "Mein Entwurf", action: handleUserDraftClick },
   ];
@@ -102,38 +132,14 @@ function SidebarUser() {
         {/* Main Menu */}
         <List>
           {mainMenuItems.map((item, index) => (
-            <ListItemButton key={index} onClick={item.action} sx={{ justifyContent: isExpanded ? 'initial' : 'center' }}>
-              <ListItemIcon sx={{ minWidth: 0, mr: isExpanded ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                sx={{
-                  opacity: isExpanded ? 1 : 0,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  transition: 'opacity 0.3s ease, max-width 0.3s ease',
-                  maxWidth: isExpanded ? '200px' : '0px',
-                }}
-              />
-            </ListItemButton>
+            <SidebarItem key={index} item={item} expanded={isExpanded}/>
           ))}
         </List>
 
         {/* Bottom Menu */}
         <List>
           {bottomMenuItems.map((item, index) => (
-            <ListItemButton key={index} onClick={item.action} sx={{ justifyContent: isExpanded ? 'initial' : 'center' }}>
-              <ListItemIcon sx={{ minWidth: 0, mr: isExpanded ? 3 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                sx={{
-                  opacity: isExpanded ? 1 : 0,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  transition: 'opacity 0.3s ease, max-width 0.3s ease',
-                  maxWidth: isExpanded ? '200px' : '0px',
-                }}
-              />
-            </ListItemButton>
+              <SidebarItem key={index} item={item} expanded={isExpanded}/>
           ))}
         </List>
       </Box>

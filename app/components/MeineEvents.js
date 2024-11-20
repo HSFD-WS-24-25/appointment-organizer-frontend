@@ -13,7 +13,6 @@ import {
   Grid,
   Alert,
 } from '@mui/material';
-import SidebarUser from './SidebarUser';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -79,15 +78,7 @@ function UserDashboard() {
         height: '100vh',
       }}
     >
-      {/* Sidebar */}
-      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-        <SidebarUser />
-      </Box>
 
-      {/* Mobile Sidebar */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' }, width: '100%' }}>
-        <SidebarUser />
-      </Box>
 
       {/* Main Content */}
       <Box

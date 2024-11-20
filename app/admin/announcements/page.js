@@ -1,6 +1,5 @@
 "use client"; // important or else search doesn't work
 
-import Sidebar from '../../components/Sidebar';
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
