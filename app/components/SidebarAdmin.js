@@ -155,7 +155,7 @@ function SidebarAdmin() {
             </ListItemIcon>
             {isExpanded && <ListItemText primary="Einstellungen" />}
           </ListItemButton>
-          <ListItemButton href="/api/auth/logout">
+          <ListItemButton onClick={handleLogoutClick}>
             <ListItemIcon>
               <ExitToAppIcon style={{ color: '#ccc' }} />
             </ListItemIcon>
@@ -181,7 +181,7 @@ function SidebarAdmin() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleLogoutCancel} color="primary">Nein</Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>Ja</Button>
+          <Button href="/api/auth/logout" color="primary" autoFocus>Ja</Button>
         </DialogActions>
       </Dialog>
     </Box>
