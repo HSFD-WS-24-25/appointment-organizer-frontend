@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import React, { useState } from 'react';
 import {
@@ -66,12 +66,16 @@ function SidebarUser() {
   };
 
   const handleUserDraftClick = () => {
-    router.push('/meinEntwurf');
+    router.push('/user/meinEntwurf');
   };
+
+    const handleUserEventsClick = () => {
+        router.push('/user/myevent');
+    };
 
   const mainMenuItems = [
     { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Veranstaltung erstellen", action: () => {} },
-    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: () => {} },
+    { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: handleUserEventsClick },
     { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Teilnahmen", action: () => {} },
     { icon: <Bookmark style={{ color: '#ccc' }} />, text: "Mein Entwurf", action: handleUserDraftClick },
   ];
