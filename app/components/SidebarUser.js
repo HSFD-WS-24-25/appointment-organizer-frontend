@@ -81,14 +81,20 @@ import PropTypes from "prop-types";
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         sx={{
-          display: { xs: 'none', sm: 'flex' },
-          width: isExpanded ? 250 : 80,
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          transition: 'width 0.3s ease',
+            width: isExpanded ? 250 : 80, // Erweiterung der SidebarAdmin bei Mouseover
+            backgroundColor: '#333',
+            color: '#ccc',
+            paddingTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            transition: 'width 0.3s ease',
+            '& .MuiListItemIcon-root': {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minWidth: 40,
+            },
         }}
       >
         {/* Main Menu */}
