@@ -7,15 +7,6 @@ import EventActivityCard from './EventActivityCard';
 
 export function AdminDashboardWidget() {
 
-
-    const NotificationsClick = () => {
-        router.push('/adminTermin');
-    };
-
-    const Users = () => {
-        router.push('/adminTermin');
-    };
-
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
             {/* Sidebar */}

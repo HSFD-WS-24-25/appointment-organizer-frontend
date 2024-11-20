@@ -1,5 +1,5 @@
-import AuthForm from '../app/components/AuthForm';
+import LogInOut from '../app/components/LogInOut';
 
 export default function HomePage() {
-  return <AuthForm />;
+  return <LogInOut />;
 }

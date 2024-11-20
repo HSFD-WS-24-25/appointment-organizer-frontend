@@ -1,5 +1,10 @@
-import AdminDashboard from '../components/AdminDashboard';
+"use client";
+
+import React, { useState } from 'react';
+import AdminDashboardWidget from '../components/AdminDashboardWidget'
 
 export default function AdminPage() {
-  return <AdminDashboard />;
+  return (
+    <AdminDashboardWidget />
+  );
 }

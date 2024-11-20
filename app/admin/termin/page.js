@@ -22,33 +22,6 @@ function AdminTermin() {
   const [openEventDialog, setOpenEventDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [view, setView] = useState("month"); // "day" für Wochenansicht, "month" für Monatsansicht
-  const router = useRouter();
-
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    router.push('/');
-  };
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const handleProfileClick = () => {
-    router.push('/adminProfile');
-  };
-
-  const handleTerminClick = () => {
-    router.push('/adminTermin');
-  };
-
-
-  const handleAnouncements = () => {
-    router.push('/adminAnouncements');
-  };
 
   const handleViewChange = (event, newView) => {
     if (newView !== null) {
@@ -111,71 +84,6 @@ function AdminTermin() {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Box
-        sx={{
-          width: 250,
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <List>
-          <ListItemButton>
-            <ListItemIcon>
-              <DashboardIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <GroupIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Benutzerverwaltung" />
-          </ListItemButton>
-          <ListItemButton onClick={handleTerminClick}>
-            <ListItemIcon>
-              <EventIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Terminmanagement" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <NotificationsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Benachrichtigungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleAnouncements}>
-            <ListItemIcon>
-              <ReportProblem style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Ankündigungen" />
-          </ListItemButton>
-        </List>
-        <List>
-          <ListItemButton onClick={handleProfileClick}>
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Profil" />
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Einstellungen" />
-          </ListItemButton>
-          <ListItemButton onClick={handleLogoutClick}>
-            <ListItemIcon>
-              <ExitToAppIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </List>
-      </Box>
-      
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#f5f5f5', padding: 3 }}>
         <Typography variant="h4" gutterBottom align="center">Willkommen im Admin-Terminmanagement</Typography>
         
@@ -206,7 +114,7 @@ function AdminTermin() {
         </Box>
 
         {/* Download Buttons */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+        <Box sx={{ display: 'flex', mt: 3 }}>
           <Button onClick={handleDownloadICS} variant="contained" color="primary" sx={{ mr: 2 }}>
             Liste als .ics herunterladen
           </Button>
@@ -215,18 +123,6 @@ function AdminTermin() {
           </Button>
         </Box>
       </Box>
-
-      {/* Logout Confirmation Dialog */}
-      <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Möchten Sie sich wirklich abmelden?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">Nein</Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>Ja</Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Event Information Dialog */}
       <Dialog open={openEventDialog} onClose={handleCloseEventDialog}>
