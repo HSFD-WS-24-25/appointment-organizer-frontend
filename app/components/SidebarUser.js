@@ -4,15 +4,6 @@ import React, { useState } from 'react';
 import {
   Box,
   List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   IconButton,
   Drawer,
 } from '@mui/material';
@@ -24,36 +15,18 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChatBoxUser from './ChatBoxUser';
 import { useRouter } from 'next/navigation';
-import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
- import * as PropTypes from "prop-types";
+import { Bookmark } from '@mui/icons-material';
+import {SidebarItem, SidebarItemMobile} from './SidebarItem';
+import {SidebarLogInOut} from './SidebarLogInOut';
+import PropTypes from "prop-types";
 
- function SidebarItem(props) {
-     return <ListItemButton onClick={props.item.action} sx={{justifyContent: props.expanded ? "initial" : "center"}}>
-         <ListItemIcon sx={{
-             minWidth: 0,
-             mr: props.expanded ? 3 : "auto",
-             justifyContent: "center"
-         }}>{props.item.icon}</ListItemIcon>
-         <ListItemText
-             primary={props.item.text}
-             sx={{
-                 opacity: props.expanded ? 1 : 0,
-                 whiteSpace: "nowrap",
-                 overflow: "hidden",
-                 transition: "opacity 0.3s ease, max-width 0.3s ease",
-                 maxWidth: props.expanded ? "200px" : "0px",
-             }}
-         />
-     </ListItemButton>;
- }
 
- SidebarItem.propTypes = {
-     item: PropTypes.any,
-     expanded: PropTypes.bool
- };
+
+
+ SidebarItemMobile.propTypes = {item: PropTypes.any};
 
  function SidebarUser() {
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const [, setOpenLogoutDialog] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isExpanded, setIsExpanded] = useState(false); // Zustand für die SidebarAdmin-Erweiterung
   const router = useRouter();
@@ -69,25 +42,14 @@ import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
   const handleMouseEnter = () => {
     setIsExpanded(true); // Erweitert die SidebarAdmin bei Mouseover
   };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    router.push('/');
-  };
-
-  const handleUserProfilClick = () => {
+     const handleUserProfilClick = () => {
     router.push('/user/profile');
   };
 
   const handleUserSettingsClick = () => {
     router.push('/user/settings');
   };
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const toggleDrawer = () => {
+     const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
 
@@ -119,14 +81,20 @@ import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         sx={{
-          display: { xs: 'none', sm: 'flex' },
-          width: isExpanded ? 250 : 80,
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          transition: 'width 0.3s ease',
+            width: isExpanded ? 250 : 80, // Erweiterung der SidebarAdmin bei Mouseover
+            backgroundColor: '#333',
+            color: '#ccc',
+            paddingTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            transition: 'width 0.3s ease',
+            '& .MuiListItemIcon-root': {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minWidth: 40,
+            },
         }}
       >
         {/* Main Menu */}
@@ -137,11 +105,7 @@ import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
         </List>
 
         {/* Bottom Menu */}
-        <List>
-          {bottomMenuItems.map((item, index) => (
-              <SidebarItem key={index} item={item} expanded={isExpanded}/>
-          ))}
-        </List>
+        <SidebarLogInOut expanded={isExpanded}/>
       </Box>
 
       {/* Mobile Hamburger Menu */}
@@ -171,34 +135,19 @@ import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
         >
           <List>
             {mainMenuItems.map((item, index) => (
-              <ListItemButton key={index} onClick={item.action}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
+              <SidebarItemMobile key={index} item={item}/>
             ))}
           </List>
           <List>
             {bottomMenuItems.map((item, index) => (
-              <ListItemButton key={index} onClick={item.action}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
+                <SidebarItemMobile key={index} item={item}/>
             ))}
           </List>
         </Drawer>
       </Box>
 
-      {/* Logout Confirmation Dialog */}
-      <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Möchten Sie sich wirklich abmelden?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">Nein</Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>Ja</Button>
-        </DialogActions>
-      </Dialog>
+        {/* Logout Confirmation Dialog */}
+        {/*Done by the SidebarLoginOut Component*/}
     </Box>
   );
 }
