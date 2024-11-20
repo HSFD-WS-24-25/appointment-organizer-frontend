@@ -11,11 +11,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <Box sx={{ display: 'flex', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+        <Box sx={{ display: 'flex', gridTemplateColumns: 'auto' }}>
             <SidebarUser />
-            <Box sx={{ p: 2 }}>
-                {children}
-            </Box>
+            {children}
         </Box>
     );
 }
