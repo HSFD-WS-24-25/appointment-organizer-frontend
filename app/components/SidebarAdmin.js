@@ -31,6 +31,10 @@ import { CenterFocusStrong, ReportProblem } from '@mui/icons-material';
 
 // For authentication
 import { useUser } from '@auth0/nextjs-auth0/client';
+import {SidebarLogInOut, LogoutDialog} from './SidebarLogInOut'
+import * as PropTypes from "prop-types";
+
+
 
 function SidebarAdmin() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -87,103 +91,63 @@ function SidebarAdmin() {
   }
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{display: 'flex', height: '100vh'}}>
       <Box
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        sx={{
-          width: isExpanded ? 250 : 80, // Erweiterung der SidebarAdmin bei Mouseover
-          backgroundColor: '#333',
-          color: '#ccc',
-          paddingTop: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          transition: 'width 0.3s ease', 
-          '& .MuiListItemIcon-root': {
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          sx={{
+            width: isExpanded ? 250 : 80, // Erweiterung der SidebarAdmin bei Mouseover
+            backgroundColor: '#333',
+            color: '#ccc',
+            paddingTop: 2,
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minWidth: 40, 
-          },
-        }}
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            transition: 'width 0.3s ease',
+            '& .MuiListItemIcon-root': {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minWidth: 40,
+            },
+          }}
       >
         <List>
           <ListItemButton>
             <ListItemIcon>
-              <DashboardIcon style={{ color: '#ccc' }} />
+              <DashboardIcon style={{color: '#ccc'}}/>
             </ListItemIcon>
-            {isExpanded && <ListItemText primary="Dashboard" />}
+            {isExpanded && <ListItemText primary="Dashboard"/>}
           </ListItemButton>
           <ListItemButton onClick={handleUsers}>
             <ListItemIcon>
-              <GroupIcon style={{ color: '#ccc' }} />
+              <GroupIcon style={{color: '#ccc'}}/>
             </ListItemIcon>
-            {isExpanded && <ListItemText primary="Benutzerverwaltung" />}
+            {isExpanded && <ListItemText primary="Benutzerverwaltung"/>}
           </ListItemButton>
           <ListItemButton onClick={handleTerminClick}>
             <ListItemIcon>
-              <EventIcon style={{ color: '#ccc' }} />
+              <EventIcon style={{color: '#ccc'}}/>
             </ListItemIcon>
-            {isExpanded && <ListItemText primary="Terminmanagement" />}
+            {isExpanded && <ListItemText primary="Terminmanagement"/>}
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
-              <NotificationsIcon style={{ color: '#ccc' }} />
+              <NotificationsIcon style={{color: '#ccc'}}/>
             </ListItemIcon>
-            {isExpanded && <ListItemText primary="Benachrichtigungen" />}
+            {isExpanded && <ListItemText primary="Benachrichtigungen"/>}
           </ListItemButton>
           <ListItemButton onClick={handleAnouncements}>
             <ListItemIcon>
-              <ReportProblem style={{ color: '#ccc' }} />
+              <ReportProblem style={{color: '#ccc'}}/>
             </ListItemIcon>
-            {isExpanded && <ListItemText primary="Ankündigungen" />}
+            {isExpanded && <ListItemText primary="Ankündigungen"/>}
           </ListItemButton>
         </List>
-        <List>
-          {user ? (
-              <>
-          <ListItemButton onClick={handleProfileClick}>
-            <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: 40 }}>
-              <Avatar src = {user.picture} alt={user.name} sx={{ width: 30, height: 30 }}/>
-            </ListItemAvatar>
-            {isExpanded && <ListItemText primary={user.name} />}
-          </ListItemButton>
-          <ListItemButton>
-            <ListItemIcon>
-              <SettingsIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            {isExpanded && <ListItemText primary="Einstellungen" />}
-          </ListItemButton>
-          <ListItemButton onClick={handleLogoutClick}>
-            <ListItemIcon>
-              <ExitToAppIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            {isExpanded && <ListItemText primary="Logout" />}
-          </ListItemButton>
-          </>
-              ) : (
-          <ListItemButton href="/api/auth/login">
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: '#ccc' }} />
-            </ListItemIcon>
-            {isExpanded && <ListItemText primary="Login" />}
-          </ListItemButton>
-              )}
-        </List>
+        <SidebarLogInOut user={user} onClick={handleProfileClick} expanded={isExpanded} onClick1={handleLogoutClick}/>
       </Box>
 
-      {/* Logout-Bestätigungsdialog */}
-      <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Möchten Sie sich wirklich abmelden?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">Nein</Button>
-          <Button href="/api/auth/logout" color="primary" autoFocus>Ja</Button>
-        </DialogActions>
-      </Dialog>
+      <LogoutDialog open={openLogoutDialog} onClose={handleLogoutCancel}/>
     </Box>
   );
 }
