@@ -14,40 +14,8 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { users } from "./dummyUsers";
 
-// Beispiel-Daten, später dann mit echten Nutzern über Backend
-const users = [
-  {
-    name: "Max Mustermann",
-    contact: "info@info.de",
-    assignment: "Max Mustermann",
-    lastActive: "15.11.2023",
-  },
-  {
-    name: "Willy Lost",
-    contact: "info@info.de",
-    assignment: "Max Mustermann",
-    lastActive: "15.4.2023",
-  },
-  {
-    name: "Franz Beck",
-    contact: "info@info.de",
-    assignment: "Max Mustermann",
-    lastActive: "13.9.2018",
-  },
-  {
-    name: "Bratdie Wurst",
-    contact: "info@info.de",
-    assignment: "Bratdie Wurst",
-    lastActive: "5.12.2022",
-  },
-  {
-    name: "Tom Wurst",
-    contact: "info@info.de",
-    assignment: "Bratdie Wurst",
-    lastActive: "18.3.2017",
-  },
-];
 
 export default function UserTable() {
   const [searchTerm, setSearchTerm] = useState("");
