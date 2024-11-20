@@ -29,7 +29,7 @@ import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
 function SidebarUser() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
-  const [isExpanded, setIsExpanded] = useState(false); // Zustand für die Sidebar-Erweiterung
+  const [isExpanded, setIsExpanded] = useState(false); // Zustand für die SidebarAdmin-Erweiterung
   const router = useRouter();
 
   const handleLogoutClick = () => {
@@ -37,11 +37,11 @@ function SidebarUser() {
   };
 
   const handleMouseLeave = () => {
-    setIsExpanded(false); // Verkleinert die Sidebar bei Mouseleave
+    setIsExpanded(false); // Verkleinert die SidebarAdmin bei Mouseleave
   };
 
   const handleMouseEnter = () => {
-    setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
+    setIsExpanded(true); // Erweitert die SidebarAdmin bei Mouseover
   };
 
   const handleLogoutConfirm = () => {

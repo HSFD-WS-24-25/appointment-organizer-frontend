@@ -2,7 +2,6 @@ import "./globals.css";
 
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-import Sidebar from "./components/Sidebar";
 import {Box} from "@mui/material";
 import { ChatProvider } from "./components/ChatContext";
 
@@ -18,12 +17,7 @@ export default function RootLayout({ children }) {
       <body>
         <UserProvider>
           <ChatProvider>
-          <Box sx={{ display: 'flex', gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            <Sidebar />
-            <Box sx={{ p: 2 }}>
-                {children}
-            </Box>
-          </Box>
+            {children}
           </ChatProvider>
         </UserProvider>
       </body>
