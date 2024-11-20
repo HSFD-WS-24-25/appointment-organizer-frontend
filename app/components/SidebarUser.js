@@ -25,32 +25,13 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChatBoxUser from './ChatBoxUser';
 import { useRouter } from 'next/navigation';
 import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
+import {SidebarItem, SidebarItemMobile} from './SidebarItem';
  import * as PropTypes from "prop-types";
 
- function SidebarItem(props) {
-     return <ListItemButton onClick={props.item.action} sx={{justifyContent: props.expanded ? "initial" : "center"}}>
-         <ListItemIcon sx={{
-             minWidth: 0,
-             mr: props.expanded ? 3 : "auto",
-             justifyContent: "center"
-         }}>{props.item.icon}</ListItemIcon>
-         <ListItemText
-             primary={props.item.text}
-             sx={{
-                 opacity: props.expanded ? 1 : 0,
-                 whiteSpace: "nowrap",
-                 overflow: "hidden",
-                 transition: "opacity 0.3s ease, max-width 0.3s ease",
-                 maxWidth: props.expanded ? "200px" : "0px",
-             }}
-         />
-     </ListItemButton>;
- }
 
- SidebarItem.propTypes = {
-     item: PropTypes.any,
-     expanded: PropTypes.bool
- };
+
+
+ SidebarItemMobile.propTypes = {item: PropTypes.any};
 
  function SidebarUser() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -171,18 +152,12 @@ import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
         >
           <List>
             {mainMenuItems.map((item, index) => (
-              <ListItemButton key={index} onClick={item.action}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
+              <SidebarItemMobile key={index} item={item}/>
             ))}
           </List>
           <List>
             {bottomMenuItems.map((item, index) => (
-              <ListItemButton key={index} onClick={item.action}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
+                <SidebarItemMobile key={index} item={item}/>
             ))}
           </List>
         </Drawer>
