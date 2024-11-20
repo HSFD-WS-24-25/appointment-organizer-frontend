@@ -4,15 +4,6 @@ import React, { useState } from 'react';
 import {
   Box,
   List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   IconButton,
   Drawer,
 } from '@mui/material';
@@ -24,9 +15,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChatBoxUser from './ChatBoxUser';
 import { useRouter } from 'next/navigation';
-import { Bookmark, Drafts, DraftsTwoTone } from '@mui/icons-material';
+import { Bookmark } from '@mui/icons-material';
 import {SidebarItem, SidebarItemMobile} from './SidebarItem';
- import * as PropTypes from "prop-types";
+import {SidebarLogInOut} from './SidebarLogInOut';
+import PropTypes from "prop-types";
 
 
 
@@ -34,7 +26,7 @@ import {SidebarItem, SidebarItemMobile} from './SidebarItem';
  SidebarItemMobile.propTypes = {item: PropTypes.any};
 
  function SidebarUser() {
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const [, setOpenLogoutDialog] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isExpanded, setIsExpanded] = useState(false); // Zustand für die SidebarAdmin-Erweiterung
   const router = useRouter();
@@ -50,25 +42,14 @@ import {SidebarItem, SidebarItemMobile} from './SidebarItem';
   const handleMouseEnter = () => {
     setIsExpanded(true); // Erweitert die SidebarAdmin bei Mouseover
   };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    router.push('/');
-  };
-
-  const handleUserProfilClick = () => {
+     const handleUserProfilClick = () => {
     router.push('/user/profile');
   };
 
   const handleUserSettingsClick = () => {
     router.push('/user/settings');
   };
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const toggleDrawer = () => {
+     const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
 
@@ -118,11 +99,7 @@ import {SidebarItem, SidebarItemMobile} from './SidebarItem';
         </List>
 
         {/* Bottom Menu */}
-        <List>
-          {bottomMenuItems.map((item, index) => (
-              <SidebarItem key={index} item={item} expanded={isExpanded}/>
-          ))}
-        </List>
+        <SidebarLogInOut expanded={isExpanded}/>
       </Box>
 
       {/* Mobile Hamburger Menu */}
@@ -163,17 +140,8 @@ import {SidebarItem, SidebarItemMobile} from './SidebarItem';
         </Drawer>
       </Box>
 
-      {/* Logout Confirmation Dialog */}
-      <Dialog open={openLogoutDialog} onClose={handleLogoutCancel}>
-        <DialogTitle>Abmelden</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Möchten Sie sich wirklich abmelden?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">Nein</Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>Ja</Button>
-        </DialogActions>
-      </Dialog>
+        {/* Logout Confirmation Dialog */}
+        {/*Done by the SidebarLoginOut Component*/}
     </Box>
   );
 }

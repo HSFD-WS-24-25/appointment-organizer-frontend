@@ -7,42 +7,23 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  Avatar, 
-  ListItemAvatar,
-  IconButton,
-  Drawer,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupIcon from '@mui/icons-material/Group';
 import EventIcon from '@mui/icons-material/Event';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
-import { CenterFocusStrong, ReportProblem } from '@mui/icons-material';
-
-// For authentication
-import { useUser } from '@auth0/nextjs-auth0/client';
-import {SidebarLogInOut, LogoutDialog} from './SidebarLogInOut'
-import * as PropTypes from "prop-types";
+import { ReportProblem } from '@mui/icons-material';
+import {SidebarLogInOut} from './SidebarLogInOut'
 
 
 
 function SidebarAdmin() {
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // Zustand für die SidebarAdmin-Erweiterung
   const router = useRouter();
 
   // For auth
-  const {user, isLoading} = useUser();
+
 
 
   const handleMouseEnter = () => {
@@ -53,9 +34,6 @@ function SidebarAdmin() {
     setIsExpanded(false); // Verkleinert die SidebarAdmin bei Mouseleave
   };
 
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
 
   const handleUsers = () => {
     router.push('/users');
@@ -65,30 +43,10 @@ function SidebarAdmin() {
     router.push('/admin/announcements');
   };
 
-  const handleProfileClick = () => {
-    router.push('/admin/profile');
-  };
 
   const handleTerminClick = () => {
     router.push('/admin/termin');
   };
-
-  const notificationClick = () => {
-    router.push('/admin/notification');
-  };
-
-  const handleLogoutConfirm = () => {
-    setOpenLogoutDialog(false);
-    router.push('/');
-  };
-
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
-
-  const handleLogin = () => {
-    console.log(user);
-  }
 
   return (
     <Box sx={{display: 'flex', height: '100vh'}}>
@@ -144,10 +102,8 @@ function SidebarAdmin() {
             {isExpanded && <ListItemText primary="Ankündigungen"/>}
           </ListItemButton>
         </List>
-        <SidebarLogInOut user={user} onClick={handleProfileClick} expanded={isExpanded} onClick1={handleLogoutClick}/>
+        <SidebarLogInOut expanded={isExpanded}/>
       </Box>
-
-      <LogoutDialog open={openLogoutDialog} onClose={handleLogoutCancel}/>
     </Box>
   );
 }
