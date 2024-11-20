@@ -13,7 +13,6 @@ import {
   IconButton,
   Rating,
 } from "@mui/material";
-import SidebarUser from './SidebarUser';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
@@ -25,8 +24,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 function EventDetails() {
     return (
       <Box sx={{ display: 'flex', height: '100vh' }}>
-        {/* Sidebar */}
-        <SidebarUser />
   
         {/* Main Content */}
         <Box sx={{ flex: 1, padding: 4, backgroundColor: '#f5f5f5', overflowY: 'auto' }}>

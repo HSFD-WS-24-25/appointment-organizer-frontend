@@ -17,7 +17,6 @@ import ListIcon from "@mui/icons-material/ViewList";
 import GridIcon from "@mui/icons-material/ViewModule";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SidebarUser from "./SidebarUser";
 
 function MeinEntwurf() {
   const [view, setView] = useState("list");
@@ -60,10 +59,6 @@ function MeinEntwurf() {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f4f4" }}>
-      {/* Sidebar */}
-      <Box sx={{ width: "flex", backgroundColor: "#333", color: "#fff" }}>
-        <SidebarUser />
-      </Box>
 
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: "flex", flexDirection: "column" }}>

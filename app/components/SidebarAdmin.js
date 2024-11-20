@@ -32,9 +32,9 @@ import { CenterFocusStrong, ReportProblem } from '@mui/icons-material';
 // For authentication
 import { useUser } from '@auth0/nextjs-auth0/client';
 
-function Sidebar() {
+function SidebarAdmin() {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false); // Zustand für die Sidebar-Erweiterung
+  const [isExpanded, setIsExpanded] = useState(false); // Zustand für die SidebarAdmin-Erweiterung
   const router = useRouter();
 
   // For auth
@@ -42,11 +42,11 @@ function Sidebar() {
 
 
   const handleMouseEnter = () => {
-    setIsExpanded(true); // Erweitert die Sidebar bei Mouseover
+    setIsExpanded(true); // Erweitert die SidebarAdmin bei Mouseover
   };
 
   const handleMouseLeave = () => {
-    setIsExpanded(false); // Verkleinert die Sidebar bei Mouseleave
+    setIsExpanded(false); // Verkleinert die SidebarAdmin bei Mouseleave
   };
 
   const handleLogoutClick = () => {
@@ -92,7 +92,7 @@ function Sidebar() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         sx={{
-          width: isExpanded ? 250 : 80, // Erweiterung der Sidebar bei Mouseover
+          width: isExpanded ? 250 : 80, // Erweiterung der SidebarAdmin bei Mouseover
           backgroundColor: '#333',
           color: '#ccc',
           paddingTop: 2,
@@ -188,4 +188,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default SidebarAdmin;

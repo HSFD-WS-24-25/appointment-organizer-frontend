@@ -1,4 +1,4 @@
-import MeinEntwurf from "../components/MeinEntwurf";
+import MeinEntwurf from "../../components/MeinEntwurf";
 
 export default function UserPage() {
   return <MeinEntwurf />;
