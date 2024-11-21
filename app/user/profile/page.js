@@ -27,27 +27,14 @@ function UserProfile() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#white', color: '#fff' }}>
-      <SidebarUser />
-      <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', color: 'black'}}>
+    <Box >
+      <Box >
         <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, marginBottom: 4 }}>
           Profil
         </Typography>
 
         {/* Profile Image Section */}
-        <Box
-          component={Paper}
-          elevation={4}
-          sx={{
-            maxWidth: { xs: '100%', sm: '1000px' },
-            width: '100%',
-            margin: "auto",
-            marginTop: 6,
-            padding: 4,
-            borderRadius: 3,
-            bgcolor: '#ffffff',
-          }}
-        >
+        <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4, flexDirection: { xs: 'column', sm: 'row' } }}>
             <Avatar src={profileImage} sx={{ width: 120, height: 120, marginRight: { sm: 2, xs: 0 }, marginBottom: { xs: 2, sm: 0 } }} />
             <Button

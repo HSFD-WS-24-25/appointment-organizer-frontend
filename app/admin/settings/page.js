@@ -27,7 +27,8 @@ function UserSettings() {
   };
 
   return (
-    <Box>
+    <Box >
+
 
       <Box>
         <Typography variant="h4" gutterBottom sx={{ marginBottom: 4, textAlign: 'center', fontWeight: 'bold', color: '#333' }}>

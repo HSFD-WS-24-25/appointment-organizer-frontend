@@ -1,8 +1,6 @@
 import "../globals.css";
 import SidebarAdmin from "../components/SidebarAdmin";
-import {Box} from "@mui/material";
-
-
+import { Box } from "@mui/material";
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -11,11 +9,30 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <Box sx={{ display: 'flex', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+    <Box
+      sx={{
+        display: "flex", // Verwende flexibles Layout
+        height: "100vh", // Vollständige Höhe des Viewports
+        width: "100%",   // Vollständige Breite
+      }}
+    >
+      <Box
+        sx={{
+          flexShrink: 0, // Sidebar soll sich nicht verkleinern
+          flexGrow: 0,   // Sidebar soll ihre Breite basierend auf dem Inhalt anpassen
+        }}
+      >
         <SidebarAdmin />
-        <Box sx={{ p: 2 }}>
-          {children}
-        </Box>
       </Box>
+      <Box
+        sx={{
+          flexGrow: 1,  // Hauptinhalt füllt den restlichen Platz
+          p: 2,         // Padding für den Inhalt
+          overflow: "auto", // Scrollen erlauben, falls nötig
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
   );
 }

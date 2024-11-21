@@ -18,19 +18,26 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import React, { useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function SidebarLogInOut({ expanded }) {
-    const { user} = useUser();
+    const { user } = useUser();
     const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
     const router = useRouter();
+    const pathname = usePathname(); // Get the current route
 
     const handleLogoutClick = () => {
         setOpenLogoutDialog(true);
     };
 
     const handleProfileClick = () => {
-        router.push("/admin/profile");
+        const basePath = pathname.startsWith("/admin") ? "/admin" : "/user"; // Determine the base path
+        router.push(`${basePath}/profile`); // Navigate to the appropriate settings page
+    };
+
+    const handleSettingClick = () => {
+        const basePath = pathname.startsWith("/admin") ? "/admin" : "/user"; // Determine the base path
+        router.push(`${basePath}/settings`); // Navigate to the appropriate settings page
     };
 
     const handleLogoutCancel = () => {
@@ -59,7 +66,7 @@ export function SidebarLogInOut({ expanded }) {
                             </ListItemAvatar>
                             {expanded && <ListItemText primary={user.name} />}
                         </ListItemButton>
-                        <ListItemButton>
+                        <ListItemButton onClick={handleSettingClick}>
                             <ListItemIcon>
                                 <SettingsIcon style={{ color: "#ccc" }} />
                             </ListItemIcon>
