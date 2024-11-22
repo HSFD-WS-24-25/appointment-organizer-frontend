@@ -48,7 +48,6 @@ function AnnouncementCreationFrom() {
             </GreenButton>
           </Box>
         </StyledPaper>
-
   );
 }
 
