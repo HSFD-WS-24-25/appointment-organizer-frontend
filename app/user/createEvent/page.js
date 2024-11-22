@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Box, Button, Typography, TextField, Checkbox, FormControlLabel, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import SidebarUser from './SidebarUser';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useRouter } from 'next/navigation';
@@ -18,10 +17,6 @@ function UserDashboard() {
   
   const getInvitesList = () => {
     router.push('/invites');
-  };
-
-  const getPreviewPage = () => {
-    router.push('/preview');
   };
 
   // Open the dialog
@@ -40,7 +35,7 @@ function UserDashboard() {
     if (preview && publish) {
       // Redirect to another page (e.g., preview or publish page)
       console.log('Proceeding to the next page...');
-      router.push('/preview'); // Replace '/next-page' with the actual page you want to navigate to
+      router.push('/user/preview'); // Replace '/next-page' with the actual page you want to navigate to
     } else {
       // If the conditions are not met, show an alert or message
       alert('Bitte wählen Sie sowohl "Vorschau" als auch "Veröffentlichen" aus.');
@@ -48,22 +43,9 @@ function UserDashboard() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      
-      <SidebarUser />
-
+    <Box >
       {/* Main Content */}
-      <Box sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start', 
-        alignItems: 'center',
-        backgroundColor: '#f5f5f5',
-        padding: 3,
-        height: '100%',
-        overflowY: 'auto'
-      }}>
+      <Box>
         <Typography variant="h5" gutterBottom align="center">
           Veranstaltungserstellung
         </Typography>

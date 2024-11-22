@@ -36,7 +36,7 @@ function SidebarAdmin() {
 
 
   const handleUsers = () => {
-    router.push('/users');
+    router.push('/admin/users');
   }
 
   const handleAnouncements = () => {
@@ -47,6 +47,11 @@ function SidebarAdmin() {
   const handleTerminClick = () => {
     router.push('/admin/termin');
   };
+
+  const handleNotificationClick = () => {
+    router.push('/admin/notification');
+  };
+
 
   return (
     <Box sx={{display: 'flex', height: '100vh'}}>
@@ -89,7 +94,7 @@ function SidebarAdmin() {
             </ListItemIcon>
             {isExpanded && <ListItemText primary="Terminmanagement"/>}
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton onClick={handleNotificationClick}>
             <ListItemIcon>
               <NotificationsIcon style={{color: '#ccc'}}/>
             </ListItemIcon>

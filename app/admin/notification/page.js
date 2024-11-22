@@ -78,7 +78,7 @@ export default function NotificationAdmin() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, height: '100vh', backgroundColor: '#f5f5f5' }}>
+    <Box >
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, color: '#333' }}>
           Benachrichtigungen

@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import React, { useState } from 'react';
 import {
@@ -61,8 +61,14 @@ import PropTypes from "prop-types";
         router.push('/user/myevent');
     };
 
+    const handleCreatEventsClick = () => {
+      router.push('/user/createEvent');
+  };
+
+    
+
   const mainMenuItems = [
-    { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Veranstaltung erstellen", action: () => {} },
+    { icon: <GroupIcon style={{ color: '#ccc' }} />, text: "Veranstaltung erstellen", action:handleCreatEventsClick },
     { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Veranstaltungen", action: handleUserEventsClick },
     { icon: <EventIcon style={{ color: '#ccc' }} />, text: "Meine Teilnahmen", action: () => {} },
     { icon: <Bookmark style={{ color: '#ccc' }} />, text: "Mein Entwurf", action: handleUserDraftClick },

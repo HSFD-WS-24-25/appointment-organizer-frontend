@@ -83,8 +83,8 @@ function AdminTermin() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#f5f5f5', padding: 3 }}>
+    <Box >
+      <Box >
         <Typography variant="h4" gutterBottom align="center">Willkommen im Admin-Terminmanagement</Typography>
         
         {/* Toggle for View Selection */}
