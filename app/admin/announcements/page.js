@@ -5,6 +5,9 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, Button, Box, Stack, Autocomplete, Typography
 } from '@mui/material';
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 const data = [
   { title: 'Closed for Server Maintenance', method: 'On Login', startDate: '12.11.2024', endDate: '-', status: 'Active' },
@@ -28,14 +31,10 @@ export default function AdminAnnouncements() {
 
   return (
 
-    <Box>
-
-
+    <StyledPaper>
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column',color: 'black' }}>
-        <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, marginBottom: 4 }}>
-          Ankündigungen
-        </Typography>
+        <DesignTitel > Ankündigungen </DesignTitel>
 
         {/* Search and Table */}
         <Box sx={{ mb: 4 }}>
@@ -95,24 +94,15 @@ export default function AdminAnnouncements() {
             paddingBottom: 4,
           }}
         >
-          <Button
-            variant="contained"
-            color="error"
-            sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#d32f2f', '&:hover': { backgroundColor: '#b71c1c' } }}
-          >
+          <RedButton>
             Ankündigung Deaktivieren
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            href="/admin/create-announcements"
-            sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
-          >
+          </RedButton>
+          <BlueButton href="/admin/create-announcements">
             Neue Ankündigung
-          </Button>
+          </BlueButton>
 
         </Box>
       </Box>
-    </Box>
+    </StyledPaper>
   );
 }

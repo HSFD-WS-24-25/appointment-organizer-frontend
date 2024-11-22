@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import SidebarUser from '../../components/SidebarUser';
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import { Description } from '@mui/icons-material';
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function UserSettings() {
   const router = useRouter();
@@ -13,7 +16,7 @@ function UserSettings() {
   };
 
   const handleGoBackClick = () => {
-    router.push("/user");
+    router.push("/admin");
   };
 
   const [language, setLanguage] = useState('');
@@ -27,13 +30,9 @@ function UserSettings() {
   };
 
   return (
-    <Box >
-
-
+    <StyledPaper >
       <Box>
-        <Typography variant="h4" gutterBottom sx={{ marginBottom: 4, textAlign: 'center', fontWeight: 'bold', color: '#333' }}>
-          Einstellungen
-        </Typography>
+        <DesignTitel> Einstellungen </DesignTitel>
 
         <Paper
           elevation={4}
@@ -76,26 +75,16 @@ function UserSettings() {
           </FormControl>
 
           <Stack direction="row" justifyContent="space-between" spacing={2} mt={2}>
-            <Button
-              onClick={handleGoBackClick}
-              variant="outlined"
-              color="error"
-              sx={{ fontWeight: 'bold', textTransform: 'none' }}
-            >
+            <RedButton onClick={handleGoBackClick}>
               Zurück
-            </Button>
-            <Button
-              onClick={handleSaveChangesClick}
-              variant="contained"
-              color="success"
-              sx={{ fontWeight: 'bold', textTransform: 'none' }}
-            >
+            </RedButton>
+            <GreenButton onClick={handleSaveChangesClick}>
               Änderungen speichern
-            </Button>
+            </GreenButton>
           </Stack>
         </Paper>
       </Box>
-    </Box>
+    </StyledPaper>
   );
 }
 
