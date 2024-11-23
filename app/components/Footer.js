@@ -16,6 +16,12 @@ export default function Footer() {
         boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
         textAlign: "center",
+
+        "@media (max-width: 768px)": {
+          bottom: "5px",
+          right: "5px",
+          fontSize: "0.8rem"
+        }
       }}
     >
       {/* TODO: Links to  Info-Page*/}
@@ -41,4 +47,5 @@ export default function Footer() {
       </Typography>
     </Box>
   );
+
 }
