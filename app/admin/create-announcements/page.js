@@ -3,34 +3,16 @@ import {
   Checkbox, Paper, Button
 
 } from "@mui/material";
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function AnnouncementCreationFrom() {
   return(
-      <Box
-          component={Paper}
-          elevation={4}
-          sx={{
-            maxWidth: 800,
-            margin: "auto",
-            marginTop: 6,
-            padding: 2,
-            border: 3,
-            borderColor: "gray",
-            borderRadius: 3,
-            display: "flex",
-            flexDirection: "column",
-            bgcolor: "#ffffff",
-          }}
-        >
-          <Typography
-            variant="h5"
-            align="center"
-            fontWeight="bold"
-            color="black"
-            gutterBottom
-          >
+      <StyledPaper>
+          <DesignTitel>
             Ankündigung Erstellen
-          </Typography>
+          </DesignTitel>
 
           <TextField
             label="Ankündigung Title"
@@ -58,25 +40,14 @@ function AnnouncementCreationFrom() {
 
           {/* Buttons */}
           <Box display="flex" justifyContent="end" mt={2} gap={2}>
-            <Button
-              variant="contained"
-              color="error"
-              href="/admin/announcements"
-              sx={{ width: { xs: "100%", sm: "auto" } }}
-            >
+            <RedButton>
               Abbrechen
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              href="/admin/announcements"
-              sx={{ width: { xs: "100%", sm: "auto" } }}
-            >
+            </RedButton>
+            <GreenButton>
               Speichern
-            </Button>
+            </GreenButton>
           </Box>
-        </Box>
-
+        </StyledPaper>
   );
 }
 

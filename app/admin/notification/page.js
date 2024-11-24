@@ -6,6 +6,9 @@ import {
   Paper, Typography, Button, TextField, Menu, MenuItem, IconButton
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton, RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 const initialEmails = [
   { subject: 'System Update Notification', sender: 'admin@system.com', date: '2024-11-01', status: 'Unread', body: 'System update scheduled for 2024-11-02.' },
@@ -78,16 +81,15 @@ export default function NotificationAdmin() {
   };
 
   return (
-    <Box >
+    <StyledPaper>
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, color: '#333' }}>
-          Benachrichtigungen
-        </Typography>
+        <DesignTitel > Benachrichtigungen   </DesignTitel>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleComposeClick} sx={{ textTransform: 'none' }}>
+         <BlueButton onClick={handleComposeClick}>
             Neue E-Mail verfassen
-          </Button>
+          </BlueButton>
+          
           <IconButton onClick={handleMenuClick}>
             <AddIcon />
           </IconButton>
@@ -152,21 +154,12 @@ export default function NotificationAdmin() {
               {selectedEmail.body}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, marginTop: 3 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleReplyClick}
-                sx={{ textTransform: 'none', backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
-              >
+              <BlueButton>
                 Antworten
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                sx={{ textTransform: 'none', backgroundColor: '#d32f2f', '&:hover': { backgroundColor: '#b71c1c' } }}
-              >
+              </BlueButton>
+              <RedButton>
                 Löschen
-              </Button>
+              </RedButton>
             </Box>
           </Paper>
         )}
@@ -201,16 +194,16 @@ export default function NotificationAdmin() {
               sx={{ marginBottom: 2 }}
             />
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-              <Button variant="contained" color="error" onClick={replyOpen ? handleReplyClose : handleComposeClose}>
+              <RedButton onClick={replyOpen ? handleReplyClose : handleComposeClose}>
                 Abbrechen
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleSendEmail}>
+              </RedButton>
+              <BlueButton onClick={handleSendEmail}>
                 Senden
-              </Button>
+              </BlueButton>
             </Box>
           </Paper>
         )}
       </Box>
-    </Box>
+      </StyledPaper>
   );
 }

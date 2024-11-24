@@ -76,11 +76,11 @@ function EventCard({ count, view }) {
       }}
       elevation={3}
     >
-      <Box sx={{ position: 'absolute', top: 8, left: 30 }}>
-        <Badge badgeContent={<EditIcon fontSize="small" />} color="primary" />
+      <Box sx={{ position: 'absolute', top: 8, left: 8 }}>
+        <Button><Badge badgeContent={<EditIcon fontSize="small" />} color="primary" /></Button>
       </Box>
-      <Box sx={{ position: 'absolute', top: 8, right: 30 }}>
-        <Badge badgeContent={<DeleteIcon fontSize="small" />} color="error" />
+      <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+      <Button> <Badge badgeContent={<DeleteIcon fontSize="small" />} color="error" /> </Button>
       </Box>
       <Box sx={{ position: 'absolute', bottom: 8, right: 30 }}>
         <Badge
