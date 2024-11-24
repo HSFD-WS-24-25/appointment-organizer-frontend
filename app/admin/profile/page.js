@@ -38,7 +38,7 @@ function AdminProfile() {
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4, flexDirection: { xs: 'column', sm: 'row' } }}>
             <Avatar src={profileImage} sx={{ width: 120, height: 120, marginRight: { sm: 2, xs: 0 }, marginBottom: { xs: 2, sm: 0 } }} />
-            <GreenButton>
+            <GreenButton   variant="outlined" component="label">
               Profilbild ändern
               <input type="file" hidden onChange={handleImageChange} />
             </GreenButton>

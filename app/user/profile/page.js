@@ -1,8 +1,10 @@
 "use client";
 
-import SidebarUser from '../../components/SidebarUser';
 import React, { useState } from 'react';
 import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography, Paper } from '@mui/material';
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function UserProfile() {
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
@@ -27,24 +29,20 @@ function UserProfile() {
   };
 
   return (
-    <Box >
+    <StyledPaper >
       <Box >
-        <Typography variant="h4" gutterBottom sx={{ textAlign: { xs: 'center', sm: 'left' }, marginBottom: 4 }}>
+        <DesignTitel>
           Profil
-        </Typography>
+        </DesignTitel>
 
         {/* Profile Image Section */}
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4, flexDirection: { xs: 'column', sm: 'row' } }}>
             <Avatar src={profileImage} sx={{ width: 120, height: 120, marginRight: { sm: 2, xs: 0 }, marginBottom: { xs: 2, sm: 0 } }} />
-            <Button
-              variant="outlined"
-              component="label"
-              sx={{ color: '#333', borderColor: '#333' }}
-            >
+            <GreenButton>
               Profilbild ändern
               <input type="file" hidden onChange={handleImageChange} />
-            </Button>
+            </GreenButton>
           </Box>
 
           {/* Personal Information Section */}
@@ -66,14 +64,9 @@ function UserProfile() {
               flexWrap: 'wrap'
             }}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ minWidth: 150, fontWeight: 'bold', textTransform: 'none', backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
-              onClick={handleSaveClick}
-            >
+            <BlueButton onClick={handleSaveClick}>
               Änderungen speichern
-            </Button>
+            </BlueButton>
           </Box>
         </Box>
       </Box>
@@ -91,7 +84,7 @@ function UserProfile() {
           <Button onClick={handleSaveConfirm} color="primary" autoFocus>Ja</Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </StyledPaper>
   );
 }
 

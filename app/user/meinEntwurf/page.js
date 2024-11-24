@@ -17,6 +17,9 @@ import ListIcon from "@mui/icons-material/ViewList";
 import GridIcon from "@mui/icons-material/ViewModule";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function MeinEntwurf() {
   const [view, setView] = useState("list");
@@ -58,12 +61,12 @@ function MeinEntwurf() {
   };
 
   return (
-    <Box>
+    <StyledPaper>
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: "flex", flexDirection: "column" }}>
-        <Typography variant="h4" sx={{ marginBottom: 2 }}>
+        <DesignTitel >
           Meine Veranstaltungen
-        </Typography>
+        </DesignTitel>
 
         {/* Header */}
         <Box
@@ -99,13 +102,9 @@ function MeinEntwurf() {
                 <GridIcon />
               </ToggleButton>
             </ToggleButtonGroup>
-            <Button
-              variant="contained"
-              sx={{ marginTop: 1, backgroundColor: "#007BFF", color: "#fff" }}
-              onClick={handleIcsFileCreation}
-            >
+            <BlueButton>
               .ics Datei erstellen
-            </Button>
+            </BlueButton>
           </Box>
         </Box>
 
@@ -158,7 +157,7 @@ function MeinEntwurf() {
           </Grid>
         )}
       </Box>
-    </Box>
+    </StyledPaper>
   );
 }
 

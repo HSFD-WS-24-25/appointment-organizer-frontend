@@ -40,10 +40,10 @@ function AnnouncementCreationFrom() {
 
           {/* Buttons */}
           <Box display="flex" justifyContent="end" mt={2} gap={2}>
-            <RedButton>
+            <RedButton href="/admin/announcements">
               Abbrechen
             </RedButton>
-            <GreenButton>
+            <GreenButton href="/admin/announcements">
               Speichern
             </GreenButton>
           </Box>

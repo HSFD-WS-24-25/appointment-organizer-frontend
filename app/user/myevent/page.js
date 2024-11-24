@@ -23,6 +23,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/navigation';
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function EventCard({ count, view }) {
   let color = 'default';
@@ -39,8 +42,6 @@ function EventCard({ count, view }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: 2,
-          border: '1px solid #ddd',
-          borderRadius: '8px',
           marginBottom: 2,
         }}
       >
@@ -117,7 +118,7 @@ function UserDashboard() {
   const eventCounts = [60, 20, 30, 10, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   return (
-    <Box>
+    <StyledPaper>
       {/* Main Content */}
       <Box>
         {/* Alert Message */}
@@ -136,10 +137,10 @@ function UserDashboard() {
             gap: { xs: 1, sm: 0 },
           }}
         >
-          <Typography variant="h5">Meine Veranstaltungen:</Typography>
-          <Button variant="outlined" size="large" onClick={handleCreateEvent}>
+          <DesignTitel>Meine Veranstaltungen:</DesignTitel>
+          <BlueButton onClick={handleCreateEvent}>
             Neue Veranstaltung
-          </Button>
+          </BlueButton>
         </Box>
 
         {/* View Toggle & File Creation Link */}
@@ -193,7 +194,7 @@ function UserDashboard() {
           </List>
         )}
       </Box>
-    </Box>
+    </StyledPaper>
   );
 }
 
