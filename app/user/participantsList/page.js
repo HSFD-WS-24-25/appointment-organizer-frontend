@@ -108,7 +108,7 @@ export default function Participants() {
           <RedButton href="/user/preview">
             Zurück zur Veranstaltung
           </RedButton>
-          <BlueButton>
+          <BlueButton href="/user/participantsMessage">
             Nachricht schreiben
           </BlueButton>
         </Box>
