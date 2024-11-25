@@ -9,7 +9,6 @@ import StyledPaper from "../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
 
-
 function UserDashboard() {
   const [checkedOnline, setCheckedOnline] = useState(false);
   const [checkedInPerson, setCheckedInPerson] = useState(false);

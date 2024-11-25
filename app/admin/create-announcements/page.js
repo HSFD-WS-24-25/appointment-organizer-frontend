@@ -20,7 +20,7 @@ function AnnouncementCreationFrom() {
             size="small"
             fullWidth
           />
-
+    
           <TextField
             label="Ankündigung Body"
             variant="outlined"
@@ -48,7 +48,6 @@ function AnnouncementCreationFrom() {
             </GreenButton>
           </Box>
         </StyledPaper>
-
   );
 }
 
