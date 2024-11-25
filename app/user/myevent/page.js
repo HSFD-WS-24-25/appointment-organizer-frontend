@@ -27,6 +27,7 @@ import StyledPaper from "../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
 
+
 function EventCard({ count, view }) {
   let color = 'default';
   if (count > 20) color = 'green';
@@ -119,6 +120,7 @@ function UserDashboard() {
 
   return (
     <StyledPaper>
+
       {/* Main Content */}
       <Box>
         {/* Alert Message */}

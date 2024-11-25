@@ -29,11 +29,9 @@ function AdminProfile() {
   };
 
   return (
-
     <StyledPaper >
       <Box>
         <DesignTitel> Profil </DesignTitel>
-
         {/* Profile Image Section */}
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4, flexDirection: { xs: 'column', sm: 'row' } }}>
