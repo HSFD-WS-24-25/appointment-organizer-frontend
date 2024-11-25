@@ -29,9 +29,9 @@ export default function ParticipantsMessage() {
   {/* Handler für den "Nachricht schicken" Button */}
   const handleSendMessage = () => {
     if (selected.length == 0) {
-        alert("Du hast keine Personen ausgewählt.");
+        alert("Es wurden keine Personen ausgewählt.");
     } else {
-      alert("Nachricht an ausgewählte Personen gesendet.");
+      alert("Die Nachricht wurde an die ausgewählte Personen gesendet.");
     }
   };
 
