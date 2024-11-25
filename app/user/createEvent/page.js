@@ -23,6 +23,10 @@ function UserDashboard() {
     router.push('/user/invites');
   };
 
+  const handleCancelClick = () => {
+    router.push('/user/myevent');
+  };
+
   // Open the dialog
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -164,7 +168,7 @@ function UserDashboard() {
 
           {/* Action Buttons */}
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-            <RedButton>Abbrechen</RedButton>
+            <RedButton onClick={handleCancelClick}>Abbrechen</RedButton>
             <GreenButton onClick={handleOpenDialog} variant="contained" color="success">Vorschau und Veröffentlichung</GreenButton>
           </Grid>
         </Grid>
