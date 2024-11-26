@@ -8,7 +8,6 @@ import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponen
 import { Description } from '@mui/icons-material';
 import DesignTitel from "../../components/styledComponents/DesignTitel";
 
-
 function UserSettings() {
   const router = useRouter();
 
@@ -34,6 +33,7 @@ function UserSettings() {
     <StyledPaper >
       <Box>
         <DesignTitel> Einstellungen </DesignTitel>
+
         <Paper
           elevation={4}
           sx={{

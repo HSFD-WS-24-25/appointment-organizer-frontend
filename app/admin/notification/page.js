@@ -154,7 +154,7 @@ export default function NotificationAdmin() {
               {selectedEmail.body}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, marginTop: 3 }}>
-              <BlueButton>
+              <BlueButton onClick={handleReplyClick}>
                 Antworten
               </BlueButton>
               <RedButton>

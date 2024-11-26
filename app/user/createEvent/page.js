@@ -5,6 +5,9 @@ import { Box, Button, Typography, TextField, Checkbox, FormControlLabel, InputAd
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useRouter } from 'next/navigation';
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function UserDashboard() {
   const [checkedOnline, setCheckedOnline] = useState(false);
@@ -16,7 +19,11 @@ function UserDashboard() {
   const router = useRouter();
   
   const getInvitesList = () => {
-    router.push('/invites');
+    router.push('/user/invites');
+  };
+
+  const handleCancelClick = () => {
+    router.push('/user/myevent');
   };
 
   // Open the dialog
@@ -43,15 +50,15 @@ function UserDashboard() {
   };
 
   return (
-    <Box >
+    <StyledPaper >
       {/* Main Content */}
       <Box>
-        <Typography variant="h5" gutterBottom align="center">
+        <DesignTitel>
           Veranstaltungserstellung
-        </Typography>
+        </DesignTitel>
 
         {/* Event Image Placeholder */}
-        <Box sx={{
+        <Button sx={{
           border: '1px solid #ccc',
           height: 150,
           display: 'flex',
@@ -61,12 +68,12 @@ function UserDashboard() {
           width: '100%'  // Ensure the image placeholder stretches to fill the width
         }}>
           <Typography variant="caption">Veranstaltungsbild hochladen</Typography>
-        </Box>
+        </Button>
 
         {/* Event Details Form */}
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField 
+            <TextField
               label="Veranstaltungstitel" 
               fullWidth 
             />
@@ -153,15 +160,15 @@ function UserDashboard() {
 
           {/* Invitation List Button */}
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 2 }}>
-            <Button onClick={getInvitesList} variant="contained" color="primary">
+            <BlueButton onClick={getInvitesList}>
               Einladungsliste
-            </Button>
+            </BlueButton>
           </Grid>
 
           {/* Action Buttons */}
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-            <Button variant="contained" color="error">Abbrechen</Button>
-            <Button onClick={handleOpenDialog} variant="contained" color="success">Vorschau und Veröffentlichung</Button>
+            <RedButton onClick={handleCancelClick}>Abbrechen</RedButton>
+            <GreenButton onClick={handleOpenDialog} variant="contained" color="success">Vorschau und Veröffentlichung</GreenButton>
           </Grid>
         </Grid>
 
@@ -187,12 +194,12 @@ function UserDashboard() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="error">Abbrechen</Button>
-          <Button onClick={handleProceed} color="success">Weiter</Button>
+          <RedButton onClick={handleCloseDialog}>Abbrechen</RedButton>
+          <GreenButton onClick={handleProceed}>Weiter</GreenButton>
         </DialogActions>
       </Dialog>
 
-    </Box>
+    </StyledPaper>
   );
 }
 

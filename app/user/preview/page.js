@@ -20,10 +20,13 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import StyledPaper from "../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import DesignTitel from "../../components/styledComponents/DesignTitel";
 
 function EventDetails() {
     return (
-      <Box>
+      <StyledPaper>
   
         {/* Main Content */}
         <Box>
@@ -54,23 +57,16 @@ function EventDetails() {
             </Box>
             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="h4" gutterBottom>
+                <DesignTitel>
                   Veranstaltungsname
-                </Typography>
+                </DesignTitel>
                 <IconButton>
                   <FavoriteBorderIcon color="error" />
                 </IconButton>
               </Box>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: 'green',
-                  color: '#fff',
-                  '&:hover': { backgroundColor: 'darkgreen' },
-                }}
-              >
+              <GreenButton>
                 Teilnehmen
-              </Button>
+              </GreenButton>
             </CardContent>
             <CardContent>
               <Typography variant="subtitle1" gutterBottom>
@@ -116,9 +112,9 @@ function EventDetails() {
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Button variant="contained" color="success">
+                  <GreenButton>
                     Bearbeiten
-                  </Button>
+                  </GreenButton>
                 </CardActions>
               </Card>
             </Grid>
@@ -185,7 +181,7 @@ function EventDetails() {
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </StyledPaper>
     );
   }
   
