@@ -13,6 +13,8 @@ import { BlueButton, RedButton, GreenButton } from '../components/styledComponen
 const LogInOut = () => {
   const { user, isLoading } = useUser();
 
+  // Bilder befinden sich unter public/images
+  // Testbild namens image1.jpg
   const images = [
     {
       src: '/images/image1.jpg',
