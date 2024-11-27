@@ -1,29 +1,47 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button, ToggleButtonGroup, ToggleButton, Typography, Grid, Paper } from "@mui/material";
-import dynamic from "next/dynamic";
-import "react-calendar/dist/Calendar.css";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from "@mui/material";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import StyledPaper from "../../components/styledComponents/StyledPaper";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
-import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import { BlueButton, GreenButton, RedButton } from "../../components/styledComponents/StyledButton";
 
-// Dynamischer Import von react-calendar zur Vermeidung von Hydration-Problemen
-const Calendar = dynamic(() => import("react-calendar"), { ssr: false });
+const localizer = momentLocalizer(moment);
 
 function AdminTermin() {
   const [openEventDialog, setOpenEventDialog] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [view, setView] = useState("month"); // "day" für Wochenansicht, "month" für Monatsansicht
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const handleViewChange = (event, newView) => {
-    if (newView !== null) {
-      setView(newView);
-    }
-  };
+  // Beispiel-Events
+  const events = [
+    {
+      id: 1,
+      title: "Projektbesprechung",
+      start: new Date(2024, 10, 29, 10, 0),
+      end: new Date(2024, 10, 29, 12, 0),
+      description: "Projektbesprechung im Konferenzraum.",
+    },
+    {
+      id: 2,
+      title: "Meeting mit Kunden",
+      start: new Date(2024, 10, 28, 14, 0),
+      end: new Date(2024, 10, 28, 15, 0),
+      description: "Kundenmeeting über Zoom.",
+    },
+    {
+      id: 3,
+      title: "Team-Event",
+      start: new Date(2024, 11, 1, 15, 0),
+      end: new Date(2024, 11, 1, 17, 0),
+      description: "Teambuilding-Aktivität.",
+    },
+  ];
 
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
+  const handleSelectEvent = (event) => {
+    setSelectedEvent(event);
     setOpenEventDialog(true);
   };
 
@@ -39,53 +57,45 @@ function AdminTermin() {
     alert("PDF-Datei wird heruntergeladen.");
   };
 
-  const exampleEvents = [
-    { day: "Montag", time: "10:00", title: "Projektbesprechung" },
-    { day: "Dienstag", time: "14:00", title: "Meeting mit Kunden" },
-    { day: "Donnerstag", time: "09:00", title: "Schulung" },
-    { day: "Freitag", time: "15:00", title: "Team-Event" },
-  ];
+  const eventStyleGetter = (event) => {
+    let backgroundColor = "blue";
+    if (event.title.includes("Projekt")) backgroundColor = "green";
+    else if (event.title.includes("Meeting")) backgroundColor = "red";
+    else if (event.title.includes("Team")) backgroundColor = "orange";
 
-  const daysOfWeek = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+    return {
+      style: {
+        backgroundColor,
+        borderRadius: "5px",
+        color: "white",
+        padding: "5px",
+        border: "none",
+      },
+    };
+  };
 
   return (
     <StyledPaper>
       <DesignTitel> Willkommen im Admin-Terminmanagement </DesignTitel>
 
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mb: 3 }}>
-        <ToggleButtonGroup value={view} exclusive onChange={handleViewChange}>
-          <ToggleButton value="day">Tagesansicht</ToggleButton>
-          <ToggleButton value="month">Monatsansicht</ToggleButton>
-          <ToggleButton value="year">Jahresansicht</ToggleButton>
-        </ToggleButtonGroup>
+      <Box sx={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", mb: 3 }}>
+        <Typography variant="h6">Kalenderübersicht</Typography>
       </Box>
 
-      <Box sx={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        {view === "day" ? (
-          <Grid container spacing={2} justifyContent="center">
-            {daysOfWeek.map((day) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={day}>
-                <StyledPaper>
-                  <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                    {day}
-                  </Typography>
-                  <Box sx={{ flexGrow: 1 }}>
-                    {exampleEvents
-                      .filter((event) => event.day === day)
-                      .map((event, index) => (
-                        <Box key={index} sx={{ marginBottom: 1 }}>
-                          <Typography variant="body1">{event.time}</Typography>
-                          <Typography variant="body2">{event.title}</Typography>
-                        </Box>
-                      ))}
-                  </Box>
-                </StyledPaper>
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <Calendar view={view} onViewChange={setView} onClickDay={handleDateClick} />
-        )}
+      {/* React-Big-Calendar */}
+      <Box sx={{ height: 600, marginBottom: 3 }}>
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100%" }}
+          views={[Views.MONTH, Views.WEEK, Views.DAY]}
+          defaultView={Views.MONTH}
+          defaultDate={new Date()}
+          eventPropGetter={eventStyleGetter}
+          onSelectEvent={handleSelectEvent}
+        />
       </Box>
 
       <Box sx={{ display: "flex", mt: 3, gap: 2 }}>
@@ -93,13 +103,27 @@ function AdminTermin() {
         <BlueButton onClick={handleDownloadPDF}> Liste als PDF herunterladen</BlueButton>
       </Box>
 
+      {/* Event-Dialog */}
       <Dialog open={openEventDialog} onClose={handleCloseEventDialog}>
-        <DialogTitle>Termine am {selectedDate.toLocaleDateString()}</DialogTitle>
+        <DialogTitle>
+          Termin: {selectedEvent ? selectedEvent.title : "Kein Termin ausgewählt"}
+        </DialogTitle>
         <DialogContent>
-          <Typography variant="body1">Hier könnten die Informationen zu den Terminen an diesem Tag stehen.</Typography>
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Beispiel: Meeting um 10:00 Uhr, Projektbesprechung um 14:00 Uhr, etc.
-          </Typography>
+          {selectedEvent ? (
+            <>
+              <Typography variant="body1" sx={{ marginBottom: 2 }}>
+                Beschreibung: {selectedEvent.description}
+              </Typography>
+              <Typography variant="body2">
+                Start: {selectedEvent.start.toLocaleString()}
+              </Typography>
+              <Typography variant="body2">
+                Ende: {selectedEvent.end.toLocaleString()}
+              </Typography>
+            </>
+          ) : (
+            <Typography>Keine Details verfügbar.</Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEventDialog} color="primary">
@@ -107,7 +131,7 @@ function AdminTermin() {
           </Button>
         </DialogActions>
       </Dialog>
-      </StyledPaper>
+    </StyledPaper>
   );
 }
 
