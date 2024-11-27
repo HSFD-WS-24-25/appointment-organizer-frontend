@@ -1,42 +1,51 @@
-"use client"
+"use client";
+
 import React, { useState } from "react";
-import { Box, Button, Card, CardContent, Menu, MenuItem, Typography, Modal, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Menu,
+  MenuItem,
+  Typography,
+  Modal,
+  TextField,
+} from "@mui/material";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import StyledPaper from "../components/styledComponents/StyledPaper";
 import { BlueButton } from "../components/styledComponents/StyledButton";
 import DesignTitel from "../components/styledComponents/DesignTitel";
-import "moment/locale/de"; // Importiere die deutsche Lokalisierung für Moment.js
-moment.locale("de"); // Setze die Lokalisierung auf Deutsch
+import jsPDF from "jspdf"; // Für PDF-Generierung
+import { saveAs } from "file-saver"; // Für .ics-Datei
+import "moment/locale/de";
+
+moment.locale("de");
 
 const Dashboard = () => {
   const localizer = momentLocalizer(moment);
   const router = useRouter();
 
-  const handleCreateEvent = () => {
-    router.push('/user/createEvent'); // Navigiere zu  createEvent
-  };
-
   const placeholderFormats = {
-    start: "YYYY-MM-DDTHH:mm", // 24-Stunden-Format für Eingaben
+    start: "YYYY-MM-DDTHH:mm",
     end: "YYYY-MM-DDTHH:mm",
   };
 
   const formats = {
-    timeGutterFormat: "HH:mm", // 24-Stunden-Format
+    timeGutterFormat: "HH:mm",
     eventTimeRangeFormat: ({ start, end }) =>
       `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
     agendaTimeRangeFormat: ({ start, end }) =>
       `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
-    dayHeaderFormat: "dddd, D. MMMM YYYY", // Beispiel: Montag, 27. November 2024
+    dayHeaderFormat: "dddd, D. MMMM YYYY",
     dayRangeHeaderFormat: ({ start, end }) =>
       `${moment(start).format("D. MMMM YYYY")} – ${moment(end).format("D. MMMM YYYY")}`,
-    monthHeaderFormat: "MMMM YYYY", // Beispiel: November 2024
+    monthHeaderFormat: "MMMM YYYY",
   };
 
-  // Initiale Events
   const [events, setEvents] = useState([
     {
       id: 1,
@@ -56,18 +65,10 @@ const Dashboard = () => {
     },
   ]);
 
-  // State-Management
+  // State für das Optionen-Menü
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
-  const [newEventModalOpen, setNewEventModalOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    description: "",
-    start: null,
-    end: null,
-  });
 
-  // Optionen-Menü
   const handleMenuOpen = (event, eventId) => {
     setAnchorEl(event.currentTarget);
     setSelectedEventId(eventId);
@@ -79,68 +80,13 @@ const Dashboard = () => {
   };
 
   const handleOptionClick = (option) => {
-    console.log(`Option "${option}" für Event ID ${selectedEventId} gewählt`);
+    if (option === "Termin stornieren") {
+      handleDeleteEvent(selectedEventId);
+    }
     handleMenuClose();
   };
 
-  // Hinzufügen eines neuen Termins
-  const handleSelectSlot = (slotInfo) => {
-    setNewEvent({
-      ...newEvent,
-      start: slotInfo.start,
-      end: moment(slotInfo.start).add(1, "hours").toDate(),
-    });
-    setNewEventModalOpen(true);
-  };
-
-  const handleNewEventChange = (field, value) => {
-    setNewEvent((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleAddNewEvent = () => {
-    if (newEvent.title && newEvent.start && newEvent.end) {
-      setEvents((prevEvents) => [
-        ...prevEvents,
-        { id: prevEvents.length + 1, ...newEvent, type: "myEvent" },
-      ]);
-      setNewEventModalOpen(false);
-      setNewEvent({
-        title: "",
-        description: "",
-        start: null,
-        end: null,
-      });
-    }
-  };
-
-  // Event-Styling
-  const eventStyleGetter = (event) => {
-    let backgroundColor = "";
-    switch (event.type) {
-      case "booked":
-        backgroundColor = "green";
-        break;
-      case "upcoming":
-        backgroundColor = "red";
-        break;
-      case "myEvent":
-        backgroundColor = "yellow";
-        break;
-      default:
-        backgroundColor = "blue";
-    }
-    return {
-      style: {
-        backgroundColor,
-        borderRadius: "5px",
-        color: "black",
-        border: "none",
-        padding: "5px",
-      },
-    };
-  };
-
-  const messages = {
+  const germanMessages = {
     allDay: "Ganztägig",
     previous: "Zurück",
     next: "Weiter",
@@ -156,12 +102,46 @@ const Dashboard = () => {
     showMore: (total) => `+ ${total} mehr`,
   };
 
+  const handleDeleteEvent = (eventId) => {
+    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+    console.log(`Termin mit ID ${eventId} wurde entfernt.`);
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text("Veranstaltungskalender", 10, 10);
+
+    events.forEach((event, index) => {
+      const start = moment(event.start).format("DD.MM.YYYY HH:mm");
+      const end = moment(event.end).format("DD.MM.YYYY HH:mm");
+      doc.text(
+        `${index + 1}. ${event.title} (${start} - ${end}): ${event.description}`,
+        10,
+        20 + index * 10
+      );
+    });
+
+    doc.save("kalender.pdf");
+  };
+
+  const handleDownloadICS = () => {
+    let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\n";
+    events.forEach((event) => {
+      const start = moment(event.start).utc().format("YYYYMMDDTHHmmss") + "Z";
+      const end = moment(event.end).utc().format("YYYYMMDDTHHmmss") + "Z";
+      icsContent += `BEGIN:VEVENT\nSUMMARY:${event.title}\nDESCRIPTION:${event.description}\nDTSTART:${start}\nDTEND:${end}\nEND:VEVENT\n`;
+    });
+    icsContent += "END:VCALENDAR";
+
+    const blob = new Blob([icsContent], { type: "text/calendar" });
+    saveAs(blob, "kalender.ics");
+  };
 
   return (
     <StyledPaper>
       <DesignTitel>Dashboard</DesignTitel>
 
-      {/* Übersicht Veranstaltungen */}
       <Typography variant="h5" sx={{ marginBottom: 2 }}>
         Übersicht Veranstaltungen
       </Typography>
@@ -184,7 +164,6 @@ const Dashboard = () => {
         ))}
       </Box>
 
-      {/* Menü für Optionen */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -195,101 +174,33 @@ const Dashboard = () => {
         <MenuItem onClick={() => handleOptionClick("Termin stornieren")}>Termin stornieren</MenuItem>
       </Menu>
 
-      {/* Veranstaltungskalender */}
       <Typography variant="h5" sx={{ marginBottom: 2 }}>
         Veranstaltungskalender
       </Typography>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500, marginBottom: 4 }}
-        selectable
-        onSelectSlot={handleSelectSlot}
-        eventPropGetter={eventStyleGetter}
-        views={[Views.MONTH, Views.WEEK, Views.DAY]}
-        defaultView={Views.MONTH}
-        toolbar={true}
-        defaultDate={new Date()}
-        formats={formats} // Die deutschen Formate
-        messages={messages} // Deutsche Texte für Buttons und Ansichten
-      />
+<Calendar
+  localizer={localizer}
+  events={events}
+  startAccessor="start"
+  endAccessor="end"
+  style={{ height: 500, marginBottom: 4 }}
+  selectable
+  views={[Views.MONTH, Views.WEEK, Views.DAY]}
+  defaultView={Views.MONTH}
+  toolbar={true}
+  defaultDate={new Date()}
+  formats={formats}
+  messages={germanMessages} // Hier wird das `messages`-Objekt übergeben
+/>
 
-      {/* Modal für neuen Termin */}
-      <Modal
-        open={newEventModalOpen}
-        onClose={() => setNewEventModalOpen(false)}
-        aria-labelledby="new-event-title"
-        aria-describedby="new-event-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography id="new-event-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
-            Neuen Termin anlegen
-          </Typography>
-          <TextField
-            label="Titel"
-            fullWidth
-            value={newEvent.title}
-            onChange={(e) => handleNewEventChange("title", e.target.value)}
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Beschreibung"
-            fullWidth
-            multiline
-            rows={2}
-            value={newEvent.description}
-            onChange={(e) => handleNewEventChange("description", e.target.value)}
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Startzeit"
-            type="datetime-local"
-            fullWidth
-            value={newEvent.start ? moment(newEvent.start).format(placeholderFormats.start) : ""}
-            onChange={(e) =>
-              handleNewEventChange("start", moment(e.target.value).toDate())
-            }
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Endzeit"
-            type="datetime-local"
-            fullWidth
-            value={newEvent.end ? moment(newEvent.end).format(placeholderFormats.end) : ""}
-            onChange={(e) =>
-              handleNewEventChange("end", moment(e.target.value).toDate())
-            }
-            sx={{ marginBottom: 2 }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleAddNewEvent}
-          >
-            Speichern
-          </Button>
-        </Box>
-      </Modal>
-      {/* Button für Veranstaltung anlegen */}
-      <BlueButton onClick={handleCreateEvent}
-      >
-        Veranstaltung anlegen
-      </BlueButton>
+
+      <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleDownloadPDF}>
+          PDF Download
+        </Button>
+        <Button variant="contained" color="secondary" onClick={handleDownloadICS}>
+          .ics Download
+        </Button>
+      </Box>
     </StyledPaper>
   );
 };
