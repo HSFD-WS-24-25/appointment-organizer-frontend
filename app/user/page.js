@@ -8,13 +8,32 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import StyledPaper from "../components/styledComponents/StyledPaper";
 import { BlueButton } from "../components/styledComponents/StyledButton";
 import DesignTitel from "../components/styledComponents/DesignTitel";
+import "moment/locale/de"; // Importiere die deutsche Lokalisierung für Moment.js
+moment.locale("de"); // Setze die Lokalisierung auf Deutsch
 
 const Dashboard = () => {
   const localizer = momentLocalizer(moment);
   const router = useRouter();
 
   const handleCreateEvent = () => {
-    router.push('/user/createEvent'); // Navigate to /user/createEvent
+    router.push('/user/createEvent'); // Navigiere zu  createEvent
+  };
+
+  const placeholderFormats = {
+    start: "YYYY-MM-DDTHH:mm", // 24-Stunden-Format für Eingaben
+    end: "YYYY-MM-DDTHH:mm",
+  };
+
+  const formats = {
+    timeGutterFormat: "HH:mm", // 24-Stunden-Format
+    eventTimeRangeFormat: ({ start, end }) =>
+      `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
+    agendaTimeRangeFormat: ({ start, end }) =>
+      `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
+    dayHeaderFormat: "dddd, D. MMMM YYYY", // Beispiel: Montag, 27. November 2024
+    dayRangeHeaderFormat: ({ start, end }) =>
+      `${moment(start).format("D. MMMM YYYY")} – ${moment(end).format("D. MMMM YYYY")}`,
+    monthHeaderFormat: "MMMM YYYY", // Beispiel: November 2024
   };
 
   // Initiale Events
@@ -121,6 +140,23 @@ const Dashboard = () => {
     };
   };
 
+  const messages = {
+    allDay: "Ganztägig",
+    previous: "Zurück",
+    next: "Weiter",
+    today: "Heute",
+    month: "Monat",
+    week: "Woche",
+    day: "Tag",
+    agenda: "Agenda",
+    date: "Datum",
+    time: "Zeit",
+    event: "Ereignis",
+    noEventsInRange: "Keine Ereignisse in diesem Zeitraum.",
+    showMore: (total) => `+ ${total} mehr`,
+  };
+
+
   return (
     <StyledPaper>
       <DesignTitel>Dashboard</DesignTitel>
@@ -176,6 +212,8 @@ const Dashboard = () => {
         defaultView={Views.MONTH}
         toolbar={true}
         defaultDate={new Date()}
+        formats={formats} // Die deutschen Formate
+        messages={messages} // Deutsche Texte für Buttons und Ansichten
       />
 
       {/* Modal für neuen Termin */}
@@ -221,7 +259,7 @@ const Dashboard = () => {
             label="Startzeit"
             type="datetime-local"
             fullWidth
-            value={moment(newEvent.start).format("YYYY-MM-DDTHH:mm")}
+            value={newEvent.start ? moment(newEvent.start).format(placeholderFormats.start) : ""}
             onChange={(e) =>
               handleNewEventChange("start", moment(e.target.value).toDate())
             }
@@ -231,7 +269,7 @@ const Dashboard = () => {
             label="Endzeit"
             type="datetime-local"
             fullWidth
-            value={moment(newEvent.end).format("YYYY-MM-DDTHH:mm")}
+            value={newEvent.end ? moment(newEvent.end).format(placeholderFormats.end) : ""}
             onChange={(e) =>
               handleNewEventChange("end", moment(e.target.value).toDate())
             }
