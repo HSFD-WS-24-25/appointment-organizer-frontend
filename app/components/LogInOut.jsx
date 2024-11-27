@@ -2,12 +2,13 @@
 
 import React from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { Box, Link, Button } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Typography } from '@mui/material';
 import Footer from '../components/Footer';
+import { BlueButton, RedButton, GreenButton } from '../components/styledComponents/StyledButton'; 
 
 const LogInOut = () => {
   const { user, isLoading } = useUser();
@@ -15,15 +16,15 @@ const LogInOut = () => {
   const images = [
     {
       src: '/images/image1.jpg',
-      caption: 'Bild 1',
+      caption: 'Feature 1',
     },
     {
       src: '/images/image1.jpg',
-      caption: 'Bild 2',
+      caption: 'Feature 2',
     },
     {
       src: '/images/image1.jpg',
-      caption: 'Bild 3',
+      caption: 'Feature 3',
     },
   ];
 
@@ -34,7 +35,7 @@ const LogInOut = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 7000,
+    autoplaySpeed: 6000,
     arrows: false,
   };
 
@@ -54,84 +55,39 @@ const LogInOut = () => {
           left: 10,
           zIndex: 1000,
           display: 'flex',
-          flexDirection: 'column', 
-          gap: '1rem', 
+          flexDirection: 'column',
+          gap: '1rem',
         }}
       >
         {!isLoading && !user ? (
           <Link href="/api/auth/login">
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#333',
-                color: '#ccc', 
-                borderRadius: '0', 
-                width: '100px', 
-                '&:hover': {
-                  backgroundColor: '#555', 
-                },
-              }}
-            >
-              Login
-            </Button>
+            <GreenButton>Login</GreenButton>
           </Link>
         ) : (
           <Box>
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                gap: '1px',
+                justifyContent: 'center',
+                gap: '1rem', 
               }}
             >
               <Link href="/user">
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: '#333',
-                    color: '#ccc',
-                    borderRadius: '0',
-                    width: '100px',
-                    '&:hover': {
-                      backgroundColor: '#555',
-                    },
-                  }}
-                >
-                  User
-                </Button>
+                <BlueButton>User</BlueButton>
               </Link>
               <Link href="/admin">
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: '#333',
-                    color: '#ccc',
-                    borderRadius: '0',
-                    width: '100px',
-                    '&:hover': {
-                      backgroundColor: '#555',
-                    },
-                  }}
-                >
-                  Admin
-                </Button>
+                <BlueButton>Admin</BlueButton>
               </Link>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center', 
+                marginTop: '1rem', 
+              }}
+            >
               <Link href="/api/auth/logout">
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: '#333',
-                    color: '#ccc',
-                    borderRadius: '0',
-                    width: '100px',
-                    '&:hover': {
-                      backgroundColor: '#555',
-                    },
-                  }}
-                >
-                  Logout
-                </Button>
+                <RedButton>Logout</RedButton>
               </Link>
             </Box>
           </Box>
@@ -145,14 +101,15 @@ const LogInOut = () => {
           minHeight: 'calc(100vh - 150px)',
         }}
       >
-        <Box
+        
+        <Box // Image-Karussell
           sx={{
             width: '90%',
             maxWidth: '800px',
             height: '60vh',
             maxHeight: '500px',
             backgroundColor: '#fff',
-            borderRadius: '0',
+            borderRadius: '10px',
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
             overflow: 'hidden',
             userSelect: 'none',
