@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Box, Button, Card, CardContent, Menu, MenuItem, Typography, Modal, TextField } from "@mui/material";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
+import { useRouter } from 'next/navigation';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import StyledPaper from "../components/styledComponents/StyledPaper";
 import { BlueButton } from "../components/styledComponents/StyledButton";
@@ -10,6 +11,11 @@ import DesignTitel from "../components/styledComponents/DesignTitel";
 
 const Dashboard = () => {
   const localizer = momentLocalizer(moment);
+  const router = useRouter();
+
+  const handleCreateEvent = () => {
+    router.push('/user/createEvent'); // Navigate to /user/createEvent
+  };
 
   // Initiale Events
   const [events, setEvents] = useState([
@@ -241,6 +247,11 @@ const Dashboard = () => {
           </Button>
         </Box>
       </Modal>
+      {/* Button für Veranstaltung anlegen */}
+      <BlueButton onClick={handleCreateEvent}
+      >
+        Veranstaltung anlegen
+      </BlueButton>
     </StyledPaper>
   );
 };
