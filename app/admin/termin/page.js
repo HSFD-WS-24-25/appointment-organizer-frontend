@@ -4,44 +4,39 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Menu,
-  MenuItem,
-  Typography,
   Modal,
+  Typography,
   TextField,
 } from "@mui/material";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
-import { useRouter } from "next/navigation";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import StyledPaper from "../../components/styledComponents/StyledPaper";
-import {RedButton, BlueButton, GreenButton} from "../../components/styledComponents/StyledButton";
+import { RedButton, BlueButton, GreenButton } from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
 import jsPDF from "jspdf"; // Für PDF-Generierung
 import { saveAs } from "file-saver"; // Für .ics-Datei
-
 
 moment.locale("de"); // Setze die Lokalisierung auf Deutsch
 
 function AdminTermin() {
   const localizer = momentLocalizer(moment);
-  const router = useRouter();
-
-  const placeholderFormats = {
-    start: "YYYY-MM-DDTHH:mm",
-    end: "YYYY-MM-DDTHH:mm",
-  };
 
   const formats = {
     timeGutterFormat: "HH:mm",
     eventTimeRangeFormat: ({ start, end }) =>
       `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
-    agendaTimeRangeFormat: ({ start, end }) =>
-      `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
-    dayHeaderFormat: "dddd, D. MMMM YYYY",
-    dayRangeHeaderFormat: ({ start, end }) =>
-      `${moment(start).format("D. MMMM YYYY")} – ${moment(end).format("D. MMMM YYYY")}`,
     monthHeaderFormat: "MMMM YYYY",
+  };
+
+  const messages = {
+    today: "Heute",
+    previous: "Zurück",
+    next: "Weiter",
+    month: "Monat",
+    week: "Woche",
+    day: "Tag",
+    agenda: "Agenda",
   };
 
   const [events, setEvents] = useState([
@@ -50,7 +45,6 @@ function AdminTermin() {
       title: "Belegte Veranstaltung",
       start: new Date(2024, 10, 29, 10, 0),
       end: new Date(2024, 10, 29, 12, 0),
-      type: "booked",
       description: "Dies ist eine belegte Veranstaltung.",
     },
     {
@@ -58,12 +52,13 @@ function AdminTermin() {
       title: "Zeitnah anstehende Veranstaltung",
       start: new Date(2024, 10, 28, 14, 0),
       end: new Date(2024, 10, 28, 16, 0),
-      type: "upcoming",
       description: "Diese Veranstaltung findet bald statt.",
     },
   ]);
 
-  const [newEventModalOpen, setNewEventModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventActionModalOpen, setEventActionModalOpen] = useState(false);
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     description: "",
@@ -71,33 +66,47 @@ function AdminTermin() {
     end: null,
   });
 
+  const [newEventModalOpen, setNewEventModalOpen] = useState(false);
+
   const handleSelectSlot = (slotInfo) => {
     setNewEvent({
-      ...newEvent,
+      title: "",
+      description: "",
       start: slotInfo.start,
       end: moment(slotInfo.start).add(1, "hours").toDate(),
     });
     setNewEventModalOpen(true);
   };
 
-  const handleNewEventChange = (field, value) => {
-    setNewEvent((prev) => ({ ...prev, [field]: value }));
-  };
-
   const handleAddNewEvent = () => {
     if (newEvent.title && newEvent.start && newEvent.end) {
       setEvents((prevEvents) => [
         ...prevEvents,
-        { id: prevEvents.length + 1, ...newEvent, type: "myEvent" },
+        { id: prevEvents.length + 1, ...newEvent },
       ]);
       setNewEventModalOpen(false);
-      setNewEvent({
-        title: "",
-        description: "",
-        start: null,
-        end: null,
-      });
     }
+  };
+
+  const handleSelectEvent = (event) => {
+    setSelectedEvent(event);
+    setEventActionModalOpen(true);
+  };
+
+  const handleDeleteEvent = () => {
+    setEvents((prevEvents) => prevEvents.filter((e) => e.id !== selectedEvent.id));
+    setEventActionModalOpen(false);
+  };
+
+  const handleRescheduleEvent = (newStart, newEnd) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === selectedEvent.id
+          ? { ...event, start: newStart, end: newEnd }
+          : event
+      )
+    );
+    setEventActionModalOpen(false);
   };
 
   const handleDownloadPDF = () => {
@@ -142,34 +151,28 @@ function AdminTermin() {
         endAccessor="end"
         style={{ height: 500, marginBottom: 4 }}
         selectable
-        onSelectSlot={handleSelectSlot}
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         defaultView={Views.MONTH}
         toolbar={true}
-        defaultDate={new Date()}
         formats={formats}
+        messages={messages}
+        onSelectEvent={handleSelectEvent} // Handler für bestehende Events
+        onSelectSlot={handleSelectSlot} // Handler für neue Events
       />
 
       <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-        <BlueButton
-          variant="contained"
-          onClick={handleDownloadPDF}
-        >
+        <BlueButton variant="contained" onClick={handleDownloadPDF}>
           PDF Download
         </BlueButton>
-        <GreenButton
-          variant="contained"
-          onClick={handleDownloadICS}
-        >
+        <GreenButton variant="contained" onClick={handleDownloadICS}>
           .ics Download
         </GreenButton>
       </Box>
 
+      {/* Modal für neues Event */}
       <Modal
         open={newEventModalOpen}
         onClose={() => setNewEventModalOpen(false)}
-        aria-labelledby="new-event-title"
-        aria-describedby="new-event-description"
       >
         <Box
           sx={{
@@ -177,21 +180,21 @@ function AdminTermin() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: 300, // Kleinere Breite
             bgcolor: "background.paper",
             boxShadow: 24,
-            p: 4,
             borderRadius: 2,
+            p: 3, // Innenabstand
           }}
         >
-          <Typography id="new-event-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>
             Neuen Termin anlegen
           </Typography>
           <TextField
             label="Titel"
             fullWidth
             value={newEvent.title}
-            onChange={(e) => handleNewEventChange("title", e.target.value)}
+            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
             sx={{ marginBottom: 2 }}
           />
           <TextField
@@ -200,37 +203,85 @@ function AdminTermin() {
             multiline
             rows={2}
             value={newEvent.description}
-            onChange={(e) => handleNewEventChange("description", e.target.value)}
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Startzeit"
-            type="datetime-local"
-            fullWidth
-            value={newEvent.start ? moment(newEvent.start).format(placeholderFormats.start) : ""}
             onChange={(e) =>
-              handleNewEventChange("start", moment(e.target.value).toDate())
+              setNewEvent({ ...newEvent, description: e.target.value })
             }
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Endzeit"
-            type="datetime-local"
+            label="Beginn (Uhrzeit)"
+            type="time"
             fullWidth
-            value={newEvent.end ? moment(newEvent.end).format(placeholderFormats.end) : ""}
-            onChange={(e) =>
-              handleNewEventChange("end", moment(e.target.value).toDate())
-            }
+            value={newEvent.start ? moment(newEvent.start).format("HH:mm") : ""}
+            onChange={(e) => {
+              const newStart = moment(newEvent.start)
+                .set("hour", e.target.value.split(":")[0])
+                .set("minute", e.target.value.split(":")[1])
+                .toDate();
+              setNewEvent({ ...newEvent, start: newStart });
+            }}
             sx={{ marginBottom: 2 }}
           />
-          <Button
-            variant="contained"
-            color="primary"
+          <TextField
+            label="Ende (Uhrzeit)"
+            type="time"
             fullWidth
-            onClick={handleAddNewEvent}
-          >
+            value={newEvent.end ? moment(newEvent.end).format("HH:mm") : ""}
+            onChange={(e) => {
+              const newEnd = moment(newEvent.end)
+                .set("hour", e.target.value.split(":")[0])
+                .set("minute", e.target.value.split(":")[1])
+                .toDate();
+              setNewEvent({ ...newEvent, end: newEnd });
+            }}
+            sx={{ marginBottom: 2 }}
+          />
+          <Button variant="contained" color="primary" fullWidth onClick={handleAddNewEvent}>
             Speichern
           </Button>
+        </Box>
+      </Modal>
+
+      {/* Modal für bestehende Events */}
+      <Modal
+        open={eventActionModalOpen}
+        onClose={() => setEventActionModalOpen(false)}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 300, // Kleinere Breite
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: 2,
+            p: 3,
+          }}
+        >
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+            {selectedEvent?.title}
+          </Typography>
+          <Typography sx={{ marginBottom: 2 }}>
+            {selectedEvent?.description}
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <RedButton variant="contained" onClick={handleDeleteEvent}>
+              Stornieren
+            </RedButton>
+            <BlueButton
+              variant="contained"
+              onClick={() =>
+                handleRescheduleEvent(
+                  moment(selectedEvent.start).add(1, "days").toDate(),
+                  moment(selectedEvent.end).add(1, "days").toDate()
+                )
+              }
+            >
+              Verschieben
+            </BlueButton>
+          </Box>
         </Box>
       </Modal>
     </StyledPaper>
