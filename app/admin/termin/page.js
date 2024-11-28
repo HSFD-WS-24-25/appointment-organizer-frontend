@@ -58,6 +58,7 @@ function AdminTermin() {
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventActionModalOpen, setEventActionModalOpen] = useState(false);
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -107,6 +108,7 @@ function AdminTermin() {
       )
     );
     setEventActionModalOpen(false);
+    setRescheduleModalOpen(false);
   };
 
   const handleDownloadPDF = () => {
@@ -272,16 +274,103 @@ function AdminTermin() {
             </RedButton>
             <BlueButton
               variant="contained"
-              onClick={() =>
-                handleRescheduleEvent(
-                  moment(selectedEvent.start).add(1, "days").toDate(),
-                  moment(selectedEvent.end).add(1, "days").toDate()
-                )
-              }
+              onClick={() => setRescheduleModalOpen(true)}
             >
               Verschieben
             </BlueButton>
           </Box>
+        </Box>
+      </Modal>
+
+      {/* Modal für Verschieben */}
+      <Modal
+        open={rescheduleModalOpen}
+        onClose={() => setRescheduleModalOpen(false)}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 300,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: 2,
+            p: 3,
+          }}
+        >
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+            Termin verschieben
+          </Typography>
+          <TextField
+            label="Neues Datum (Start)"
+            type="date"
+            fullWidth
+            value={selectedEvent?.start ? moment(selectedEvent.start).format("YYYY-MM-DD") : ""}
+            onChange={(e) => {
+              const newStart = moment(selectedEvent.start)
+                .set("year", e.target.value.split("-")[0])
+                .set("month", e.target.value.split("-")[1] - 1)
+                .set("date", e.target.value.split("-")[2])
+                .toDate();
+              setSelectedEvent({ ...selectedEvent, start: newStart });
+            }}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Neue Uhrzeit (Start)"
+            type="time"
+            fullWidth
+            value={selectedEvent?.start ? moment(selectedEvent.start).format("HH:mm") : ""}
+            onChange={(e) => {
+              const newStart = moment(selectedEvent.start)
+                .set("hour", e.target.value.split(":")[0])
+                .set("minute", e.target.value.split(":")[1])
+                .toDate();
+              setSelectedEvent({ ...selectedEvent, start: newStart });
+            }}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Neues Datum (Ende)"
+            type="date"
+            fullWidth
+            value={selectedEvent?.end ? moment(selectedEvent.end).format("YYYY-MM-DD") : ""}
+            onChange={(e) => {
+              const newEnd = moment(selectedEvent.end)
+                .set("year", e.target.value.split("-")[0])
+                .set("month", e.target.value.split("-")[1] - 1)
+                .set("date", e.target.value.split("-")[2])
+                .toDate();
+              setSelectedEvent({ ...selectedEvent, end: newEnd });
+            }}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Neue Uhrzeit (Ende)"
+            type="time"
+            fullWidth
+            value={selectedEvent?.end ? moment(selectedEvent.end).format("HH:mm") : ""}
+            onChange={(e) => {
+              const newEnd = moment(selectedEvent.end)
+                .set("hour", e.target.value.split(":")[0])
+                .set("minute", e.target.value.split(":")[1])
+                .toDate();
+              setSelectedEvent({ ...selectedEvent, end: newEnd });
+            }}
+            sx={{ marginBottom: 2 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={() => {
+              handleRescheduleEvent(selectedEvent.start, selectedEvent.end);
+            }}
+          >
+            Speichern
+          </Button>
         </Box>
       </Modal>
     </StyledPaper>
