@@ -1,6 +1,6 @@
 "use client";
 
-import SidebarAdmin from '../components/SidebarAdmin'
+
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 
