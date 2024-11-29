@@ -20,10 +20,13 @@ import {
 import StyledPaper from "../../components/styledComponents/StyledPaper";
 import { BlueButton, GreenButton, RedButton } from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+import {useFetchApiData} from "../../lib/useFetchApiData";
+import {useUser} from '@auth0/nextjs-auth0/client';
 
 const Page = () => {
-  const [users, setUsers] = useState([]);
+  //const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const { user, error: authError, isLoading } = useUser();
   const [searchQuery, setSearchQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [userActionOpen, setUserActionOpen] = useState(false);
@@ -42,21 +45,9 @@ const Page = () => {
   });
 
   // Benutzer abrufen
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/users');
-      if (!response.ok) throw new Error('Fehler beim Abrufen der Benutzer.');
-      const data = await response.json();
-      setUsers(data);
-      setFilteredUsers(data);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const path = "api/users";
+  const method = 'GET';
+  const {data: users, error: fetchError} = useFetchApiData(user, path, method);
 
   // Benutzer filtern
   useEffect(() => {
