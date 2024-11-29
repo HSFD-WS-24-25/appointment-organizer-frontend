@@ -16,29 +16,36 @@ import { RedButton, BlueButton, GreenButton } from "../../components/styledCompo
 import DesignTitel from "../../components/styledComponents/DesignTitel";
 import jsPDF from "jspdf"; // Für PDF-Generierung
 import { saveAs } from "file-saver"; // Für .ics-Datei
+import {CustomToolbar, formats, germanMessages} from "../../components/styledComponents/StyledCalender"
 
-moment.locale("de"); // Setze die Lokalisierung auf Deutsch
+moment.locale("de");
 
 function AdminTermin() {
   const localizer = momentLocalizer(moment);
 
-  const formats = {
-    timeGutterFormat: "HH:mm",
-    eventTimeRangeFormat: ({ start, end }) =>
-      `${moment(start).format("HH:mm")} - ${moment(end).format("HH:mm")}`,
-    monthHeaderFormat: "MMMM YYYY",
+<formats/>
+  //Farbbestimmung für aktuelle Woche / Kommende Wocher / Über eine Woche 
+  const calculateColor = (event) => {
+    const now = moment();
+    const eventStart = moment(event.start);
+    const diffDays = eventStart.diff(now, "days");
+
+    if (diffDays <= 0) return "red";
+    if (diffDays <= 7) return "orange";
+    return "green";
   };
 
-  const messages = {
-    today: "Heute",
-    previous: "Zurück",
-    next: "Weiter",
-    month: "Monat",
-    week: "Woche",
-    day: "Tag",
-    agenda: "Agenda",
+  const eventPropGetter = (event) => {
+    const color = calculateColor(event);
+    return {
+      style: {
+        backgroundColor: color,
+        color: "white",
+      },
+    };
   };
-
+  
+  //Beispieldaten
   const [events, setEvents] = useState([
     {
       id: 1,
@@ -59,6 +66,7 @@ function AdminTermin() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventActionModalOpen, setEventActionModalOpen] = useState(false);
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -155,9 +163,14 @@ function AdminTermin() {
         selectable
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         defaultView={Views.MONTH}
-        toolbar={true}
+        toolbar
+        components={{
+          toolbar: CustomToolbar, // Benutzerdefinierte Toolbar verwenden
+        }}
+        defaultDate={new Date()}
         formats={formats}
-        messages={messages}
+        messages={germanMessages}
+        eventPropGetter={eventPropGetter}
         onSelectEvent={handleSelectEvent} // Handler für bestehende Events
         onSelectSlot={handleSelectSlot} // Handler für neue Events
       />
