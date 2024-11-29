@@ -29,6 +29,7 @@ jobs:
           echo "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}" >> $GITHUB_ENV
           echo "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}" >> $GITHUB_ENV
           echo "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_BACKEND_URL=${{ vars.NEXT_PUBLIC_BACKEND_URL }}" >> $GITHUB_ENV
 
       - name: npm install, build, and test
         run: |
@@ -74,6 +75,7 @@ jobs:
           echo "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}" >> $GITHUB_ENV
           echo "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}" >> $GITHUB_ENV
           echo "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_BACKEND_URL=${{ vars.NEXT_PUBLIC_BACKEND_URL }}" >> $GITHUB_ENV
 
       - name: Login to Azure
         uses: azure/login@v2
