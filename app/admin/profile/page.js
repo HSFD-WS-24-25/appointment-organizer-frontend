@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography, Paper } from '@mui/material';
+import { Box,   Button,  Avatar, Typography, Paper } from '@mui/material';
 import StyledPaper from "../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+import {StyledDialog, StyledDialogTitle, StyledDialogContent, StyledDialogActions} from "../../components/styledComponents/StyledDialog";
+import {StyledTextField} from "../../components/styledComponents/StyledTextField";
+
 
 function AdminProfile() {
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
@@ -44,11 +47,11 @@ function AdminProfile() {
 
           {/* Personal Information Section */}
           <Box component="form" sx={{ display: 'grid', gap: 3, width: '100%' }}>
-            <TextField label="Name" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="Vorname" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="Personalnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="E-Mail" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="Telefonnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <StyledTextField label="Name" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <StyledTextField label="Vorname" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <StyledTextField label="Personalnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <StyledTextField label="E-Mail" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <StyledTextField label="Telefonnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
           </Box>
 
           {/* Save Button */}
@@ -68,20 +71,20 @@ function AdminProfile() {
         </Box>
       </Box>
 
-      {/* Save Confirmation Dialog */}
+      {/* Save Confirmation StyledDialog */}
 
-      <Dialog open={openSaveDialog} onClose={handleSaveCancel}>
-        <DialogTitle>Änderungen speichern</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
+      <StyledDialog open={openSaveDialog} onClose={handleSaveCancel}>
+        <StyledDialogTitle>Änderungen speichern</StyledDialogTitle>
+        <StyledDialogContent>
+          <StyledDialogContent>
             Möchten Sie die Änderungen übernehmen?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
+          </StyledDialogContent>
+        </StyledDialogContent>
+        <StyledDialogActions>
           <Button onClick={handleSaveCancel} color="primary">Nein</Button>
           <Button onClick={handleSaveConfirm} color="primary" autoFocus>Ja</Button>
-        </DialogActions>
-      </Dialog>
+        </StyledDialogActions>
+      </StyledDialog>
     </StyledPaper>
   );
 }

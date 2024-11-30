@@ -1,13 +1,19 @@
 "use client"; // important or else search doesn't work
 
 import React, { useState, useEffect } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, Button, Box, Stack, Autocomplete, Typography
+import { 
+  Paper, TextField, Box, Stack, Autocomplete, 
 } from '@mui/material';
 import StyledPaper from "../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+import {StyledTableContainer, 
+   StyledTable, 
+   StyledTableRow,
+   StyledTableHeadCell,
+   StyledTableBody,
+   StyledTableCell, 
+   StyledTableHead } from "../../components/styledComponents/StyledTable";
 
 const data = [
   { title: 'Closed for Server Maintenance', method: 'On Login', startDate: '12.11.2024', endDate: '-', status: 'Active' },
@@ -59,30 +65,30 @@ export default function AdminAnnouncements() {
           </Stack>
         </Box>
 
-        <TableContainer component={Paper} sx={{ flex: 1, overflowY: 'auto', borderRadius: 2, backgroundColor: '#fff' }}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#444' }}>
-                <TableCell sx={{ color: '#fff' }}>Titel</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Methode</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Start Datum</TableCell>
-                <TableCell sx={{ color: '#fff' }}>End Datum</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+        <StyledTableContainer component={Paper} sx={{ flex: 1, overflowY: 'auto', borderRadius: 2, backgroundColor: '#fff' }}>
+          <StyledTable>
+            <StyledTableHead>
+              <StyledTableRow sx={{ backgroundColor: '#444' }}>
+                <StyledTableCell sx={{ color: '#fff' }}>Titel</StyledTableCell>
+                <StyledTableCell sx={{ color: '#fff' }}>Methode</StyledTableCell>
+                <StyledTableCell sx={{ color: '#fff' }}>Start Datum</StyledTableCell>
+                <StyledTableCell sx={{ color: '#fff' }}>End Datum</StyledTableCell>
+                <StyledTableCell sx={{ color: '#fff' }}>Status</StyledTableCell>
+              </StyledTableRow>
+            </StyledTableHead>
+            <StyledTableBody>
               {filteredData.map((row, index) => (
-                <TableRow key={index} sx={{ backgroundColor: row.status === 'Closed' ? '#f8d7da' : '#d4edda' }}>
-                  <TableCell>{row.title}</TableCell>
-                  <TableCell>{row.method}</TableCell>
-                  <TableCell>{row.startDate}</TableCell>
-                  <TableCell>{row.endDate}</TableCell>
-                  <TableCell>{row.status}</TableCell>
-                </TableRow>
+                <StyledTableRow key={index} sx={{ backgroundColor: row.status === 'Closed' ? '#f8d7da' : '#d4edda' }}>
+                  <StyledTableCell>{row.title}</StyledTableCell>
+                  <StyledTableCell>{row.method}</StyledTableCell>
+                  <StyledTableCell>{row.startDate}</StyledTableCell>
+                  <StyledTableCell>{row.endDate}</StyledTableCell>
+                  <StyledTableCell>{row.status}</StyledTableCell>
+                </StyledTableRow>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </StyledTableBody>
+          </StyledTable>
+        </StyledTableContainer>
 
         <Box
           sx={{
