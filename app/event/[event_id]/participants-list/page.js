@@ -5,9 +5,9 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, TextField, Button, Box, Stack, Typography, InputAdornment,
 } from '@mui/material';
-import StyledPaper from "../../components/styledComponents/StyledPaper";
-import { BlueButton, GreenButton, RedButton } from "../../components/styledComponents/StyledButton";
-import DesignTitel from "../../components/styledComponents/DesignTitel";
+import StyledPaper from "../../../components/styledComponents/StyledPaper";
+import { BlueButton, GreenButton, RedButton } from "../../../components/styledComponents/StyledButton";
+import DesignTitel from "../../../components/styledComponents/DesignTitel";
 import FilterListIcon from '@mui/icons-material/FilterList'; // Filter Icon importieren
 
 {/* Beispieldaten */ }
@@ -20,7 +20,7 @@ const data = [
   { name: 'Franz Gast', contact: 'franz.gast@beispiel.de' },
 ];
 
-export default function Participants() {
+export default function ParticipantsList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
 
