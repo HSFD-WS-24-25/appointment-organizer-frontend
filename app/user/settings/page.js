@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import StyledPaper from "../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
+import {BlueButton,GreenButton ,RedButton, ToggleButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+
 
 function UserSettings() {
   const router = useRouter();
@@ -42,7 +43,6 @@ function UserSettings() {
             width: '100%',
             padding: 3,
             borderRadius: 3,
-            backgroundColor: '#fff',
             display: 'flex',
             flexDirection: 'column',
             gap: 3,
@@ -75,7 +75,7 @@ function UserSettings() {
               <MenuItem value="UTC">UTC</MenuItem>
             </Select>
           </FormControl>
-
+          <ToggleButton/>
           <Stack direction="row" justifyContent="space-between" spacing={2} mt={2}>
             <RedButton
               onClick={handleGoBackClick}

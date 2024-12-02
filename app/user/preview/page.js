@@ -36,7 +36,6 @@ function EventDetails() {
               sx={{
                 position: 'relative',
                 height: 300,
-                backgroundColor: '#ccc',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

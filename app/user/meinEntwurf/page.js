@@ -110,7 +110,7 @@ function MeinEntwurf() {
 
         {/* Content */}
         {view === "list" ? (
-          <Box sx={{ backgroundColor: "#fff", borderRadius: "8px", padding: 2 }}>
+          <Box sx={{borderRadius: "8px", padding: 2 }}>
             {events.map((event) => (
               <Box
                 key={event.id}
@@ -139,7 +139,7 @@ function MeinEntwurf() {
           <Grid container spacing={2}>
             {events.map((event) => (
               <Grid item xs={12} sm={6} md={4} key={event.id}>
-                <Card sx={{ backgroundColor: "#fff", borderRadius: "8px" }}>
+                <Card sx={{ borderRadius: "8px" }}>
                   <CardContent>
                     <Typography variant="h6">{event.title}</Typography>
                   </CardContent>

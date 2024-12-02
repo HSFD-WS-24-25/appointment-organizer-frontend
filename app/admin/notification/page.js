@@ -7,8 +7,9 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import StyledPaper from "../../components/styledComponents/StyledPaper";
-import {BlueButton, RedButton} from "../../components/styledComponents/StyledButton";
+import { BlueButton, RedButton } from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+import { useDarkMode } from "../../components/styledComponents/DarkMode"; // Importiere den DarkMode-Status
 
 const initialEmails = [
   { subject: 'System Update Notification', sender: 'admin@system.com', date: '2024-11-01', status: 'Unread', body: 'System update scheduled for 2024-11-02.' },
@@ -22,6 +23,7 @@ const initialEmails = [
 const folders = ['Inbox', 'Unread', 'Sent', 'Trash'];
 
 export default function NotificationAdmin() {
+  const { isDarkMode } = useDarkMode(); // Zugriff auf den DarkMode-Status
   const [emails, setEmails] = useState(initialEmails);
   const [filteredEmails, setFilteredEmails] = useState(initialEmails);
   const [selectedEmail, setSelectedEmail] = useState(null);
@@ -80,16 +82,24 @@ export default function NotificationAdmin() {
     setAnchorEl(null);
   };
 
+  // Dynamische Farben basierend auf dem DarkMode-Status
+  const tableHeaderBgColor = isDarkMode ? '#333' : '#444';
+  const tableHeaderTextColor = isDarkMode ? '#ccc' : '#fff';
+  const tableRowUnreadBgColor = isDarkMode ? '#2d3748' : '#d1ecf1';
+  const tableRowReadBgColor = isDarkMode ? '#1a202c' : '#f8f9fa';
+  const paperBgColor = isDarkMode ? '#1e293b' : '#fff';
+  const paperTextColor = isDarkMode ? '#f1f5f9' : '#000';
+
   return (
     <StyledPaper>
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <DesignTitel > Benachrichtigungen   </DesignTitel>
+        <DesignTitel>Benachrichtigungen</DesignTitel>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-         <BlueButton onClick={handleComposeClick}>
+          <BlueButton onClick={handleComposeClick}>
             Neue E-Mail verfassen
           </BlueButton>
-          
+
           <IconButton onClick={handleMenuClick}>
             <AddIcon />
           </IconButton>
@@ -112,21 +122,24 @@ export default function NotificationAdmin() {
           </Menu>
         </Box>
 
-        <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden', backgroundColor: '#fff' }}>
+        <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden', backgroundColor: paperBgColor }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#444' }}>
-                <TableCell sx={{ color: '#fff' }}>Betreff</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Absender</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Datum</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Status</TableCell>
+              <TableRow sx={{ backgroundColor: tableHeaderBgColor }}>
+                <TableCell sx={{ color: tableHeaderTextColor }}>Betreff</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>Absender</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>Datum</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredEmails.map((email, index) => (
                 <TableRow
                   key={index}
-                  sx={{ cursor: 'pointer', backgroundColor: email.status === 'Unread' ? '#d1ecf1' : '#f8f9fa' }}
+                  sx={{
+                    cursor: 'pointer',
+                    backgroundColor: email.status === 'Unread' ? tableRowUnreadBgColor : tableRowReadBgColor,
+                  }}
                   onClick={() => handleEmailClick(email)}
                 >
                   <TableCell>{email.subject}</TableCell>
@@ -140,7 +153,7 @@ export default function NotificationAdmin() {
         </TableContainer>
 
         {selectedEmail && (
-          <Paper elevation={3} sx={{ padding: 3, marginTop: 2, backgroundColor: '#fff', borderRadius: 2 }}>
+          <Paper elevation={3} sx={{ padding: 3, marginTop: 2, backgroundColor: paperBgColor, color: paperTextColor, borderRadius: 2 }}>
             <Typography variant="h5" gutterBottom>
               {selectedEmail.subject}
             </Typography>
@@ -165,7 +178,7 @@ export default function NotificationAdmin() {
         )}
 
         {(composeOpen || replyOpen) && (
-          <Paper elevation={3} sx={{ padding: 3, marginTop: 2, backgroundColor: '#fff', borderRadius: 2 }}>
+          <Paper elevation={3} sx={{ padding: 3, marginTop: 2, backgroundColor: paperBgColor, color: paperTextColor, borderRadius: 2 }}>
             <Typography variant="h5" gutterBottom>{replyOpen ? 'Antworten' : 'Neue E-Mail'}</Typography>
             <TextField
               fullWidth
@@ -204,6 +217,6 @@ export default function NotificationAdmin() {
           </Paper>
         )}
       </Box>
-      </StyledPaper>
+    </StyledPaper>
   );
 }

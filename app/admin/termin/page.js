@@ -202,7 +202,7 @@ function AdminTermin() {
             p: 3, // Innenabstand
           }}
         >
-          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+          <Typography variant="h6" sx={{ marginBottom: 2, color:"grey"}}>
             Neuen Termin anlegen
           </Typography>
           <TextField

@@ -52,7 +52,7 @@ export default function AdminAnnouncements() {
                   label="Suche"
                   variant="outlined"
                   fullWidth
-                  sx={{ backgroundColor: '#fff', color: '#000', borderRadius: 1, '& .MuiInputLabel-root': { color: '#555' }, '& .MuiOutlinedInput-root': { color: '#000', '& fieldset': { borderColor: '#aaa' }, '&:hover fieldset': { borderColor: '#888' } } }}
+                  sx={{borderRadius: 1, '& .MuiOutlinedInput-root': {'& fieldset': { borderColor: '#aaa' }, '&:hover fieldset': { borderColor: '#888' } } }}
                 />
               )}
             />
@@ -63,16 +63,16 @@ export default function AdminAnnouncements() {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#444' }}>
-                <TableCell sx={{ color: '#fff' }}>Titel</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Methode</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Start Datum</TableCell>
-                <TableCell sx={{ color: '#fff' }}>End Datum</TableCell>
-                <TableCell sx={{ color: '#fff' }}>Status</TableCell>
+                <TableCell>Titel</TableCell>
+                <TableCell>Methode</TableCell>
+                <TableCell>Start Datum</TableCell>
+                <TableCell>End Datum</TableCell>
+                <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredData.map((row, index) => (
-                <TableRow key={index} sx={{ backgroundColor: row.status === 'Closed' ? '#f8d7da' : '#d4edda' }}>
+                <TableRow key={index} sx={{ backgroundColor: row.status === 'Closed' ? '#af2e12' : '#0b5210' }}>
                   <TableCell>{row.title}</TableCell>
                   <TableCell>{row.method}</TableCell>
                   <TableCell>{row.startDate}</TableCell>

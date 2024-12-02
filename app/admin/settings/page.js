@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import StyledPaper from "../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
-import { Description } from '@mui/icons-material';
+import {BlueButton,GreenButton ,RedButton, ToggleButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+
 
 function UserSettings() {
   const router = useRouter();
@@ -16,7 +16,7 @@ function UserSettings() {
   };
 
   const handleGoBackClick = () => {
-    router.push("/admin");
+    router.push("/user");
   };
 
   const [language, setLanguage] = useState('');
@@ -30,9 +30,12 @@ function UserSettings() {
   };
 
   return (
-    <StyledPaper >
+    <StyledPaper>
+
       <Box>
-        <DesignTitel> Einstellungen </DesignTitel>
+        <DesignTitel>
+          Einstellungen
+        </DesignTitel>
 
         <Paper
           elevation={4}
@@ -40,7 +43,6 @@ function UserSettings() {
             width: '100%',
             padding: 3,
             borderRadius: 3,
-            backgroundColor: '#fff',
             display: 'flex',
             flexDirection: 'column',
             gap: 3,
@@ -73,12 +75,16 @@ function UserSettings() {
               <MenuItem value="UTC">UTC</MenuItem>
             </Select>
           </FormControl>
-
+          <ToggleButton/>
           <Stack direction="row" justifyContent="space-between" spacing={2} mt={2}>
-            <RedButton onClick={handleGoBackClick}>
+            <RedButton
+              onClick={handleGoBackClick}
+            >
               Zurück
             </RedButton>
-            <GreenButton onClick={handleSaveChangesClick}>
+            <GreenButton
+              onClick={handleSaveChangesClick}
+            >
               Änderungen speichern
             </GreenButton>
           </Stack>

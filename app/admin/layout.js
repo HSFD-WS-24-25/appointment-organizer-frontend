@@ -14,6 +14,7 @@ export default function RootLayout({ children }) {
         display: "flex", // Verwende flexibles Layout
         height: "100vh", // Vollständige Höhe des Viewports
         width: "100%",   // Vollständige Breite
+        backgroundColor: "#9b9b9b"
       }}
     >
       <Box

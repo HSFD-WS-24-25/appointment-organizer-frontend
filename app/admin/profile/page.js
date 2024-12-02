@@ -44,11 +44,11 @@ function AdminProfile() {
 
           {/* Personal Information Section */}
           <Box component="form" sx={{ display: 'grid', gap: 3, width: '100%' }}>
-            <TextField label="Name" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="Vorname" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="Personalnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="E-Mail" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
-            <TextField label="Telefonnummer" variant="outlined" fullWidth sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#fff' } }} />
+            <TextField label="Name" variant="outlined" fullWidth />
+            <TextField label="Vorname" variant="outlined" fullWidth  />
+            <TextField label="Personalnummer" variant="outlined" fullWidth  />
+            <TextField label="E-Mail" variant="outlined" fullWidth  />
+            <TextField label="Telefonnummer" variant="outlined" fullWidth  />
           </Box>
 
           {/* Save Button */}
