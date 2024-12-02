@@ -68,12 +68,12 @@ export default function AdminAnnouncements() {
         <StyledTableContainer component={Paper} sx={{ flex: 1, overflowY: 'auto', borderRadius: 2, backgroundColor: '#fff' }}>
           <StyledTable>
             <StyledTableHead>
-              <StyledTableRow sx={{ backgroundColor: '#444' }}>
-                <StyledTableCell sx={{ color: '#fff' }}>Titel</StyledTableCell>
-                <StyledTableCell sx={{ color: '#fff' }}>Methode</StyledTableCell>
-                <StyledTableCell sx={{ color: '#fff' }}>Start Datum</StyledTableCell>
-                <StyledTableCell sx={{ color: '#fff' }}>End Datum</StyledTableCell>
-                <StyledTableCell sx={{ color: '#fff' }}>Status</StyledTableCell>
+              <StyledTableRow>
+              <StyledTableHeadCell>Titel</StyledTableHeadCell>
+                <StyledTableHeadCell>Methode</StyledTableHeadCell>
+                <StyledTableHeadCell>Start Datum</StyledTableHeadCell>
+                <StyledTableHeadCell>End Datum</StyledTableHeadCell>
+                <StyledTableHeadCell>Status</StyledTableHeadCell>
               </StyledTableRow>
             </StyledTableHead>
             <StyledTableBody>

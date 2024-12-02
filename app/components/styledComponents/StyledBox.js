@@ -4,7 +4,14 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
-// Styled-Komponente für die Box
+/**
+ * **StyledBox**
+ * Eine angepasste Version der MUI Box-Komponente.
+ * - Fügt der Box einen stilisierten Hintergrund, abgerundete Ecken, Schatten und Übergänge hinzu.
+ * - Der Hover-Effekt verstärkt den Schatten für visuelle Interaktivität.
+ * - Responsivität wurde hinzugefügt, um die Padding-Größe basierend auf der Bildschirmgröße zu ändern.
+ * 
+ */
 export const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2), // Standard Padding (16px)
   backgroundColor: theme.palette.background.paper, // Hintergrundfarbe der Box
@@ -28,7 +35,14 @@ export const StyledBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-// Komponente für die StyledBox
+/**
+ * **CustomStyledBox**
+ * Eine benutzerdefinierte Box-Komponente, die die StyledBox umschließt.
+ * - Erlaubt die Einfügung von beliebigen Kindern (children) in die Box.
+ *
+ * @param {object} children - Die Kinder, die innerhalb der Box angezeigt werden.
+ * @returns {JSX.Element} - Eine Box-Komponente mit den angepassten Stilen.
+ */
 const CustomStyledBox = ({ children }) => {
   return <StyledBox>{children}</StyledBox>;
 };
