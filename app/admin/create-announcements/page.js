@@ -1,11 +1,12 @@
 import {
-  Box, Typography, TextField, FormControlLabel,
+   Typography, TextField, FormControlLabel,
   Checkbox, Paper, Button
 
 } from "@mui/material";
 import StyledPaper from "../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+import {StyledBox} from "../../components/styledComponents/StyledBox";
 
 function AnnouncementCreationFrom() {
   return(
@@ -39,14 +40,14 @@ function AnnouncementCreationFrom() {
           <FormControlLabel control={<Checkbox />} label="E-Mail" />
 
           {/* Buttons */}
-          <Box display="flex" justifyContent="end" mt={2} gap={2}>
+          <StyledBox display="flex" justifyContent="end" mt={2} gap={2}>
             <RedButton href="/admin/announcements">
               Abbrechen
             </RedButton>
             <GreenButton href="/admin/announcements">
               Speichern
             </GreenButton>
-          </Box>
+          </StyledBox>
         </StyledPaper>
   );
 }
