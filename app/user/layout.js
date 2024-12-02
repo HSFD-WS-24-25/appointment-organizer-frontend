@@ -1,5 +1,5 @@
 import "../globals.css";
-import SidebarUser from "../components/SidebarUser";
+import Sidebar from "../components/Sidebar";
 import { Box } from "@mui/material";
 
 export const metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
           flexGrow: 0,   // Sidebar soll ihre Breite basierend auf dem Inhalt anpassen
         }}
       >
-        <SidebarUser />
+        <Sidebar role="user" />
       </Box>
       <Box
         sx={{
