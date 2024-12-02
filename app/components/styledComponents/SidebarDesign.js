@@ -119,14 +119,6 @@ function SidebarDesign({
               />
             ))}
           </List>
-          <List>
-            {bottomMenuItems.map((item, index) => (
-              <SidebarItemMobile
-                key={index}
-                item={{ ...item, icon: icons[item.icon] }}
-              />
-            ))}
-          </List>
         </Drawer>
       </Box>
     </Box>

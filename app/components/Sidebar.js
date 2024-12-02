@@ -22,37 +22,30 @@ function Sidebar({ role }) {
     setDrawerOpen(!drawerOpen);
   };
 
-  // Admin-spezifische Menüeinträge
-  const adminMenuItems = [
-    { icon: "Dashboard", text: "Dashboard", action: () => router.push("") },
-    { icon: "Group", text: "Benutzerverwaltung", action: () => router.push("/admin/users") },
-    { icon: "Event", text: "Terminmanagement", action: () => router.push("/admin/termin") },
-    { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push("/admin/notification") },
-    { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push("/admin/announcements") },
-  ];
-
-  // User-spezifische Menüeinträge
-  const userMenuItems = [
-    { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push("/user/createEvent") },
-    { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push("/user/myevent") },
-    { icon: "Event", text: "Meine Teilnahmen", action: () => {} },
-    { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push("/user/meinEntwurf") },
-  ];
-
-
-  // Gemeinsame Menüeinträge
-  const bottomMenuItems = [
-    { icon: "AccountCircle", text: "Profil", action: () => router.push(`/${role}/profile`) },
-    { icon: "Settings", text: "Einstellungen", action: () => router.push(`/${role}/settings`) },
-    { icon: "ExitToApp", text: "Logout", action: () => {} },
-  ];
-
-  // Wähle die entsprechenden Menüeinträge basierend auf der Rolle
   let mainMenuItems = [];
-  if (role === "admin") {
-    mainMenuItems = adminMenuItems;
-  } else if (role === "user") {
-    mainMenuItems = userMenuItems;
+
+  switch (role) {
+    case "admin":
+      mainMenuItems = [
+        { icon: "Dashboard", text: "Dashboard", action: () => router.push("") },
+        { icon: "Group", text: "Benutzerverwaltung", action: () => router.push("/admin/users") },
+        { icon: "Event", text: "Terminmanagement", action: () => router.push("/admin/termin") },
+        { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push("/admin/notification") },
+        { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push("/admin/announcements") },
+      ];
+      break;
+
+    case "user":
+      mainMenuItems = [
+        { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push("/user/createEvent") },
+        { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push("/user/myevent") },
+        { icon: "Event", text: "Meine Teilnahmen", action: () => {} },
+        { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push("/user/meinEntwurf") },
+      ];
+      break;
+
+    default:
+      mainMenuItems = []; // Optional: Menüeinträge für unbekannte Rollen oder keine Rolle
   }
 
   return (
@@ -63,7 +56,6 @@ function Sidebar({ role }) {
       drawerOpen={drawerOpen}
       toggleDrawer={toggleDrawer}
       mainMenuItems={mainMenuItems}
-      bottomMenuItems={bottomMenuItems}
       role={role}
     />
   );
