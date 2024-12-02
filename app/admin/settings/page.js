@@ -1,15 +1,30 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, FormControl, InputLabel, MenuItem, Select, Stack, Switch, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import StyledPaper from "../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
-import { Description } from '@mui/icons-material';
+import { GreenButton, RedButton } from "../../components/styledComponents/StyledButton";
 import DesignTitel from "../../components/styledComponents/DesignTitel";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import { lightTheme, darkTheme } from "../../components/styledComponents/theme";
 
 function UserSettings() {
   const router = useRouter();
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Lade gespeichertes Theme aus localStorage
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  useEffect(() => {
+    // Speichere Theme in localStorage
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  const handleThemeToggle = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   const handleSaveChangesClick = () => {
     alert("Änderungen erfolgreich gespeichert.");
@@ -30,22 +45,27 @@ function UserSettings() {
   };
 
   return (
-    <StyledPaper >
-      <Box>
-        <DesignTitel> Einstellungen </DesignTitel>
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <CssBaseline />
+      <StyledPaper>
+        <Box>
+          <DesignTitel>
+            Einstellungen
+          </DesignTitel>
 
-        <Paper
-          elevation={4}
-          sx={{
-            width: '100%',
-            padding: 3,
-            borderRadius: 3,
-            backgroundColor: '#fff',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 3,
-          }}
-        >
+          {/* Darkmode-Schalter */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 2,
+            }}
+          >
+            <Typography variant="body1">Dark Mode</Typography>
+            <Switch checked={isDarkMode} onChange={handleThemeToggle} />
+          </Box>
+
           <FormControl fullWidth>
             <InputLabel id="language-label">Sprache</InputLabel>
             <Select
@@ -82,9 +102,9 @@ function UserSettings() {
               Änderungen speichern
             </GreenButton>
           </Stack>
-        </Paper>
-      </Box>
-    </StyledPaper>
+        </Box>
+      </StyledPaper>
+    </ThemeProvider>
   );
 }
 

@@ -110,7 +110,7 @@ function MeinEntwurf() {
 
         {/* Content */}
         {view === "list" ? (
-          <Box sx={{ backgroundColor: "#fff", borderRadius: "8px", padding: 2 }}>
+          <Box sx={{borderRadius: "8px", padding: 2 }}>
             {events.map((event) => (
               <Box
                 key={event.id}

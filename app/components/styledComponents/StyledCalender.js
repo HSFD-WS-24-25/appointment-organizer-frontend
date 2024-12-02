@@ -51,7 +51,6 @@ export const CustomToolbar = (props) => {
               border: "1px solid black", // Umrandung
               padding: "5px 10px", // Innenabstand
               borderRadius: "4px", // Abgerundete Ecken
-              backgroundColor: "white", // Hintergrundfarbe
               cursor: "pointer", // Zeiger ändern
             }}
           >
@@ -64,7 +63,6 @@ export const CustomToolbar = (props) => {
               border: "1px solid black",
               padding: "5px 10px",
               borderRadius: "4px",
-              backgroundColor: "white",
               cursor: "pointer",
             }}
           >
@@ -76,7 +74,6 @@ export const CustomToolbar = (props) => {
               border: "1px solid black",
               padding: "5px 10px",
               borderRadius: "4px",
-              backgroundColor: "white",
               cursor: "pointer",
             }}
           >
