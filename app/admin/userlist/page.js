@@ -2,18 +2,19 @@
 
 import React, { useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Paper,
   Box,
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { StyledPaper } from "../../components/styledComponents/StyledPaper";
+import { StyledTextField } from "../../components/styledComponents/StyledTextField";
+import {StyledTableContainer, 
+  StyledTable, 
+  StyledTableRow,
+  StyledTableHeadCell,
+  StyledTableBody,
+  StyledTableCell, 
+  StyledTableHead } from "../../components/styledComponents/StyledTable";
 
 // Beispiel-Daten, später dann mit echten Nutzern über Backend
 const users = [
@@ -81,7 +82,7 @@ export default function UserTable() {
           mb: 2,
         }}
       >
-        <TextField
+        <StyledTextField
           fullWidth
           label="Search"
           variant="outlined"
@@ -92,8 +93,8 @@ export default function UserTable() {
       </Box>
 
       {/* Tabelle oder Kartenansicht */}
-      <TableContainer
-        component={Paper}
+      <StyledTableContainer
+        component={StyledPaper}
         sx={{
           width: "100%",
           maxWidth: "800px",
@@ -127,28 +128,28 @@ export default function UserTable() {
             </Box>
           ))
         ) : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Benutzer</TableCell>
-                <TableCell>Kontaktdaten</TableCell>
-                <TableCell>Veranstalter</TableCell>
-                <TableCell>Zuletzt aktiv</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+          <StyledTable>
+            <StyledTableHead>
+              <StyledTableRow>
+                <StyledTableCell>Benutzer</StyledTableCell>
+                <StyledTableCell>Kontaktdaten</StyledTableCell>
+                <StyledTableCell>Veranstalter</StyledTableCell>
+                <StyledTableCell>Zuletzt aktiv</StyledTableCell>
+              </StyledTableRow>
+            </StyledTableHead>
+            <StyledTableBody>
               {filteredUsers.map((user, index) => (
-                <TableRow key={index} sx={{ backgroundColor: "#d1edda" }}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.contact}</TableCell>
-                  <TableCell>{user.assignment}</TableCell>
-                  <TableCell>{user.lastActive}</TableCell>
-                </TableRow>
+                <StyledTableRow key={index} sx={{ backgroundColor: "#d1edda" }}>
+                  <StyledTableCell>{user.name}</StyledTableCell>
+                  <StyledTableCell>{user.contact}</StyledTableCell>
+                  <StyledTableCell>{user.assignment}</StyledTableCell>
+                  <StyledTableCell>{user.lastActive}</StyledTableCell>
+                </StyledTableRow>
               ))}
-            </TableBody>
-          </Table>
+            </StyledTableBody>
+          </StyledTable>
         )}
-      </TableContainer>
+      </StyledTableContainer>
     </Box>
   );
 }
