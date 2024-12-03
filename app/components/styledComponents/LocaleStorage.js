@@ -1,17 +1,23 @@
 const LocalStorage = {
   get: (key) => {
     try {
-      return localStorage.getItem(key);
+      if (typeof window !== "undefined" && localStorage) {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : null;
+      }
     } catch (error) {
-      console.error('Error getting item from localStorage', error);
+      console.error("Error getting item from localStorage", error);
       return null;
     }
   },
   set: (key, value) => {
     try {
-      localStorage.setItem(key, value);
+      if (typeof window !== "undefined" && localStorage) {
+        const valueToStore = typeof value === "string" ? value : JSON.stringify(value);
+        localStorage.setItem(key, valueToStore);
+      }
     } catch (error) {
-      console.error('Error setting item in localStorage', error);
+      console.error("Error setting item in localStorage", error);
     }
   },
 };

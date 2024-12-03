@@ -1,7 +1,7 @@
+"use client"
 import {
    Typography, TextField, FormControlLabel,
   Checkbox, Paper, Button
-
 } from "@mui/material";
 import StyledPaper from "../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";

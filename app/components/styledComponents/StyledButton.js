@@ -1,3 +1,4 @@
+"use client"
 import { styled } from '@mui/material/styles';
 import { Button, Switch,FormControlLabel } from '@mui/material';
 import { useDarkMode } from './DarkMode'
