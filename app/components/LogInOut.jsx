@@ -2,31 +2,40 @@
 
 import React from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { Box, Link } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Typography } from '@mui/material';
 import Footer from '../components/Footer';
-import { BlueButton, RedButton, GreenButton } from '../components/styledComponents/StyledButton'; 
+import { BlueButton, RedButton, GreenButton } from '../components/styledComponents/StyledButton';
 
 const LogInOut = () => {
   const { user, isLoading } = useUser();
 
-  // Bilder befinden sich unter public/images
-  // Testbild namens image1.jpg
-  const images = [
+  const carousel1 = [
     {
-      src: '/images/image1.jpg',
-      caption: 'Feature 1',
+      src: '/images/Veranstaltungserstellung.png',
     },
     {
-      src: '/images/image1.jpg',
-      caption: 'Feature 2',
+      src: '/images/Veranstaltungserstellung2.png',
+    },
+  ];
+
+  const carousel2 = [
+    {
+      src: '/images/Veranstaltungsinformationen.png',
     },
     {
-      src: '/images/image1.jpg',
-      caption: 'Feature 3',
+      src: '/images/Einladungsliste.png',
+    },
+  ];
+
+  const carousel3 = [
+    {
+      src: '/images/MeineVeranstaltungen.png',
+    },
+    {
+      src: '/images/MeineVeranstaltungen2.png',
     },
   ];
 
@@ -47,7 +56,7 @@ const LogInOut = () => {
         position: 'relative',
         minHeight: '100vh',
         backgroundColor: '#f5f5f5',
-        padding: '2rem',
+        paddingTop: '2rem',
       }}
     >
       <Box
@@ -71,7 +80,7 @@ const LogInOut = () => {
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
-                gap: '1rem', 
+                gap: '1rem',
               }}
             >
               <Link href="/user">
@@ -84,8 +93,8 @@ const LogInOut = () => {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'center', 
-                marginTop: '1rem', 
+                justifyContent: 'center',
+                marginTop: '1rem',
               }}
             >
               <Link href="/api/auth/logout">
@@ -95,20 +104,36 @@ const LogInOut = () => {
           </Box>
         )}
       </Box>
+
+      {/* Erster Abschnitt */}
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: 'calc(100vh - 150px)',
+          padding: '1rem',
+          flexDirection: 'column',
         }}
       >
-        
-        <Box // Image-Karussell
+        <Typography
           sx={{
-            width: '90%',
+            fontWeight: 'bold',
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+            paddingBottom: '1rem',
+            textAlign: 'center',
+          }}
+        >
+          Veranstaltungen planen und erstellen!
+        </Typography>
+        <Box sx={{ paddingBottom: '1rem' }}>
+          Erstelle innerhalb von wenigen Sekunden deine eigene Veranstaltung und veröffentliche sie
+        </Box>
+        <Box
+          sx={{
+            width: '100%',
             maxWidth: '800px',
-            height: '60vh',
+            height: { xs: '50vh', sm: '60vh' },
             maxHeight: '500px',
             backgroundColor: '#fff',
             borderRadius: '10px',
@@ -118,7 +143,7 @@ const LogInOut = () => {
           }}
         >
           <Slider {...settings}>
-            {images.map((image, index) => (
+            {carousel1.map((image, index) => (
               <Box
                 key={index}
                 sx={{
@@ -134,27 +159,143 @@ const LogInOut = () => {
                   alt={image.caption}
                   style={{
                     width: '100%',
-                    height: 'calc(100% - 50px)',
+                    height: '100%',
                     objectFit: 'cover',
                     borderRadius: '0',
                     marginBottom: '0.5rem',
-                    outline: 'none',
-                    userSelect: 'none',
-                    WebkitUserDrag: 'none',
                   }}
                 />
-                <Typography variant="body1" sx={{ color: '#333' }}>
-                  {image.caption}
-                </Typography>
               </Box>
             ))}
           </Slider>
         </Box>
       </Box>
+
+      {/* Zweiter Abschnitt */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          minHeight: 'calc(100vh - 150px)',
+          flexDirection: { xs: 'column', sm: 'row' },
+          padding: '1rem',
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            paddingRight: { xs: 0, sm: '2rem' },
+            textAlign: { xs: 'center', sm: 'left' },
+          }}
+        >
+          <Typography
+            sx={{
+              fontWeight: 'bold',
+              fontSize: { xs: '1.5rem', sm: '2rem' },
+              paddingBottom: '1rem',
+            }}
+          >
+            Alle wichtigen Informationen und Teilnehmer an einem Ort!
+          </Typography>
+          <Box sx={{ paddingBottom: '1rem' }}>
+            Verliere niemals den Überblick einer Veranstaltung und rufe alle wichtigen Informationen auf.
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '800px',
+            height: { xs: '50vh', sm: '60vh' },
+            maxHeight: '500px',
+            backgroundColor: '#fff',
+            borderRadius: '10px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+            overflow: 'hidden',
+          }}
+        >
+          <Slider {...settings}>
+            {carousel2.map((image, index) => (
+              <Box key={index}>
+                <img
+                  src={image.src}
+                  alt={image.caption}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              </Box>
+            ))}
+          </Slider>
+        </Box>
+      </Box>
+
+      {/* Dritter Abschnitt */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          minHeight: 'calc(100vh - 150px)',
+          flexDirection: { xs: 'column', sm: 'row-reverse' },
+          padding: '1rem',
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            paddingLeft: { xs: 0, sm: '2rem' },
+            textAlign: { xs: 'center', sm: 'left' },
+          }}
+        >
+          <Typography
+            sx={{
+              fontWeight: 'bold',
+              fontSize: { xs: '1.5rem', sm: '2rem' },
+              paddingBottom: '1rem',
+            }}
+          >
+            Verwalte Deine Veranstaltungen mit Leichtigkeit!
+          </Typography>
+          <Box sx={{ paddingBottom: '1rem' }}>
+            Plane, bearbeite und organisiere all deine Events an einem einzigen Ort – effizient und einfach.
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '800px',
+            height: { xs: '50vh', sm: '60vh' },
+            maxHeight: '500px',
+            backgroundColor: '#fff',
+            borderRadius: '10px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+            overflow: 'hidden',
+          }}
+        >
+          <Slider {...settings}>
+            {carousel3.map((image, index) => (
+              <Box key={index}>
+                <img
+                  src={image.src}
+                  alt={image.caption}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              </Box>
+            ))}
+          </Slider>
+        </Box>
+      </Box>
+
       <Footer />
     </Box>
   );
 };
 
 export default LogInOut;
-
