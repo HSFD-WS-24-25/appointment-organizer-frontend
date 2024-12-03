@@ -4,7 +4,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import {Box} from "@mui/material";
 import { ChatProvider } from "./components/ChatContext";
-import { DarkModeProvider, useDarkMode } from "./components/styledComponents/DarkMode"
+import { DarkModeProvider } from "./components/styledComponents/DarkMode"
 
 
 export const metadata = {
