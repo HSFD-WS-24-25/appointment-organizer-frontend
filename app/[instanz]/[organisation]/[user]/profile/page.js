@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography, Paper } from '@mui/material';
-import StyledPaper from "../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../components/styledComponents/StyledButton";
-import DesignTitel from "../../components/styledComponents/DesignTitel";
+import StyledPaper from "../../../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
+import DesignTitel from "../../../../components/styledComponents/DesignTitel";
 
 function UserProfile() {
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
