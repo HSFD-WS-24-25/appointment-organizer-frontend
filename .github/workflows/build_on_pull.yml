@@ -2,6 +2,7 @@ name: build_on_pull.yml
 on:
   pull_request:
     branches:
+      - main
       - development
 jobs:
   build:
