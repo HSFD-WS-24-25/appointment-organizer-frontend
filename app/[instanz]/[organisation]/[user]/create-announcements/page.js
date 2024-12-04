@@ -7,8 +7,32 @@ import StyledPaper from "../../../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
 import DesignTitel from "../../../../components/styledComponents/DesignTitel";
 import {StyledBox} from "../../../../components/styledComponents/StyledBox";
+import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
+import React, {useEffect,useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 function AnnouncementCreationFrom() {
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+  const router = useRouter();
+
+   // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+   useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
+  const handleSaveClick = () => {
+    router.push(`${basePath}/announcements`);
+  };
+
+  const handleCancelClick = () => {
+    router.push(`${basePath}/announcements`);
+  };
+
+
   return(
       <StyledPaper>
           <DesignTitel>
@@ -41,10 +65,10 @@ function AnnouncementCreationFrom() {
 
           {/* Buttons */}
           <StyledBox display="flex" justifyContent="end" mt={2} gap={2}>
-            <RedButton href="/admin/announcements">
+            <RedButton onClick={handleCancelClick}>
               Abbrechen
             </RedButton>
-            <GreenButton href="/admin/announcements">
+            <GreenButton onClick={handleSaveClick}>
               Speichern
             </GreenButton>
           </StyledBox>
