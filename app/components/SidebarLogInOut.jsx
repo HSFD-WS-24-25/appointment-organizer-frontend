@@ -66,12 +66,6 @@ export function SidebarLogInOut({ expanded }) {
                             </ListItemAvatar>
                             {expanded && <ListItemText primary={user.name} />}
                         </ListItemButton>
-                        <ListItemButton onClick={handleSettingClick}>
-                            <ListItemIcon>
-                                <SettingsIcon style={{ color: "#ccc" }} />
-                            </ListItemIcon>
-                            {expanded && <ListItemText primary="Einstellungen" />}
-                        </ListItemButton>
                         <ListItemButton onClick={handleLogoutClick}>
                             <ListItemIcon>
                                 <ExitToAppIcon style={{ color: "#ccc" }} />
