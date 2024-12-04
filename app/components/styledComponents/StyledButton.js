@@ -1,6 +1,7 @@
 "use client"
 import { styled } from '@mui/material/styles';
-import { Button } from '@mui/material';
+import { Button, Switch,FormControlLabel } from '@mui/material';
+import { useDarkMode } from './DarkMode'
 
 // Blauer Button
 export const BlueButton = styled(Button)(({ theme }) => ({
@@ -139,3 +140,20 @@ export const GreenButton = styled(Button)(({ theme }) => ({
       fontSize: '0.8rem', // Noch kleinere Schriftgröße
     },
   }));
+
+  export const ToggleButton = () => {
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
+  
+    return (
+      <FormControlLabel
+        control={
+          <Switch
+            checked={isDarkMode}
+            onChange={toggleDarkMode}
+            color="primary"
+          />
+        }
+        label={isDarkMode ? 'Dark Mode' : 'Light Mode'}
+      />
+    );
+  };

@@ -4,7 +4,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import {Box} from "@mui/material";
 import { ChatProvider } from "./components/ChatContext";
-
+import { DarkModeProvider } from "./components/styledComponents/DarkMode"
+import {UserProviderr} from "./context/UserContext"
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -14,13 +15,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <DarkModeProvider>
       <body>
-        <UserProvider>
+      <UserProvider>
+        <UserProviderr>
           <ChatProvider>
             {children}
           </ChatProvider>
+        </UserProviderr>
         </UserProvider>
       </body>
+      </DarkModeProvider>
     </html>
   );
 }

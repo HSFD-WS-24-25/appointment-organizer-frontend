@@ -82,6 +82,19 @@ function SidebarDesign({
           ))}
         </List>
 
+        {/* Bottom-Menü */}
+  <Box sx={{ marginTop: "auto" }}>
+    <List>
+      {bottomMenuItems.map((item, index) => (
+        <SidebarItem
+          key={index}
+          item={{ ...item, icon: icons[item.icon] }}
+          expanded={isExpanded}
+        />
+      ))}
+    </List>
+  </Box>
+
         {/* Gemeinsames Menü */}
         <SidebarLogInOut expanded={isExpanded} />
       </Box>
@@ -121,6 +134,7 @@ function SidebarDesign({
           </List>
         </Drawer>
       </Box>
+
     </Box>
   );
 }

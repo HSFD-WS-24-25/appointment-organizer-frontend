@@ -1,0 +1,31 @@
+{
+  "instanz": "Eventmanager",
+  "organisation": [
+    {
+      "name": "Buchhaltung",
+      "users": [
+        {
+          "id": 1,
+          "username": "admin",
+          "password": "1234",
+          "email": "admin@beispiel.com",
+          "name": "Admin Benutzer",
+          "role": "organisation-admin",
+          "organisation": "Buchhaltung"
+        },
+        {
+          "id": 1733319634984,
+          "username": "orgi",
+          "password": "1234",
+          "email": "asdas",
+          "name": "asdas",
+          "role": "organisator"
+        }
+      ]
+    },
+    {
+      "name": "HS FULDA",
+      "users": []
+    }
+  ]
+}
