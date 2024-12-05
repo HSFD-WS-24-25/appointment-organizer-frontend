@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -20,12 +20,23 @@ import StyledPaper from "../../../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
 import DesignTitel from "../../../../components/styledComponents/DesignTitel";
 import { useRouter } from 'next/navigation';
+import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
 
 function UserDashboard() {
   const [searchText, setSearchText] = useState('');
   const [filteredGuests, setFilteredGuests] = useState(["Max Mustermann", "Alice Müller", "Tom Gast", "Julia Schmidt", "Peter Neumann", "Franz Gast"]);
   const router = useRouter();
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
   
+  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+  useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
   // Handle search filter action
   const handleSearch = () => {
     // Filtering based on the search text and matching guests' names
@@ -45,7 +56,7 @@ function UserDashboard() {
   };
 
   const handleBackToEventClick = () => {
-    router.push('/user/createEvent');
+    router.push(`${basePath}/createEvent`);
   };
 
   return (
