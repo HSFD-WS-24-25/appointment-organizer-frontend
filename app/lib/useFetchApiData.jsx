@@ -3,10 +3,11 @@ import {useEffect, useState} from "react";
 export function useFetchApiData(user, path, method) {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
+    let backend_url
     if (process.env.NEXT_PUBLIC_BACKEND_URL === '') {
-        const backend_url = "https://eventplanner.azurewebsites.net/"
+        backend_url = "https://eventplanner-backend.azurewebsites.net/"
     } else {
-        const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL
+        backend_url = process.env.NEXT_PUBLIC_BACKEND_URL
     }
     useEffect(() => {
         const fetchProtectedData = async () => {
