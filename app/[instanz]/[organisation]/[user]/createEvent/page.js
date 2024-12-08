@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, TextField, Checkbox, FormControlLabel, InputAdornment, Grid, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import StyledPaper from "../../../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
 import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
 
 function UserDashboard() {
   const [checkedOnline, setCheckedOnline] = useState(false);
@@ -17,13 +18,24 @@ function UserDashboard() {
   const [publish, setPublish] = useState(false);
   const [saveDraft, setSaveDraft] = useState(false);
   const router = useRouter();
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+
+  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+  useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
   
   const getInvitesList = () => {
-    router.push('/user/invites');
+    router.push(`${basePath}/invites`);
   };
 
   const handleCancelClick = () => {
-    router.push('/user/myevent');
+    router.push(`${basePath}/myevent`);
   };
 
   // Open the dialog
@@ -42,7 +54,7 @@ function UserDashboard() {
     if (preview && publish) {
       // Redirect to another page (e.g., preview or publish page)
       console.log('Proceeding to the next page...');
-      router.push('/user/preview'); // Replace '/next-page' with the actual page you want to navigate to
+      router.push(`${basePath}/preview`); // Replace '/next-page' with the actual page you want to navigate to
     } else {
       // If the conditions are not met, show an alert or message
       alert('Bitte wählen Sie sowohl "Vorschau" als auch "Veröffentlichen" aus.');
