@@ -18,7 +18,7 @@ function UserDashboard() {
   const [publish, setPublish] = useState(false);
   const [saveDraft, setSaveDraft] = useState(false);
   const router = useRouter();
-  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink 
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
 
   // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
