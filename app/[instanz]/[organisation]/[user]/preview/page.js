@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect} from "react";
+import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
 import {
   Box,
   Typography,
@@ -23,8 +24,27 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import StyledPaper from "../../../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
 import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import { useRouter } from 'next/navigation';
 
 function EventDetails() {
+
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink 
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+
+  useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
+
+  const router = useRouter();
+  
+  const handleEditEvent = () => {
+    router.push(`${basePath}/editEvent`);
+  };
     return (
       <StyledPaper>
   
@@ -111,7 +131,7 @@ function EventDetails() {
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <GreenButton>
+                  <GreenButton onClick={handleEditEvent}>
                     Bearbeiten
                   </GreenButton>
                 </CardActions>

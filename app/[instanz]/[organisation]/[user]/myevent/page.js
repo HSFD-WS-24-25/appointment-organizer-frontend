@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Box,
   Button,
@@ -23,9 +23,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/navigation';
+import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
 import StyledPaper from "../../../../components/styledComponents/StyledPaper";
 import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
 import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+
+
+
+
 
 
 function EventCard({ count, view }) {
@@ -103,8 +108,19 @@ function EventCard({ count, view }) {
 }
 
 function UserDashboard() {
-  const [view, setView] = useState('grid');
   const router = useRouter();
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink 
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+
+  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+  useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+    const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+    setBasePath(path);
+  }
+  }, [userInfo]);
+
+  const [view, setView] = useState('grid');
 
   const handleViewChange = (event, nextView) => {
     if (nextView !== null) {
@@ -113,7 +129,7 @@ function UserDashboard() {
   };
 
   const handleCreateEvent = () => {
-    router.push('/user/createEvent'); // Navigate to /user/createEvent
+    router.push(`${basePath}/createEvent`); // Navigate to /user/createEvent
   };
 
   const eventCounts = [60, 20, 30, 10, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
