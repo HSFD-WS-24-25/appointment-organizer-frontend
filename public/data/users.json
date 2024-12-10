@@ -29,16 +29,7 @@
     },
     {
       "name": "fulda.de",
-      "users": [
-        {
-          "id": 1733689030226,
-          "username": "johndoe",
-          "password": "1234",
-          "email": "tictacom.com",
-          "name": "name",
-          "role": "teilnehmer"
-        }
-      ]
+      "users": []
     }
   ]
 }
