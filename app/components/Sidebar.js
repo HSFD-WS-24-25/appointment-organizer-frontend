@@ -8,6 +8,7 @@ import { useUserContext } from "../context/UserContext"; // Benutzerkontext
 function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
+  const [isPinned, setIsPinned] = useState(false); // Zustand für das Anheften der Sidebar
   const router = useRouter();
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
   const [role, setRole] = useState("");
@@ -31,6 +32,7 @@ function Sidebar() {
   ];
 
   let dashboard = { icon: "Dashboard", text: "Dashboard", action: () => router.push(basePath) }
+
   switch (role) {
     case "organisation-admin":
       mainMenuItems = [
@@ -72,12 +74,20 @@ function Sidebar() {
       mainMenuItems = []; // Optional: Menüeinträge für unbekannte Rollen
   }
 
+  const togglePin = () => {
+    setIsPinned(!isPinned);
+  };
+
   const handleMouseEnter = () => {
     setIsExpanded(true);
   };
 
   const handleMouseLeave = () => {
+    if (!isPinned)
     setIsExpanded(false);
+    else {
+      setIsExpanded(true);
+    }
   };
 
   const toggleDrawer = () => {
@@ -94,6 +104,8 @@ function Sidebar() {
       mainMenuItems={mainMenuItems}
       bottomMenuItems={bottomMenuItems} // Übergabe des Bottom-Menüs
       role={role}
+      isPinned={isPinned}
+      togglePin={togglePin}
     />
   );
 }
