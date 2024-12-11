@@ -77,14 +77,14 @@ function SidebarDesign({
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: isExpanded? 'flex-end' : 'center',
             alignItems: 'center',
-            padding: 1,
+            padding: 0.2,
             borderBottom: '1px solid #444',
           }}
         >
           <IconButton onClick={togglePin}>
-            <PushPinIcon style={{ color: isPinned ? '#fff' : '#ccc' }} />
+            <PushPinIcon style={{ color: isPinned ? 'orange' : '#ccc', fontSize: '18px' }} />
           </IconButton>
         </Box>
 
