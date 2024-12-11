@@ -91,13 +91,7 @@ function EventDetails() {
                 onChange={handleInputChange}
                 label="Event Name"
               />
-              <IconButton>
-                <FavoriteBorderIcon color="error" />
-              </IconButton>
             </Box>
-            <GreenButton>
-              Teilnehmen
-            </GreenButton>
           </CardContent>
           <CardContent>
             <TextField
@@ -184,12 +178,24 @@ function EventDetails() {
                   <InstagramIcon />
                 </Box>
                 <Typography variant="h6" gutterBottom>
-                  Bewertung:
+                  Facebook Link:
                 </Typography>
-                <Rating
-                  name="rating"
-                  value={eventData.rating}
-                  onChange={(event, newValue) => handleRatingChange(newValue)}
+                <TextField
+                  name="website"
+                  value={eventData.website}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  fullWidth
+                />
+                <Typography variant="h6" gutterBottom>
+                  Instagram Link:
+                </Typography>
+                <TextField
+                  name="website"
+                  value={eventData.website}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  fullWidth
                 />
               </CardContent>
             </Card>
