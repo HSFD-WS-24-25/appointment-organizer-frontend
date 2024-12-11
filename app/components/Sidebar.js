@@ -20,7 +20,7 @@ function Sidebar() {
   }, [userInfo]);
 
   if (!userInfo) {
-    return null; // Zeige nichts, wenn der Benutzer nicht eingeloggt ist
+    return <div>Benutzerinformationen werden geladen...</div>;
   }
 
   const basePath = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
