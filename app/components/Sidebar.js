@@ -20,7 +20,7 @@ function Sidebar() {
   }, [userInfo]);
 
   if (!userInfo) {
-    return <div>Benutzerinformationen werden geladen...</div>;
+    return;
   }
 
   const basePath = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;

@@ -18,7 +18,8 @@
           "password": "user",
           "email": "asdasdas",
           "name": "User",
-          "role": "teilnehmer"
+          "role": "teilnehmer",
+          "organisation": "Angewandte Informatik"
         }
       ]
     }
