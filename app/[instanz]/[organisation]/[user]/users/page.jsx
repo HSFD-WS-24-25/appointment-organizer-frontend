@@ -6,7 +6,7 @@ import {useFetchApiData} from "../../../../lib/useFetchApiData";
 
 function App() {
     const { user, error: authError, isLoading } = useUser();
-    const path = "api/users";
+    const path = "/api/users";
     const method = 'GET';
     const {data: users, error: fetchError} = useFetchApiData(user, path, method);
 
