@@ -26,7 +26,7 @@ export function useFetchApiData(user, path, method) {
 
                 // Use the token to access the protected backend route
 
-                const response = await fetch(`${backend_url}${path}`, {
+                const response = await fetch(`${backend_url}/${path}`, {
                     method, // Directly use the method string
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
