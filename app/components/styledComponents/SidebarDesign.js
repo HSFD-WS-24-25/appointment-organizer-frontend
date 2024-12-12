@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   List,
@@ -10,6 +10,8 @@ import {
   ListItemText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import PushPinIcon from "@mui/icons-material/PushPin";
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
 import {
   Dashboard,
   Group,
@@ -25,6 +27,18 @@ import { SidebarItem, SidebarItemMobile } from "../SidebarItem";
 import { SidebarLogInOut } from "../SidebarLogInOut";
 import PropTypes from "prop-types";
 
+const icons = {
+  Dashboard: <Dashboard style={{ color: "#ccc" }} />,
+  Group: <Group style={{ color: "#ccc" }} />,
+  Event: <Event style={{ color: "#ccc" }} />,
+  AccountCircle: <AccountCircle style={{ color: "#ccc" }} />,
+  Settings: <Settings style={{ color: "#ccc" }} />,
+  ExitToApp: <ExitToApp style={{ color: "#ccc" }} />,
+  Notifications: <Notifications style={{ color: "#ccc" }} />,
+  Bookmark: <Bookmark style={{ color: "#ccc" }} />,
+  ReportProblem: <ReportProblem style={{ color: "#ccc" }} />,
+};
+
 function SidebarDesign({
   isExpanded,
   onEnter,
@@ -34,20 +48,9 @@ function SidebarDesign({
   mainMenuItems,
   bottomMenuItems,
   role,
+  isPinned,
+  togglePin,
 }) {
-  // Map icons based on string names
-  const icons = {
-    Dashboard: <Dashboard style={{ color: "#ccc" }} />,
-    Group: <Group style={{ color: "#ccc" }} />,
-    Event: <Event style={{ color: "#ccc" }} />,
-    AccountCircle: <AccountCircle style={{ color: "#ccc" }} />,
-    Settings: <Settings style={{ color: "#ccc" }} />,
-    ExitToApp: <ExitToApp style={{ color: "#ccc" }} />,
-    Notifications: <Notifications style={{ color: "#ccc" }} />,
-    Bookmark: <Bookmark style={{ color: "#ccc" }} />,
-    ReportProblem: <ReportProblem style={{ color: "#ccc" }} />,
-  };
-
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       {/* Desktop Sidebar */}
@@ -71,8 +74,23 @@ function SidebarDesign({
           },
         }}
       >
+        {/* Pin Icon Box */}
+        <Box
+          sx={{
+            display: 'flex',
+            marginLeft: '10px', // Verschiebe das Icon 20 Pixel vom linken Rand, wenn die Sidebar erweitert ist
+            alignItems: 'center',
+            padding: 0.2,
+            borderBottom: '1px solid #444',
+          }}
+        >
+          <IconButton onClick={togglePin}>
+            <ChromeReaderModeIcon style={{ color: isPinned ? 'orange' : '#ccc'}} />
+          </IconButton>
+        </Box>
+
         {/* Hauptmenü */}
-        <List>
+        <List sx={{ flexGrow: 1 }}>
           {mainMenuItems.map((item, index) => (
             <SidebarItem
               key={index}
@@ -81,20 +99,7 @@ function SidebarDesign({
             />
           ))}
         </List>
-
-        {/* Bottom-Menü */}
-  <Box sx={{ marginTop: "auto" }}>
-    <List>
-      {bottomMenuItems.map((item, index) => (
-        <SidebarItem
-          key={index}
-          item={{ ...item, icon: icons[item.icon] }}
-          expanded={isExpanded}
-        />
-      ))}
-    </List>
-  </Box>
-
+      
         {/* Gemeinsames Menü */}
         <SidebarLogInOut expanded={isExpanded} />
       </Box>
@@ -148,6 +153,8 @@ SidebarDesign.propTypes = {
   mainMenuItems: PropTypes.array.isRequired,
   bottomMenuItems: PropTypes.array.isRequired,
   role: PropTypes.string.isRequired,
+  isPinned: PropTypes.bool.isRequired,
+  togglePin: PropTypes.func.isRequired,
 };
 
 export default SidebarDesign;
