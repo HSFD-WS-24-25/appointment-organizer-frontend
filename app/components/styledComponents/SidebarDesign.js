@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
 import {
   Dashboard,
   Group,
@@ -77,19 +78,19 @@ function SidebarDesign({
         <Box
           sx={{
             display: 'flex',
-            justifyContent: isExpanded? 'flex-end' : 'center',
+            marginLeft: '10px', // Verschiebe das Icon 20 Pixel vom linken Rand, wenn die Sidebar erweitert ist
             alignItems: 'center',
             padding: 0.2,
             borderBottom: '1px solid #444',
           }}
         >
           <IconButton onClick={togglePin}>
-            <PushPinIcon style={{ color: isPinned ? 'orange' : '#ccc', fontSize: '18px' }} />
+            <ChromeReaderModeIcon style={{ color: isPinned ? 'orange' : '#ccc'}} />
           </IconButton>
         </Box>
 
         {/* Hauptmenü */}
-        <List>
+        <List sx={{ flexGrow: 1 }}>
           {mainMenuItems.map((item, index) => (
             <SidebarItem
               key={index}
@@ -98,20 +99,7 @@ function SidebarDesign({
             />
           ))}
         </List>
-
-        {/* Bottom-Menü */}
-  <Box sx={{ marginTop: "auto" }}>
-    <List>
-      {bottomMenuItems.map((item, index) => (
-        <SidebarItem
-          key={index}
-          item={{ ...item, icon: icons[item.icon] }}
-          expanded={isExpanded}
-        />
-      ))}
-    </List>
-  </Box>
-
+      
         {/* Gemeinsames Menü */}
         <SidebarLogInOut expanded={isExpanded} />
       </Box>
