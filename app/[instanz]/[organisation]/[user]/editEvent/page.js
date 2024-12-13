@@ -58,12 +58,14 @@ function EventDetails() {
           <Box
             sx={{
               position: 'relative',
-              height: 300,
+              width: '100%',
+              height: 300, // Festgelegte Höhe für den Platzhalter
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               backgroundImage: `url(${eventData.image})`,
-              backgroundSize: 'cover',
+              backgroundSize: 'contain', // Oder 'cover', je nach Bedarf
+              backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
             }}
           >
