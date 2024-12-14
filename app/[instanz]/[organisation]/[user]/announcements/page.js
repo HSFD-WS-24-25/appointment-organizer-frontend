@@ -5,7 +5,7 @@ import {
   Paper, TextField, Box, Stack, Autocomplete, 
 } from '@mui/material';
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import { BlueButton, RedButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import {StyledTableContainer, 
    StyledTable, 

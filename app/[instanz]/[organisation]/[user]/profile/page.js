@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar, Typography, Paper } from '@mui/material';
+import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Avatar } from '@mui/material';
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import { BlueButton, GreenButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 
 function UserProfile() {

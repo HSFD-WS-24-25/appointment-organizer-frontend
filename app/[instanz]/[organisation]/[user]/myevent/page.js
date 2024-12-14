@@ -6,7 +6,6 @@ import {
   Button,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
   Link,
   Paper,
   Badge,
@@ -24,7 +23,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/navigation';
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import { BlueButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 
 

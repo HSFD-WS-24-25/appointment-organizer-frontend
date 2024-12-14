@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, Button, Box, Stack, Typography, InputAdornment, Checkbox
+  Paper, TextField, Box, Stack, InputAdornment, Checkbox
 } from '@mui/material';
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import { BlueButton, GreenButton, RedButton } from "@/app/components/styledComponents/StyledButton";

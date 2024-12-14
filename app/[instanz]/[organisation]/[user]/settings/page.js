@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { Box, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton, ToggleButton} from "@/app/components/styledComponents/StyledButton";
+import { GreenButton, RedButton, ToggleButton} from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 
