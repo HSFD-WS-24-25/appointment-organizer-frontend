@@ -4,8 +4,6 @@ import React from "react";
 import {
   Box,
   Typography,
-  Button,
-  TextField,
   Grid,
   Card,
   CardContent,
@@ -20,9 +18,9 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { GreenButton } from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 
 function EventDetails() {
     return (
