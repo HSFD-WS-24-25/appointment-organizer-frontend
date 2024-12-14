@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {useUser} from '@auth0/nextjs-auth0/client';
-import {useFetchApiData} from "../../../../lib/useFetchApiData";
+import {useFetchApiData} from "@/app/lib/useFetchApiData";
 
 function App() {
     const { user, error: authError, isLoading } = useUser();

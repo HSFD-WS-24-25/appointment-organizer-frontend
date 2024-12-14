@@ -3,11 +3,11 @@ import {
    Typography, TextField, FormControlLabel,
   Checkbox, Paper, Button
 } from "@mui/material";
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
-import {StyledBox} from "../../../../components/styledComponents/StyledBox";
-import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import {StyledBox} from "@/app/components/styledComponents/StyledBox";
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import React, {useEffect,useState } from 'react';
 import { useRouter } from 'next/navigation';
 

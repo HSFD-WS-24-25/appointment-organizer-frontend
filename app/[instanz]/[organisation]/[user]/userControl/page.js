@@ -19,9 +19,8 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material";
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 
 const UserControl = () => {
   const [users, setUsers] = useState([]); // Benutzerliste
