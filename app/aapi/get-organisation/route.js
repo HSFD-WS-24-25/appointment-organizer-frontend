@@ -4,6 +4,7 @@ import path from "path";
 
 // Pfad zur JSON-Datei im public/data-Ordner
 const filePath = path.join(process.cwd(), "public", "data", "users.json");
+const eventsPath = path.join(process.cwd(), "public", "data", "events.json");
 
 // JSON-Daten lesen
 const loadUsersData = () => {

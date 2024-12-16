@@ -51,7 +51,7 @@ function UserDashboard() {
   // Handle "Weiter" button click
   const handleProceed = () => {
     // Validate if "Vorschau" and "Veröffentlichen" are both checked
-    if (preview && publish) {
+    if (preview) {
       // Redirect to another page (e.g., preview or publish page)
       console.log('Proceeding to the next page...');
       router.push(`${basePath}/preview`); // Replace '/next-page' with the actual page you want to navigate to
@@ -194,10 +194,6 @@ function UserDashboard() {
             <FormControlLabel
               control={<Checkbox checked={preview} onChange={(e) => setPreview(e.target.checked)} />}
               label="Vorschau"
-            />
-            <FormControlLabel
-              control={<Checkbox checked={publish} onChange={(e) => setPublish(e.target.checked)} />}
-              label="Veröffentlichen"
             />
             <FormControlLabel
               control={<Checkbox checked={saveDraft} onChange={(e) => setSaveDraft(e.target.checked)} />}
