@@ -1,6 +1,5 @@
 import "./globals.css";
 
-
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { ChatProvider } from "@/app/components/ChatContext";
 import { DarkModeProvider } from "@/app/components/styledComponents/DarkMode"
