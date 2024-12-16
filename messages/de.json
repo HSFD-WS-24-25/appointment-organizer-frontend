@@ -1,0 +1,179 @@
+{
+    "LocaleSwitcher": {
+        "label": "Sprache ändern",
+        "locale": "{locale, select, de {🇩🇪 Deutsch} en {🇺🇸 English} other {Unbekannt}}"
+    },
+    "HomePage": {
+        "button_login": "Einloggen",
+        "button_logout": "Ausloggen",
+        "button_user": "User",
+        "button_admin": "Admin",
+        "caption_image_one": "Feature 1",
+        "caption_image_two": "Feature 2",
+        "caption_image_three": "Feature 3"
+    },
+    "Footer": {
+        "link_about_us": "Über uns",
+        "link_privacy": "Datenschutz",
+        "link_contact": "Kontakt",
+        "link_imprint": "Impressum",
+        "copyright_name": "Appointment Organizer"
+    },
+    "UserSettings": {
+        "title": "Einstellungen",
+        "select_language_name": "Sprache",
+        "select_language_option_german": "Deutsch",
+        "select_language_option_english": "Englisch",
+        "select_timezone_name": "Zeitzone",
+        "select_timezone_option_cet": "CET",
+        "select_timezone_option_utc": "UTC",
+        "button_go_back": "Zurück",
+        "button_save_changes": "Änderungen speichern",
+        "alert_changes_saved_successfully": "Änderungen erfolgreich gespeichert."
+    },
+    "UserDashboard": {
+        "title": "Dashboard",
+        "description": "Übersicht Veranstaltungen",
+        "event_start": "Start: ",
+        "event_end": "Ende: ",
+        "menu_options": "Optionen",
+        "menu_option_event_details": "Event Details",
+        "menu_option_edit": "Bearbeiten",
+        "menu_option_cancel_appointment": "Termin stornieren",
+        "title_event_details": "Termin Details",
+        "event_location": "Ort: ",
+        "event_date": "Datum: ",
+        "event_description": "Beschreibung: ",
+        "headline_event_calender": "Veranstaltungskalender",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics",
+        "button_create_event": "Veranstaltung erstellen"
+    },
+    "CreateEvent": {
+        "title": "Veranstaltungserstellung",
+        "upload_event_image_caption": "Veranstaltungsbild hochladen",
+        "textfield_event_title": "Veranstaltungstitel",
+        "textfield_number_of_participants": "Teilnehmeranzahl",
+        "textfield_number_of_companions": "Anzahl an Begleiter",
+        "textfield_time_from": "Uhrzeit: Von",
+        "textfield_time_to": "Uhrzeit: Bis",
+        "checkbox_on_site": "Vor Ort",
+        "checkbox_online": "Online",
+        "textfield_adress": "Adresse",
+        "textfield_enter_link": "Link eintragen",
+        "textfield_description": "Beschreibung",
+        "textfield_description_placeholder": "Beschreiben Sie die Veranstaltung",
+        "textfield_date_selection": "Terminauswahl",
+        "textfield_registration_deadline": "Anmeldefrist",
+        "button_invitation_list": "Einladungsliste",
+        "button_cancel": "Abbrechen",
+        "button_preview_and_release": "Vorschau und veröffentlichen",
+        "button_preview_and_release_dialog_title": "Aktionen für die Veranstaltung",
+        "button_preview_and_release_dialog_checkbox_preview": "Vorschau",
+        "button_preview_and_release_dialog_checkbox_release": "Veröffentlichen",
+        "button_preview_and_release_dialog_checkbox_save_draft": "Entwurf speichern",
+        "button_preview_and_release_dialog_button_cancel": "Abbrechen",
+        "button_preview_and_release_dialog_button_go_to_preview": "Weiter zur Vorschau"
+    },
+    "Invites": {
+        "title": "Einladungsliste",
+        "description": "Gäste, die schon an anderen Veranstaltungen teilgenommen haben:",
+        "searchbar_placeholder": "Suchen",
+        "table_column_guest_information": "Gast-Informationen",
+        "table_column_email": "E-Mail",
+        "table_column_participated": "Teilgenommen",
+        "description_new_guests": "Für neue Gäste tragen Sie bitte die E-Mail ein:",
+        "button_cancel": "Abbrechen",
+        "button_send_invitation": "Einladung schicken",
+        "button_back_to_event_creation": "Zurück zur Veransatlungserstellung"
+    },
+    "MyDraft": {
+        "title": "Meine Veranstaltungen",
+        "textfield_select_date": "Datum auswählen",
+        "button_ics_download": "Download .ics"
+    },
+    "MyEvent": {
+        "title": "Meine Veranstaltungen",
+        "button_new_event": "Neue Veranstaltung",
+        "button_ics_download": "Download .ics",
+        "alert_event_deleted": "Die Veranstaltung [...] wurde gelöscht.",
+        "edit": "Bearbeiten",
+        "delete": "Löschen"
+    },
+    "Preview": {
+        "button_praticipate": "Teilnehmen",
+        "button_edit": "Bearbeiten",
+        "description": "Beschreibung",
+        "time": "Uhrzeit:",
+        "location": "Ort:",
+        "contact_information": "Kontakt-Informationen",
+        "website": "Webseite:",
+        "rating": "Bewertung:"
+    },
+    "Profile": {
+        "title": "Profil",
+        "button_change_profile_picture": "Profilbild ändern",
+        "textfield_name": "Name",
+        "textfield_first_name": "Vorname",
+        "textfield_personnel_number": "Personalenummer",
+        "textfield_email": "E-Mail",
+        "textfield_phone_number": "Telefonnummer",
+        "button_save_changes": "Änderungen speichern",
+        "button_save_changes_dialog_title": "Änderungen speichern",
+        "button_save_changes_dialog_description": "Möchten Sie die Änderungen übernehmen?",
+        "button_save_changes_dialog_button_yes": "Ja",
+        "button_save_changes_dialog_button_no": "Nein",
+        "alert_saved_changes": "Die Änderungen wurden gespeichert."
+    },
+    "Announcements": {
+        "title": "Ankündigungen",
+        "searchbar": "Suchen",
+        "table_column_title": "Titel",
+        "table_column_method": "Methode",
+        "table_column_start_date": "Startdatum",
+        "table_column_end_date": "Enddatum",
+        "table_column_status": "Status",
+        "button_disable_announcements": "Ankündigungen deaktivieren",
+        "button_new_announcement": "Neue Ankündigung"
+    },
+    "CreateAnnouncements": {
+        "title": "Ankündigung erstellen",
+        "textfield_announcement_title": "Titel",
+        "textfield_announcement_description": "Beschreibung",
+        "headline_method": "Methode",
+        "checkbox_login": "Bei Anmeldung",
+        "checkbox_email": "E-Mail",
+        "button_cancel": "Abbrechen",
+        "button_save": "Speichern"
+    },
+    "Notification": {
+        "title": "Benachrichtigungen",
+        "button_write_new_email": "Neue E-Mail schreiben",
+        "table_column_subject": "Betreff",
+        "table_column_sender": "Absender",
+        "table_column_date": "Datum",
+        "table_column_status": "Status",
+        "email_sender": "Absender:",
+        "date": "Datum:",
+        "button_answer": "Antworten",
+        "button_delete": "Löschen",
+        "headline_new_email": "Neue E-Mail",
+        "textfield_recipient": "Empfänger",
+        "textfield_subject": "Betreff",
+        "textfield_message": "Nachricht",
+        "button_cancel": "Abbrechen",
+        "button_send": "Absenden"
+    },
+    "Termin": {
+        "title": "Terminverwaltung",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics"
+    },
+    "Userlist": {
+        "searchbar": "Suchen",
+        "table_column_user": "Benutzer",
+        "table_column_contact_details": "Kontaktdaten",
+        "table_column_organizer": "Veranstalter",
+        "table_column_last_active": "Zuletzt aktiv"
+    }
+}

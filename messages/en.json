@@ -1,0 +1,179 @@
+{
+    "LocaleSwitcher": {
+        "label": "Change language",
+        "locale": "{locale, select, de {🇩🇪 Deutsch} en {🇺🇸 English} other {Unknown}}"
+    },
+    "HomePage": {
+        "button_login": "Login",
+        "button_logout": "Logout",
+        "button_user": "User",
+        "button_admin": "Admin",
+        "caption_image_one": "Feature 1",
+        "caption_image_two": "Feature 2",
+        "caption_image_three": "Feature 3"
+    },
+    "Footer": {
+        "link_about_us": "About us",
+        "link_privacy": "Privacy",
+        "link_contact": "Contact",
+        "link_imprint": "imprint",
+        "copyright_name": "Appointment Organizer"
+    },
+    "UserSettings": {
+        "title": "Settings",
+        "select_language_name": "Language",
+        "select_language_option_german": "German",
+        "select_language_option_english": "English",
+        "select_timezone_name": "Timezone",
+        "select_timezone_option_cet": "CET",
+        "select_timezone_option_utc": "UTC",
+        "button_go_back": "Go back",
+        "button_save_changes": "Save changes",
+        "alert_changes_saved_successfully": "Changes saved successfully."
+    },
+    "UserDashboard": {
+        "title": "Dashboard",
+        "description": "Overview of events",
+        "event_start": "Start: ",
+        "event_end": "End: ",
+        "menu_options": "Options",
+        "menu_option_event_details": "Event details",
+        "menu_option_edit": "Edit",
+        "menu_option_cancel_appointment": "Cancel appointment",
+        "title_event_details": "appointment details",
+        "event_location": "Location: ",
+        "event_date": "Date: ",
+        "event_description": "Description: ",
+        "headline_event_calender": "Event calender",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics",
+        "button_create_event": "Create Event"
+    },
+    "CreateEvent": {
+        "title": "Create Event",
+        "upload_event_image_caption": "Upload event image",
+        "textfield_event_title": "Event title",
+        "textfield_number_of_participants": "Number of praticipants",
+        "textfield_number_of_companions": "Number of companions",
+        "textfield_time_from": "Time: from",
+        "textfield_time_to": "Time: to",
+        "checkbox_on_site": "On site",
+        "checkbox_online": "Online",
+        "textfield_adress": "Adress",
+        "textfield_enter_link": "Enter link",
+        "textfield_description": "Description",
+        "textfield_description_placeholder": "Describe the event",
+        "textfield_date_selection": "Date selection",
+        "textfield_registration_deadline": "Registration deadline",
+        "button_invitation_list": "Invitation list",
+        "button_cancel": "Cancel",
+        "button_preview_and_release": "Preview and release",
+        "button_preview_and_release_dialog_title": "Actions for the event",
+        "button_preview_and_release_dialog_checkbox_preview": "Preview",
+        "button_preview_and_release_dialog_checkbox_release": "Release",
+        "button_preview_and_release_dialog_checkbox_save_draft": "Save draft",
+        "button_preview_and_release_dialog_button_cancel": "Cancel",
+        "button_preview_and_release_dialog_button_go_to_preview": "Go to preview"
+    },
+    "Invites": {
+        "title": "Invitation list",
+        "description": "Guests who have already participated in other events:",
+        "searchbar_placeholder": "Search",
+        "table_column_guest_information": "Guest-Information",
+        "table_column_email": "E-Mail",
+        "table_column_participated": "Participated",
+        "description_new_guests": "For new guests please enter the E-Mail:",
+        "button_cancel": "Cancel",
+        "button_send_invitation": "Send invitation",
+        "button_back_to_event_creation": "Back to event creation"
+    },
+    "MyDraft": {
+        "title": "My events",
+        "textfield_select_date": "Select date",
+        "button_ics_download": "Download .ics"
+    },
+    "MyEvent": {
+        "title": "My events",
+        "button_new_event": "New event",
+        "button_ics_download": "Download .ics",
+        "alert_event_deleted": "The event [...] has been deleted.",
+        "edit": "Edit",
+        "delete": "Delete"
+    },
+    "Preview": {
+        "button_praticipate": "Participate",
+        "button_edit": "Edit",
+        "description": "Description",
+        "time": "Time:",
+        "location": "Location:",
+        "contact_information": "Contact Information",
+        "website": "Website:",
+        "rating": "Rating:"
+    },
+    "Profile": {
+        "title": "Profil",
+        "button_change_profile_picture": "Change profile picture",
+        "textfield_name": "Name",
+        "textfield_first_name": "Vorname",
+        "textfield_personnel_number": "Personnel number",
+        "textfield_email": "E-Mail",
+        "textfield_phone_number": "Phone number",
+        "button_save_changes": "Save changes",
+        "button_save_changes_dialog_title": "Save changes",
+        "button_save_changes_dialog_description": "Do you want to accept the changes?",
+        "button_save_changes_dialog_button_yes": "Yes",
+        "button_save_changes_dialog_button_no": "No",
+        "alert_saved_changes": "The changes were saved successfully."
+    },
+    "Announcements": {
+        "title": "Announcements",
+        "searchbar": "Search",
+        "table_column_title": "Title",
+        "table_column_method": "Method",
+        "table_column_start_date": "Start date",
+        "table_column_end_date": "End date",
+        "table_column_status": "Status",
+        "button_disable_announcements": "Disable announcements",
+        "button_new_announcement": "New announcement"
+    },
+    "CreateAnnouncements": {
+        "title": "Create announcement",
+        "textfield_announcement_title": "Title",
+        "textfield_announcement_description": "Description",
+        "headline_method": "Method",
+        "checkbox_login": "At Login",
+        "checkbox_email": "E-Mail",
+        "button_cancel": "Cancel",
+        "button_save": "Save"
+    },
+    "Notification": {
+        "title": "Notifications",
+        "button_write_new_email": "Write new E-Mail",
+        "table_column_subject": "Subject",
+        "table_column_sender": "Sender",
+        "table_column_date": "Date",
+        "table_column_status": "Status",
+        "email_sender": "Sender:",
+        "date": "Date:",
+        "button_answer": "Answer",
+        "button_delete": "Delete",
+        "headline_new_email": "New E-Mail",
+        "textfield_recipient": "Recipient",
+        "textfield_subject": "Subject",
+        "textfield_message": "Message",
+        "button_cancel": "Cancel",
+        "button_send": "Send"
+    },
+    "Termin": {
+        "title": "Appointment management",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics"
+    },
+    "Userlist": {
+        "searchbar": "Suchen",
+        "table_column_user": "Benutzer",
+        "table_column_contact_details": "Kontaktdaten",
+        "table_column_organizer": "Veranstalter",
+        "table_column_last_active": "Zuletzt aktiv"
+    }
+}
