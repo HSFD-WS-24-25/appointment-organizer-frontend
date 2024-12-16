@@ -62,15 +62,40 @@ export function SidebarLogInOut({ expanded }) {
                                     minWidth: 40,
                                 }}
                             >
-                                <Avatar src={user.picture} alt={user.name} sx={{ width: 30, height: 30 }} />
+                                <Avatar src={user.picture} alt={user.name} sx={{ width: 24, height: 24 }} />
                             </ListItemAvatar>
-                            {expanded && <ListItemText primary={user.name} />}
+                            {expanded && (
+                              <ListItemText
+                                primary={user.name}
+                                sx={{
+                                  marginTop: 0,
+                                  marginBottom: 0,
+                                }}
+                              />
+                            )}
                         </ListItemButton>
-                        <ListItemButton onClick={handleLogoutClick}>
+                        <ListItemButton onClick={handleSettingClick} 
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            width: '100%', 
+                          }}>
+                            <ListItemIcon>
+                                <SettingsIcon style={{ color: "#ccc" }} />
+                            </ListItemIcon>
+                            {expanded && 
+                            <ListItemText primary="Settings" sx={{marginTop: 0, marginBottom: 0}} />}
+                        </ListItemButton>
+                        <ListItemButton onClick={handleLogoutClick}
+                           sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            width: '100%', 
+                          }}>
                             <ListItemIcon>
                                 <ExitToAppIcon style={{ color: "#ccc" }} />
                             </ListItemIcon>
-                            {expanded && <ListItemText primary="Logout" />}
+                            {expanded && <ListItemText primary="Logout" sx={{marginTop: 0, marginBottom: 0}}/>}
                         </ListItemButton>
                     </>
                 ) : (

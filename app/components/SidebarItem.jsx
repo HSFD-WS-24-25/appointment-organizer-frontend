@@ -6,7 +6,7 @@ export function SidebarItem(props) {
     return <ListItemButton onClick={props.item.action} sx={{justifyContent: props.expanded ? "initial" : "center"}}>
         <ListItemIcon sx={{
             minWidth: 0,
-            mr: props.expanded ? 3 : "auto",
+            mr: props.expanded ? 0 : "auto",
             justifyContent: "center"
         }}>{props.item.icon}</ListItemIcon>
         <ListItemText

@@ -1,5 +1,5 @@
-import "../../../globals.css";
-import Sidebar from "../../../components/Sidebar";
+import "@/app/globals.css";
+import Sidebar from "@/app/components/Sidebar";
 import { Box } from "@mui/material";
 
 export const metadata = {
