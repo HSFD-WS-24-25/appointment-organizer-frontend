@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, TextField, Button, Typography } from '@mui/material';
-import { useUserContext } from '../context/UserContext'; // Benutzerkontext
+import { useUserContext } from '@/app/context/UserContext'; // Benutzerkontext
 
 const SimpleLogin = () => {
   const [loginState, setLoginState] = useState({ username: '', password: '' });

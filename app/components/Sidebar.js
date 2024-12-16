@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import SidebarDesign from "../components/styledComponents/SidebarDesign";
-import { useUserContext } from "../context/UserContext"; // Benutzerkontext
+import SidebarDesign from "@/app/components/styledComponents/SidebarDesign";
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext
 
 function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);

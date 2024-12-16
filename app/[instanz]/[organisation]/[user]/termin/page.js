@@ -11,12 +11,12 @@ import {
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import { RedButton, BlueButton, GreenButton } from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { RedButton, BlueButton, GreenButton } from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import jsPDF from "jspdf"; // Für PDF-Generierung
 import { saveAs } from "file-saver"; // Für .ics-Datei
-import {CustomToolbar, formats, germanMessages} from "../../../../components/styledComponents/StyledCalender"
+import {CustomToolbar, formats, germanMessages} from "@/app/components/styledComponents/StyledCalender"
 
 moment.locale("de");
 

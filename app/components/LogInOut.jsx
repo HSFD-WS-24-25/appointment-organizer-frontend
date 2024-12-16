@@ -6,8 +6,8 @@ import { Box, Link, Typography } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Footer from '../components/Footer';
-import { BlueButton, RedButton, GreenButton } from '../components/styledComponents/StyledButton';
+import Footer from '@/app/components/Footer';
+import { BlueButton, RedButton, GreenButton } from '@/app/components/styledComponents/StyledButton';
 
 const LogInOut = () => {
   const { user, isLoading } = useUser();

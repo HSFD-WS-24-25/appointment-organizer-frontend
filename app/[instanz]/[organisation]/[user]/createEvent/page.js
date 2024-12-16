@@ -5,10 +5,10 @@ import { Box, Button, Typography, TextField, Checkbox, FormControlLabel, InputAd
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useRouter } from 'next/navigation';
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
-import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 
 function UserDashboard() {
   const [checkedOnline, setCheckedOnline] = useState(false);
