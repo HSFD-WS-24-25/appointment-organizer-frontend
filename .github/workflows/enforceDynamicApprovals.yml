@@ -1,14 +1,6 @@
 name: "Enforce Dynamic Approvals"
 
 on:
-  pull_request:
-    branches:
-      - main
-      - development
-    types:
-      - opened
-      - synchronize
-      - edited
   pull_request_review:
     types:
       - submitted # Trigger when a review (Approval) is submitted.
@@ -16,6 +8,7 @@ on:
 jobs:
   enforce-approvals:
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'development' }}
 
     steps:
       - name: Checkout code
