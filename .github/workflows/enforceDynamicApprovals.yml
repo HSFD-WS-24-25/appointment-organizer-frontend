@@ -30,6 +30,8 @@ jobs:
 
       - name: Get number of approvals
         id: approvals
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           APPROVALS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews | map(select(.state == "APPROVED")) | length')
           echo "Approvals: $APPROVALS"
