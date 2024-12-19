@@ -1,0 +1,58 @@
+name: "Enforce Dynamic Approvals"
+
+on:
+  pull_request_review:
+    types:
+      - submitted # Trigger when a review (Approval) is submitted.
+
+jobs:
+  enforce-approvals:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'development' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Count changed files
+        id: file_count
+        run: |
+          FILE_COUNT=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | wc -l)
+          echo "Files changed: $FILE_COUNT"
+          echo "::set-output name=files_changed::$FILE_COUNT"
+
+      - name: Get number of approvals
+        id: approvals
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APPROVALS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '.reviews | map(select(.state == "APPROVED")) | length')
+          echo "Approvals: $APPROVALS"
+          echo "::set-output name=approvals::$APPROVALS"
+
+      - name: Check if PR should be blocked
+        id: check_block
+        run: |
+          FILE_COUNT=${{ steps.file_count.outputs.files_changed }}
+          APPROVALS=${{ steps.approvals.outputs.approvals }}
+          
+          if [ "$FILE_COUNT" -lt 10 ]; then
+            REQUIRED_APPROVALS=1
+          else
+            REQUIRED_APPROVALS=2
+          fi
+
+          echo "Files changed: $FILE_COUNT, Approvals: $APPROVALS, Required approvals: $REQUIRED_APPROVALS"
+
+          # If not enough approvals, block merge
+          if [ "$APPROVALS" -lt "$REQUIRED_APPROVALS" ]; then
+            echo "::set-output name=merge_block::true"
+          else
+            echo "::set-output name=merge_block::false"
+          fi
+
+      - name: Block merge if not enough approvals
+        if: ${{ steps.check_block.outputs.merge_block == 'true' }}
+        run: |
+          echo "Merge is blocked: Not enough approvals."
+          exit 1
