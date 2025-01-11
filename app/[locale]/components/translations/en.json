@@ -175,5 +175,16 @@
         "table_column_contact_details": "Kontaktdaten",
         "table_column_organizer": "Veranstalter",
         "table_column_last_active": "Zuletzt aktiv"
+    },
+    "Sidebar": {
+        "dashboard": "Dashboard",
+        "user_management": "User management",
+        "appointment_management": "Appointment management",
+        "notifications": "Notifications",
+        "announcements": "Announcements",
+        "create_event": "Create event",
+        "my_events": "My events",
+        "my_participations": "My participations",
+        "my_draft": "My draft"
     }
 }
