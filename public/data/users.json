@@ -1,31 +1,27 @@
 {
-  "instanz": "Eventmanager",
+  "instanz": "HS-Fulda",
   "organisation": [
     {
-      "name": "Buchhaltung",
+      "name": "Angewandte Informatik",
       "users": [
         {
-          "id": 1,
+          "id": 1733910414662,
           "username": "admin",
           "password": "1234",
-          "email": "admin@beispiel.com",
-          "name": "Admin Benutzer",
-          "role": "organisation-admin",
-          "organisation": "Buchhaltung"
+          "email": "testadmin@web.de",
+          "name": "Admin",
+          "role": "organisation-admin"
         },
         {
-          "id": 1733319634984,
-          "username": "orgi",
-          "password": "1234",
-          "email": "asdas",
-          "name": "asdas",
-          "role": "organisator"
+          "id": 1733910812426,
+          "username": "user",
+          "password": "user",
+          "email": "asdasdas",
+          "name": "User",
+          "role": "teilnehmer",
+          "organisation": "Angewandte Informatik"
         }
       ]
-    },
-    {
-      "name": "HS FULDA",
-      "users": []
     }
   ]
 }

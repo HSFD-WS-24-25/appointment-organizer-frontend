@@ -6,7 +6,6 @@ import {
   Button,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
   Link,
   Paper,
   Badge,
@@ -23,9 +22,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/navigation';
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { BlueButton } from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 
 
 function EventCard({ count, view }) {

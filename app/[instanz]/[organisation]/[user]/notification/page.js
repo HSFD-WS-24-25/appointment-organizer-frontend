@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import {
   Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, Typography, Button, TextField, Menu, MenuItem, IconButton
+  Paper, Typography, TextField, Menu, MenuItem, IconButton
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import { BlueButton, RedButton } from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
-import { useDarkMode } from "../../../../components/styledComponents/DarkMode"; // Importiere den DarkMode-Status
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { BlueButton, RedButton } from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import { useDarkMode } from "@/app/components/styledComponents/DarkMode"; // Importiere den DarkMode-Status
 
 const initialEmails = [
   { subject: 'System Update Notification', sender: 'admin@system.com', date: '2024-11-01', status: 'Unread', body: 'System update scheduled for 2024-11-02.' },

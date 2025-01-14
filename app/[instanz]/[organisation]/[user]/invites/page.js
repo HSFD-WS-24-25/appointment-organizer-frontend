@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -16,11 +15,11 @@ import {
   InputAdornment,
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList'; // Import the filter icon
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import { useRouter } from 'next/navigation';
-import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 
 function UserDashboard() {
   const [searchText, setSearchText] = useState('');

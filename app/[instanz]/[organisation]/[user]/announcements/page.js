@@ -4,17 +4,17 @@ import React, { useState, useEffect } from 'react';
 import { 
   Paper, TextField, Box, Stack, Autocomplete, 
 } from '@mui/material';
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { BlueButton, RedButton } from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import {StyledTableContainer, 
    StyledTable, 
    StyledTableRow,
    StyledTableHeadCell,
    StyledTableBody,
    StyledTableCell, 
-   StyledTableHead } from "../../../../components/styledComponents/StyledTable";
-import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
+   StyledTableHead } from "@/app/components/styledComponents/StyledTable";
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import { useRouter } from 'next/navigation';
 
 const data = [
