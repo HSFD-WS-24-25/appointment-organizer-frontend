@@ -5,16 +5,16 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { StyledBox } from "../../../../components/styledComponents/StyledBox";
-import { StyledPaper } from "../../../../components/styledComponents/StyledPaper";
-import { StyledTextField } from "../../../../components/styledComponents/StyledTextField";
+import { StyledBox } from "@/app/components/styledComponents/StyledBox";
+import { StyledPaper } from "@/app/components/styledComponents/StyledPaper";
+import { StyledTextField } from "@/app/components/styledComponents/StyledTextField";
 import {StyledTableContainer, 
   StyledTable, 
   StyledTableRow,
   StyledTableHeadCell,
   StyledTableBody,
   StyledTableCell, 
-  StyledTableHead } from "../../../../components/styledComponents/StyledTable";
+  StyledTableHead } from "@/app/components/styledComponents/StyledTable";
 
 // Beispiel-Daten, später dann mit echten Nutzern über Backend
 const users = [
