@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect} from "react";
+import { useUserContext } from "../../../../context/UserContext"; // Benutzerkontext importieren
 import {
   Box,
   Typography,
@@ -18,11 +19,31 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import { GreenButton } from "@/app/components/styledComponents/StyledButton";
-import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+
+import StyledPaper from "../../../../components/styledComponents/StyledPaper";
+import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
+import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import { useRouter } from 'next/navigation';
 
 function EventDetails() {
+
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink 
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+
+  useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
+
+  const router = useRouter();
+  
+  const handleEditEvent = () => {
+    router.push(`${basePath}/editEvent`);
+  };
     return (
       <StyledPaper>
   
@@ -40,17 +61,6 @@ function EventDetails() {
               }}
             >
               <Typography variant="caption">Event Image Placeholder</Typography>
-              <IconButton
-                sx={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  backgroundColor: '#fff',
-                  '&:hover': { backgroundColor: '#eee' },
-                }}
-              >
-                <CameraAltIcon />
-              </IconButton>
             </Box>
             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -61,9 +71,6 @@ function EventDetails() {
                   <FavoriteBorderIcon color="error" />
                 </IconButton>
               </Box>
-              <GreenButton>
-                Teilnehmen
-              </GreenButton>
             </CardContent>
             <CardContent>
               <Typography variant="subtitle1" gutterBottom>
@@ -83,7 +90,53 @@ function EventDetails() {
                   </Typography>
                   <Typography variant="body1">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
+                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
                     elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
                     elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
                     elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
@@ -108,9 +161,12 @@ function EventDetails() {
                     elementum, nec vehicula velit fermentum.
                   </Typography>
                 </CardContent>
-                <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <GreenButton>
+                <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <BlueButton onClick={handleEditEvent}>
                     Bearbeiten
+                  </BlueButton>
+                  <GreenButton onClick={handleEditEvent}>
+                    Speichern
                   </GreenButton>
                 </CardActions>
               </Card>
