@@ -34,13 +34,13 @@ import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useFetchApiData } from "@/app/lib/useFetchApiData";
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
+import {useFetchEvents} from "@/app/hooks/useFetchEvents"
+import {useDeleteEvent} from "@/app/hooks/useDeleteEvent"
 
 function EventCard({ event, view }) {
-  const { user } = useUser();
+   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
 
   const [open, setOpen] = useState(false);
-
-
 
   // Öffnet den Dialog
   const handleOpen = () => setOpen(true);
@@ -50,25 +50,15 @@ function EventCard({ event, view }) {
 
   // Löscht die Veranstaltung
   const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/events/${event.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        console.log("Event deleted successfully!");
-        //window.location.reload();
-      } else {
-        console.error(`Failed to delete event. Status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-    } finally {
-      handleClose(); // Schließe den Dialog
+    const result = await deleteEvent(event.id); // Rufe die Löschfunktion auf
+    if (result.success) {
+      console.log(result.message);
+      // Optional: UI aktualisieren oder Seite neu laden
+      window.location.reload();
+    } else {
+      console.error(result.message);
     }
+    handleClose();
   };
 
   const count = event.capacity || 0;
@@ -86,31 +76,27 @@ function EventCard({ event, view }) {
           alignItems: "center",
           padding: 2,
           marginBottom: 2,
-          border: "1px solid #ddd", // Optional: für bessere Sichtbarkeit
+          border: "1px solid #ddd",
           borderRadius: "8px",
         }}
       >
-        {/* Avatar */}
         <ListItemAvatar>
           <Avatar>
             <EventIcon />
           </Avatar>
         </ListItemAvatar>
 
-        {/* Event-Titel und Teilnehmer */}
         <ListItemText
           primary={event.title || `Event ${event.id}`}
           secondary={`Teilnehmer: ${event.capacity}`}
           sx={{ flex: 1, marginRight: 2 }}
         />
 
-        {/* Beschreibung */}
         <Box sx={{ textAlign: "left", flex: 1, paddingRight: 2 }}>
           <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
           <p style={{ margin: 0 }}>{event.description}</p>
         </Box>
 
-        {/* Buttons */}
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
           <Button size="small" startIcon={<EditIcon />}>
             Bearbeiten
@@ -147,8 +133,6 @@ function EventCard({ event, view }) {
     );
   }
 
-
-  // Grid View Rendering
   return (
     <Paper
       sx={{
@@ -166,7 +150,6 @@ function EventCard({ event, view }) {
       }}
       elevation={3}
     >
-      {/* Edit Button */}
       <Box sx={{ position: "absolute", top: 8, left: 8 }}>
         <Button
           variant="outlined"
@@ -178,7 +161,6 @@ function EventCard({ event, view }) {
         </Button>
       </Box>
 
-      {/* Delete Button */}
       <Box sx={{ position: "absolute", top: 8, right: 8 }}>
         <Button
           variant="outlined"
@@ -186,12 +168,11 @@ function EventCard({ event, view }) {
           startIcon={<DeleteIcon />}
           color="error"
           sx={{ borderRadius: 4 }}
-          onClick={handleOpen} // Öffnet den Dialog
+          onClick={handleOpen}
         >
           Löschen
         </Button>
 
-        {/* Dialog */}
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Veranstaltung löschen</DialogTitle>
           <DialogContent>
@@ -215,7 +196,6 @@ function EventCard({ event, view }) {
         </Dialog>
       </Box>
 
-      {/* Badge (z. B. Teilnehmerzahl) */}
       <Box sx={{ position: "absolute", bottom: 8, right: 30 }}>
         <Badge
           badgeContent={count}
@@ -228,15 +208,14 @@ function EventCard({ event, view }) {
                 color === "green"
                   ? "#4caf50"
                   : color === "orange"
-                    ? "#ffa726"
-                    : "#f44336",
+                  ? "#ffa726"
+                  : "#f44336",
               color: "#fff",
             },
           }}
         />
       </Box>
 
-      {/* Event-Name und Beschreibung */}
       <Box
         sx={{
           textAlign: "center",
@@ -271,17 +250,15 @@ function UserDashboard() {
     }
   }, [userInfo]);
 
-  // Fetch events from API
-  const { user, error: authError, isLoading } = useUser();
-  const path = "/api/events";
-  const method = "GET";
-  const { data: events, error: fetchError } = useFetchApiData(user, path, method);
+// Verwende den neuen Hook
+const { user, authError, isLoading, events, fetchError } = useFetchEvents();
 
-  // Handle loading and errors
-  if (isLoading) return <div>Loading...</div>;
-  if (authError) return <div>Error loading user data: {authError.message}</div>;
-  if (!user) return <div>Please log in</div>;
-  if (fetchError) return <div>Error fetching events data: {fetchError.message}</div>;
+// Handle loading and errors
+if (isLoading) return <div>Loading...</div>;
+if (authError) return <div>Error loading user data: {authError.message}</div>;
+if (!user) return <div>Please log in</div>;
+if (fetchError) return <div>Error fetching events data: {fetchError.message}</div>;
+
 
   const handleViewChange = (event, nextView) => {
     if (nextView !== null) {
