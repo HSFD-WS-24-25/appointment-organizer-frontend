@@ -29,16 +29,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EventIcon from "@mui/icons-material/Event";
 import { useRouter } from "next/navigation";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import { BlueButton } from "@/app/components/styledComponents/StyledButton";
+import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useFetchApiData } from "@/app/lib/useFetchApiData";
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
-import {useFetchEvents} from "@/app/hooks/useFetchEvents"
-import {useDeleteEvent} from "@/app/hooks/useDeleteEvent"
+import { useFetchEvents } from "@/app/hooks/useFetchEvents"
+import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
 
 function EventCard({ event, view }) {
-   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
+  const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
 
   const [open, setOpen] = useState(false);
 
@@ -138,7 +136,7 @@ function EventCard({ event, view }) {
       sx={{
         position: "relative",
         width: "100%",
-        height: 200,
+        height: 250,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -151,28 +149,14 @@ function EventCard({ event, view }) {
       elevation={3}
     >
       <Box sx={{ position: "absolute", top: 8, left: 8 }}>
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<EditIcon />}
-          sx={{ borderRadius: 4 }}
-        >
-          Bearbeiten
-        </Button>
+        <StyledEditButton />
       </Box>
 
       <Box sx={{ position: "absolute", top: 8, right: 8 }}>
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<DeleteIcon />}
-          color="error"
-          sx={{ borderRadius: 4 }}
-          onClick={handleOpen}
-        >
-          Löschen
-        </Button>
+        <StyledDeleteButton onClick={handleOpen} />
+      </Box>
 
+      <Box sx={{ position: "absolute", top: 8, right: 8 }}>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Veranstaltung löschen</DialogTitle>
           <DialogContent>
@@ -208,8 +192,8 @@ function EventCard({ event, view }) {
                 color === "green"
                   ? "#4caf50"
                   : color === "orange"
-                  ? "#ffa726"
-                  : "#f44336",
+                    ? "#ffa726"
+                    : "#f44336",
               color: "#fff",
             },
           }}
@@ -229,8 +213,26 @@ function EventCard({ event, view }) {
           {event.name}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {event.description}
+          {event.description.split(".")[0]}.
         </Typography>
+
+        <Typography variant="body2" color="textSecondary">
+          {new Date(event.date_start).toLocaleString("de-DE", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })} Uhr -{" "}
+          {new Date(event.date_end).toLocaleString("de-DE", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })} Uhr
+        </Typography>
+
       </Box>
     </Paper>
   );
@@ -250,14 +252,14 @@ function UserDashboard() {
     }
   }, [userInfo]);
 
-// Verwende den neuen Hook
-const { user, authError, isLoading, events, fetchError } = useFetchEvents();
+  // Verwende den neuen Hook
+  const { user, authError, isLoading, events, fetchError } = useFetchEvents();
 
-// Handle loading and errors
-if (isLoading) return <div>Loading...</div>;
-if (authError) return <div>Error loading user data: {authError.message}</div>;
-if (!user) return <div>Please log in</div>;
-if (fetchError) return <div>Error fetching events data: {fetchError.message}</div>;
+  // Handle loading and errors
+  if (isLoading) return <div>Loading...</div>;
+  if (authError) return <div>Error loading user data: {authError.message}</div>;
+  if (!user) return <div>Please log in</div>;
+  if (fetchError) return <div>Error fetching events data: {fetchError.message}</div>;
 
 
   const handleViewChange = (event, nextView) => {
@@ -274,10 +276,7 @@ if (fetchError) return <div>Error fetching events data: {fetchError.message}</di
     <StyledPaper>
       {/* Main Content */}
       <Box>
-        {/* Alert Message */}
-        <Alert severity="warning" sx={{ marginBottom: 3 }}>
-          Die Veranstaltung XU ist gelöscht
-        </Alert>
+
 
         {/* Header */}
         <Box
@@ -290,7 +289,7 @@ if (fetchError) return <div>Error fetching events data: {fetchError.message}</di
             gap: { xs: 1, sm: 0 },
           }}
         >
-          <DesignTitel>Meine Veranstaltungen:</DesignTitel>
+          <DesignTitel>Veranstaltungen:</DesignTitel>
           <BlueButton onClick={handleCreateEvent}>Neue Veranstaltung</BlueButton>
         </Box>
 
