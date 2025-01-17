@@ -21,6 +21,8 @@ import ReactDOM from "react-dom/client";
 import { usePostEvent } from "@/app/hooks/usePostEvent"
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import { useRouter } from "next/navigation";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 
 const InvitationForm = () => {
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
@@ -336,7 +338,7 @@ const InvitationForm = () => {
       }}
     >
       <Container maxWidth="md">
-<Paper
+<StyledPaper
   elevation={3}
   style={{
     padding: "20px",
@@ -344,9 +346,9 @@ const InvitationForm = () => {
     backgroundColor: "rgba(255, 255, 255, 0.8)",
   }}
 >
-  <Typography variant="h4" gutterBottom>
-    Einladungsseite erstellen
-  </Typography>
+  <DesignTitel>
+    Veranstaltung erstellen
+  </DesignTitel>
 
   <input
     accept="image/*"
@@ -523,7 +525,7 @@ const InvitationForm = () => {
       Vorschau
     </Button>
   </Box>
-</Paper>
+</StyledPaper>
 
 {/* Dialog */}
 <Dialog open={dialogOpen} onClose={handleCloseDialog}>
