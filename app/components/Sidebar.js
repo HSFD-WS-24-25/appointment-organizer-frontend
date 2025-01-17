@@ -41,10 +41,8 @@ function Sidebar() {
         { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
         { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
         { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-        { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
         { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
         { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
-        { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push(`${basePath}/meinEntwurf`) },
       ];
       break;
 
