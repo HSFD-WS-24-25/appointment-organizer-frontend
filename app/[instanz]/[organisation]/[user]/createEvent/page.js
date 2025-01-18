@@ -327,7 +327,7 @@ const geocodeAddress = async (address) => {
             <strong>Titel:</strong> {formData.title}
           </p>
           <p>
-            <strong>Typ:</strong> {formData.eventType || "N/A"}
+            <strong>Typ:</strong> {eventType || "N/A"}
           </p>
           <div
             style={{
@@ -557,8 +557,8 @@ const handleBlur = async (e) => {
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
     <DateTimePicker
       label="Startdatum & Uhrzeit"
-      value={formData.endDate}
-      onChange={(newValue) => handleDateChange("endDate", newValue)}
+      value={formData.startDate}
+      onChange={(newValue) => handleDateChange("startDate", newValue)}
       inputFormat="DD.MM.YYYY HH:mm" // Format anpassen
       ampm={false} // 24-Stunden-Format
       renderInput={(params) => (
