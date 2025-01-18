@@ -22,6 +22,7 @@
     "appointment-organizer-frontend": "file:",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.2",
+    "leaflet": "^1.9.4",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
     "next": "^15.0.2",

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -17,12 +17,94 @@ import {
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import "dayjs/locale/de"; // Importiere die deutsche Lokalisierung
 import ReactDOM from "react-dom/client";
 import { usePostEvent } from "@/app/hooks/usePostEvent"
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import { useRouter } from "next/navigation";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import StyledTextField from "@/app/components/styledComponents/StyledTextField";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+
+
+
+
+// Setze die deutsche Lokalisierung global
+dayjs.locale("de");
+
+const OpenStreetMap = ({ address, coordinates }) => {
+  const mapRef = useRef(null);
+  const mapInstance = useRef(null);
+
+  useEffect(() => {
+    // Initialisiere die Karte nur einmal
+    if (!mapInstance.current) {
+      const map = L.map(mapRef.current).setView([51.505, -0.09], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      mapInstance.current = map; // Speichere die Karteninstanz
+    }
+
+    const updateMap = async () => {
+      if (coordinates) {
+        const [lat, lon] = coordinates;
+        mapInstance.current.setView([lat, lon], 15);
+        L.marker([lat, lon])
+          .addTo(mapInstance.current)
+          .bindPopup("Gewählte Adresse")
+          .openPopup();
+      } else if (address) {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+              address
+            )}`
+          );
+          const data = await response.json();
+          if (data.length > 0) {
+            const { lat, lon } = data[0];
+            mapInstance.current.setView([lat, lon], 15);
+            L.marker([lat, lon])
+              .addTo(mapInstance.current)
+              .bindPopup(`Adresse: ${address}`)
+              .openPopup();
+          }
+        } catch (error) {
+          console.error("Fehler beim Geocoding:", error);
+        }
+      }
+
+      // Aktualisiere die Kartengröße
+      setTimeout(() => {
+        mapInstance.current.invalidateSize(); // Wichtig: Leaflet zwingt ein Resize
+      }, 0);
+    };
+
+    updateMap();
+
+    return () => {
+      if (mapInstance.current) {
+        mapInstance.current.eachLayer((layer) => {
+          if (layer instanceof L.Marker) {
+            mapInstance.current.removeLayer(layer); // Entferne alte Marker
+          }
+        });
+      }
+    };
+  }, [address, coordinates]);
+
+  return <div ref={mapRef} style={{ height: "200px", width: "100%" }} />;
+};
+
+
 
 const InvitationForm = () => {
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
@@ -36,6 +118,7 @@ const InvitationForm = () => {
       setBasePath(path);
     }
   }, [userInfo]);
+
 
     const { postEvent } = usePostEvent();
     const [errors, setErrors] = useState({});
@@ -51,6 +134,31 @@ const InvitationForm = () => {
     description: "",
     reminderDays: "",
   });
+
+
+    // Geocoding-Funktion global definieren
+const geocodeAddress = async (address) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP-Error: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.length > 0) {
+      const { lat, lon } = data[0];
+      return [lat, lon]; // Koordinaten zurückgeben
+    } else {
+      console.error("Adresse nicht gefunden.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Fehler beim Geocoding:", error);
+    return null;
+  }
+};
+  
 
   const validateForm = () => {
     const newErrors = {};
@@ -143,125 +251,175 @@ const InvitationForm = () => {
     handleCloseDialog();
   };
 
-  const Preview = ({ formData, backgroundImage }) => (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        margin: "0",
-        padding: "20px",
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "#333",
-      }}
-    >
+  const Preview = ({ formData, backgroundImage }) => {
+    useEffect(() => {
+      setTimeout(() => {
+        const mapElements = document.querySelectorAll(".leaflet-container");
+        mapElements.forEach((element) => {
+          const mapInstance = element._leaflet_map;
+          if (mapInstance) {
+            mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
+          }
+        });
+      }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
+    }, []);
+  
+    return (
       <div
         style={{
-          maxWidth: "800px",
-          margin: "auto",
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          padding: "20px",
-          borderRadius: "10px",
+          fontFamily: "Arial, sans-serif",
+          margin: "0",
+          padding: "50px",
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          color: "#333",
         }}
       >
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
+            maxWidth: "1080px",
+            margin: "auto",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            padding: "20px",
+            borderRadius: "10px",
           }}
         >
-          <h1 style={{ fontSize: "2.5em", fontWeight: "bold" }}>Einladung</h1>
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button
-              style={{
-                padding: "8px 12px",
-                fontSize: "0.9em",
-                borderRadius: "5px",
-                backgroundColor: "green",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Teilnehmen
-            </button>
-            <button
-              style={{
-                padding: "8px 12px",
-                fontSize: "0.9em",
-                borderRadius: "5px",
-                backgroundColor: "red",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Nicht Teilnehmen
-            </button>
-          </div>
-        </div>
-        <p>
-          <strong>Titel:</strong> {formData.title}
-        </p>
-        <p>
-          <strong>Typ:</strong> {eventType}
-        </p>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "20px",
-            marginTop: "20px",
-          }}
-        >
-          <div>
-            <p>
-              <strong>Start:</strong> {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-            </p>
-            <p>
-              <strong>Adresse:</strong> {formData.address || "N/A"}
-            </p>
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "10px",
-                border: "1px solid #ccc",
-                height: "200px",
-                marginTop: "10px",
-              }}
-            >
-              Platzhalter für Maps
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h1 style={{ fontSize: "2.5em", fontWeight: "bold" }}>Einladung</h1>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "green",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Teilnehmen
+              </button>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Nicht Teilnehmen
+              </button>
             </div>
           </div>
-          <div>
-            <p>
-              <strong>Ende:</strong> {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-            </p>
-            <p>
-              <strong>Beschreibung:</strong> 
-            </p>
-            <p>              {formData.description || "N/A"}</p>
+          <p>
+            <strong>Titel:</strong> {formData.title}
+          </p>
+          <p>
+            <strong>Typ:</strong> {formData.eventType || "N/A"}
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <div>
+              <p>
+                <strong>Start:</strong> {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+              </p>
+              <p>
+                <strong>Adresse:</strong> {formData.address || "N/A"}
+              </p>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid #ccc",
+                  marginTop: "10px",
+                  overflow: "hidden",
+                }}
+              >
+                {formData.coordinates || formData.address ? (
+                  <OpenStreetMap
+                    address={formData.address}
+                    coordinates={formData.coordinates}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                    }}
+                  >
+                    Keine Adresse eingegeben
+                  </div>
+                )}
+              </div>
+            </div>
+            <div>
+              <p>
+                <strong>Ende:</strong> {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+              </p>
+              <p>
+                <strong>Beschreibung:</strong>
+              </p>
+              <p>{formData.description || "N/A"}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-
-
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "title" && value.length > 50) return;
-
-    if (["capacity", "maxGuests", "reminderDays"].includes(name) && !/^\d*$/.test(value)) {
-      return;
-    }
-
-    setFormData({ ...formData, [name]: value });
+    );
   };
+  
+
+let debounceTimer;
+
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "title" && value.length > 50) return;
+
+  if (["capacity", "maxGuests", "reminderDays"].includes(name) && !/^\d*$/.test(value)) {
+    return;
+  }
+
+  setFormData((prevData) => ({ ...prevData, [name]: value }));
+};
+
+const handleBlur = async (e) => {
+  const { name, value } = e.target;
+
+  if (name === "address" ) {
+    const coordinates = await geocodeAddress(value);
+
+    if (coordinates) {
+      console.log("Koordinaten erfolgreich geholt:", coordinates);
+      // Koordinaten im State speichern
+      setFormData((prevData) => ({
+        ...prevData,
+        coordinates, // Speichere die Koordinaten
+      }));
+    }
+  }
+};
+
 
   const handleDateChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -286,7 +444,7 @@ const InvitationForm = () => {
   };
 
   const handlePreview = () => {
-    const previewWindow = window.open("", "Vorschau", "width=800,height=600");
+    const previewWindow = window.open("", "Vorschau", "width=1000,height=700");
     if (previewWindow) {
       const rootElement = previewWindow.document.createElement("div");
       previewWindow.document.body.appendChild(rootElement);
@@ -365,7 +523,7 @@ const InvitationForm = () => {
             error={!!errors.title}
             helperText={errors.title}
             fullWidth
-            style={{ marginBottom: "20px" }}
+            style={{ marginBottom: "20px", backgroundColor: "white" }}
           />
 
 
@@ -375,6 +533,7 @@ const InvitationForm = () => {
         value={eventType}
         onChange={handleEventTypeChange}
         fullWidth
+        style={{backgroundColor: "white" }}
       >
         <MenuItem value="Präsenz">Präsenz</MenuItem>
         <MenuItem value="Online">Online</MenuItem>
@@ -382,65 +541,83 @@ const InvitationForm = () => {
     </Grid>
     <Grid item xs={12} sm={6}>
     <TextField
-                label="Adresse"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                error={!!errors.address}
-                helperText={errors.address}
-                fullWidth
-                disabled={eventType === "Online"}
-              />
+  label="Adresse"
+  name="address"
+  value={formData.address}
+  onChange={handleInputChange} // Aktualisiert den State bei jeder Eingabe
+  onBlur={handleBlur} // Führt die Geocoding-Logik aus, wenn das Feld verlassen wird
+  error={!!errors.address}
+  helperText={errors.address}
+  fullWidth
+  disabled={eventType === "Online"}
+  style={{ backgroundColor: "white" }}
+/>
     </Grid>
     <Grid item xs={12} sm={6}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateTimePicker
-                  label="Startdatum & Uhrzeit"
-                  value={formData.startDate}
-                  onChange={(newValue) => handleDateChange("startDate", newValue)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={!!errors.startDate}
-                      helperText={errors.startDate}
-                      fullWidth
-                    />
-                  )}
-                />
-      </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+    <DateTimePicker
+      label="Startdatum & Uhrzeit"
+      value={formData.endDate}
+      onChange={(newValue) => handleDateChange("endDate", newValue)}
+      inputFormat="DD.MM.YYYY HH:mm" // Format anpassen
+      ampm={false} // 24-Stunden-Format
+      renderInput={(params) => (
+        <StyledTextField
+          {...params}
+          error={!!errors.endDate}
+          helperText={errors.endDate}
+          fullWidth
+        />
+      )}
+    />
+  </LocalizationProvider>
     </Grid>
     <Grid item xs={12} sm={6}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateTimePicker
-                  label="Enddatum & Uhrzeit"
-                  value={formData.endDate}
-                  onChange={(newValue) => handleDateChange("endDate", newValue)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={!!errors.endDate}
-                      helperText={errors.endDate}
-                      fullWidth
-                    />
-                  )}
-                />
-      </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+    <DateTimePicker
+      label="Enddatum & Uhrzeit"
+      value={formData.endDate}
+      onChange={(newValue) => handleDateChange("endDate", newValue)}
+      inputFormat="DD.MM.YYYY HH:mm" // Format anpassen
+      ampm={false} // 24-Stunden-Format
+      renderInput={(params) => (
+        <StyledTextField
+        {...params}
+        error={!!errors.endDate}
+        helperText={errors.endDate}
+        fullWidth
+      />
+      )}
+    />
+  </LocalizationProvider>
     </Grid>
   </Grid>
 
   <Grid container spacing={3} style={{ marginTop: "20px" }}>
-    <Grid item xs={12} sm={6}>
-      <Box
-        style={{
-          backgroundColor: "white",
-          padding: "10px",
-          border: "1px solid #ccc",
-          height: "200px",
-        }}
-      >
-        Platzhalter für Maps
-      </Box>
-    </Grid>
+  <Grid item xs={12} sm={6}>
+  {formData.coordinates ? (
+        <OpenStreetMap
+        coordinates={formData.coordinates} // Koordinaten aus dem Formular
+        address={formData.address} // Adresse aus dem Formular
+      />
+  ) : (
+    <Box
+      style={{
+        backgroundColor: "white",
+        padding: "10px",
+        border: "1px solid #ccc",
+        height: "200px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      Keine Adresse eingegeben
+    </Box>
+  )}
+</Grid>
+
+
     <Grid item xs={12} sm={6}>
     <TextField
             label="Beschreibung"
@@ -452,6 +629,7 @@ const InvitationForm = () => {
             multiline
             rows={4}
             fullWidth
+            style={{backgroundColor: "white" }}
           />
     </Grid>
   </Grid>
@@ -466,6 +644,7 @@ const InvitationForm = () => {
                 error={!!errors.capacity}
                 helperText={errors.capacity}
                 fullWidth
+                style={{backgroundColor: "white" }}
               />
     </Grid>
     <Grid item xs={12} sm={4}>
@@ -477,6 +656,7 @@ const InvitationForm = () => {
                 error={!!errors.maxGuests}
                 helperText={errors.maxGuests}
                 fullWidth
+                style={{backgroundColor: "white" }}
               />
     </Grid>
     <Grid item xs={12} sm={4}>
@@ -488,6 +668,7 @@ const InvitationForm = () => {
                 error={!!errors.reminderDays}
                 helperText={errors.reminderDays}
                 fullWidth
+                style={{backgroundColor: "white" }}
               />
     </Grid>
   </Grid>
@@ -507,6 +688,13 @@ const InvitationForm = () => {
     </Button>
     <Button
       variant="contained"
+      color="primary"
+      onClick={handlePreview}
+    >
+      Vorschau
+    </Button>
+    <Button
+      variant="contained"
       sx={{
         backgroundColor: "green", // Grüne Hintergrundfarbe
         "&:hover": {
@@ -515,14 +703,7 @@ const InvitationForm = () => {
       }}
       onClick={handleOpenDialog}
     >
-      Veröffentlichen
-    </Button>
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={handlePreview}
-    >
-      Vorschau
+      Weiter
     </Button>
   </Box>
 </StyledPaper>
@@ -536,12 +717,8 @@ const InvitationForm = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleDialogAction("publish")}
-          >
-            Veröffentlichen
+        <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
+            Abbrechen
           </Button>
           <Button
             variant="contained"
@@ -550,8 +727,12 @@ const InvitationForm = () => {
           >
             Einladungsliste
           </Button>
-          <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
-            Abbrechen
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDialogAction("publish")}
+          >
+            Veröffentlichen
           </Button>
         </DialogActions>
       </Dialog>
