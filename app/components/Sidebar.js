@@ -44,7 +44,6 @@ function Sidebar() {
         { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
         { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
         { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
-        { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push(`${basePath}/meinEntwurf`) },
       ];
       break;
 
