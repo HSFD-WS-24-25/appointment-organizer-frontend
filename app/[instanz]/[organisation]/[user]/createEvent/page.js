@@ -13,7 +13,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  FormControl,
+  InputLabel
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -580,26 +582,42 @@ const InvitationForm = () => {
           backgroundColor: "rgba(255, 255, 255, 0.8)",
         }}
       >
+
+        
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
           Veranstaltung erstellen
         </DesignTitel>
 
+        <Box 
+         sx={{
+          marginTop:"70px"
+        }}
+      >
         {/* Datei-Upload und Eventtyp */}
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <Select
-              value={eventType}
-              onChange={handleEventTypeChange}
-              fullWidth
-              style={{
-                backgroundColor: "white",
-                height: "56px",
-              }}
-            >
-              <MenuItem value="Präsenz">Präsenz</MenuItem>
-              <MenuItem value="Online">Online</MenuItem>
-            </Select>
+            <FormControl fullWidth>
+              <InputLabel id="event-type-label"
+                sx={{
+                  fontSize: "1.2rem", // Größere Schriftgröße
+                  top: "-10px",        // Beschriftung weiter nach oben
+                }}
+              >Veranstaltungstyp:</InputLabel>
+              <Select
+                labelId="event-type-label"
+                value={eventType}
+                onChange={handleEventTypeChange}
+                fullWidth
+                style={{
+                  backgroundColor: "white",
+                  height: "56px",
+                }}
+              >
+                <MenuItem value="Präsenz">Präsenz</MenuItem>
+                <MenuItem value="Online">Online</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <input
@@ -636,52 +654,52 @@ const InvitationForm = () => {
           <Grid item xs={6}>
             {/* Startdatum */}
             <Grid container spacing={2}>
-  {/* Startdatum */}
-  <Grid item xs={6}>
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-      <DateTimePicker
-        label="Startdatum & Uhrzeit"
-        value={formData.startDate}
-        onChange={(newValue) => handleDateChange("startDate", newValue)}
-        inputFormat="DD.MM.YYYY HH:mm"
-        ampm={false}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            fullWidth
-            style={{
-              backgroundColor: "white",
-              height: "56px",
-            }}
-          />
-        )}
-      />
-    </LocalizationProvider>
-  </Grid>
+              {/* Startdatum */}
+              <Grid item xs={6}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                  <DateTimePicker
+                    label="Startdatum & Uhrzeit"
+                    value={formData.startDate}
+                    onChange={(newValue) => handleDateChange("startDate", newValue)}
+                    inputFormat="DD.MM.YYYY HH:mm"
+                    ampm={false}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        style={{
+                          backgroundColor: "white",
+                          height: "56px",
+                        }}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+              </Grid>
 
-  {/* Enddatum */}
-  <Grid item xs={6}>
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-      <DateTimePicker
-        label="Enddatum & Uhrzeit"
-        value={formData.endDate}
-        onChange={(newValue) => handleDateChange("endDate", newValue)}
-        inputFormat="DD.MM.YYYY HH:mm"
-        ampm={false}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            fullWidth
-            style={{
-              backgroundColor: "white",
-              height: "56px",
-            }}
-          />
-        )}
-      />
-    </LocalizationProvider>
-  </Grid>
-</Grid>
+              {/* Enddatum */}
+              <Grid item xs={6}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                  <DateTimePicker
+                    label="Enddatum & Uhrzeit"
+                    value={formData.endDate}
+                    onChange={(newValue) => handleDateChange("endDate", newValue)}
+                    inputFormat="DD.MM.YYYY HH:mm"
+                    ampm={false}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        style={{
+                          backgroundColor: "white",
+                          height: "56px",
+                        }}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+              </Grid>
+            </Grid>
 
             {/* Adresse */}
             <TextField
@@ -737,10 +755,10 @@ const InvitationForm = () => {
               error={!!errors.description}
               helperText={errors.description}
               multiline={true}
-              rows={9} // Nur Höhe für Multiline
+              rows={13} // Nur Höhe für Multiline
               style={{
-                marginTop: "80px",
-                height: "250px", // Fixe Höhe unabhängig von Schriftgröße
+                marginTop: "-50px",
+                height: "340px", // Fixe Höhe unabhängig von Schriftgröße
                 backgroundColor: "white",
               }}
 
@@ -816,6 +834,7 @@ const InvitationForm = () => {
           >
             Weiter
           </Button>
+        </Box>
         </Box>
       </StyledPaper>
 
