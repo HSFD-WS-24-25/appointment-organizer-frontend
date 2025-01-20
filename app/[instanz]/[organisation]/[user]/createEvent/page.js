@@ -711,9 +711,11 @@ const InvitationForm = () => {
               onChange={handleInputChange}
               onBlur={handleBlur}
               error={!!errors.address}
+
                helperText={errors.address}
               fullWidth
               disabled={eventType === "Online"} // Adresse deaktivieren, wenn Online
+
               style={{
                 backgroundColor: "white",
                 marginTop: "10px", // Optionaler Abstand
@@ -760,6 +762,7 @@ const InvitationForm = () => {
               rows={13} // Nur Höhe für Multiline
               style={{
                 marginTop: "-10px",
+
                 height: "340px", // Fixe Höhe unabhängig von Schriftgröße
                 backgroundColor: "white",
               }}

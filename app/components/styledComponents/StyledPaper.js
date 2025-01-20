@@ -2,7 +2,7 @@
 import { styled } from "@mui/material/styles";
 import {Paper} from "@mui/material";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+export const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3), // Mehr Padding für einen luftigen Look
   height: "auto", // Dynamische Höhe
   display: "flex",
@@ -30,4 +30,4 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 }));
 
-export default StyledPaper;
+//export default StyledPaper;
