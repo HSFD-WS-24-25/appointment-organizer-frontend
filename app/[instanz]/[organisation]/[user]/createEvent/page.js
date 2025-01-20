@@ -283,7 +283,7 @@ const InvitationForm = () => {
             mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
           }
         });
-      }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
+      }); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
     }, []);
 
     return (
@@ -483,9 +483,11 @@ const InvitationForm = () => {
   };
 
   const handleEventTypeChange = (e) => {
-    setEventType(e.target.value);
-    if (e.target.value === "Online") {
-      setFormData({ ...formData, address: "" });
+    const selectedType = e.target.value;
+    setEventType(selectedType);
+  
+    if (selectedType === "Online") {
+      setFormData({ ...formData, address: "" }); // Adresse entfernen
     }
   };
 
@@ -709,9 +711,9 @@ const InvitationForm = () => {
               onChange={handleInputChange}
               onBlur={handleBlur}
               error={!!errors.address}
-              helperText={errors.address}
+               helperText={errors.address}
               fullWidth
-              disabled={eventType === "Online"}
+              disabled={eventType === "Online"} // Adresse deaktivieren, wenn Online
               style={{
                 backgroundColor: "white",
                 marginTop: "10px", // Optionaler Abstand
@@ -757,7 +759,7 @@ const InvitationForm = () => {
               multiline={true}
               rows={13} // Nur Höhe für Multiline
               style={{
-                marginTop: "-50px",
+                marginTop: "-10px",
                 height: "340px", // Fixe Höhe unabhängig von Schriftgröße
                 backgroundColor: "white",
               }}
