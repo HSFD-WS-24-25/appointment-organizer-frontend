@@ -313,9 +313,6 @@ function UserDashboard() {
             <ToggleButton value="grid">Grid</ToggleButton>
             <ToggleButton value="list">List</ToggleButton>
           </ToggleButtonGroup>
-          <Link href="#" underline="hover">
-            .ics Datei erstellen
-          </Link>
         </Box>
 
         {/* Events Display */}
