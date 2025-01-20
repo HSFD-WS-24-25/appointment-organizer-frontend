@@ -37,7 +37,7 @@ import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
 // Setze die deutsche Lokalisierung global
 dayjs.locale("de");
 
-const OpenStreetMap = ({ address, coordinates }) => {
+ const OpenStreetMap = ({ address, coordinates }) => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 

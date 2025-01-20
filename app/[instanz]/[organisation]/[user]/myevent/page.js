@@ -31,12 +31,20 @@ import { useRouter } from "next/navigation";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
-import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
+import { generateBasePath } from "@/app/components/Sidebar";
 
 function EventCard({ event, view }) {
   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
+  const router = useRouter();
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
+  const { user, authError, isLoading, events, fetchError } = useFetchEvents();
+
+  const handleEditEvent = () => {
+    const basePath = generateBasePath(userInfo, user); // Determine the base path
+    router.push(`${basePath}/editEvent/${event.id}`); // Navigate to /user/createEvent
+  };
 
   const [open, setOpen] = useState(false);
 
@@ -96,7 +104,7 @@ function EventCard({ event, view }) {
         </Box>
 
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
-          <Button size="small" startIcon={<EditIcon />}>
+          <Button size="small" startIcon={<EditIcon />} onClick={handleEditEvent}>
             Bearbeiten
           </Button>
           <Box>
@@ -149,7 +157,7 @@ function EventCard({ event, view }) {
       elevation={3}
     >
       <Box sx={{ position: "absolute", top: 8, left: 8 }}>
-        <StyledEditButton />
+        <StyledEditButton onClick={handleEditEvent} />
       </Box>
 
       <Box sx={{ position: "absolute", top: 8, right: 8 }}>
@@ -241,16 +249,7 @@ function EventCard({ event, view }) {
 function UserDashboard() {
   const [view, setView] = useState("grid");
   const router = useRouter();
-  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
-  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-
-  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
-  useEffect(() => {
-    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
-      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
-      setBasePath(path);
-    }
-  }, [userInfo]);
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
 
   // Verwende den neuen Hook
   const { user, authError, isLoading, events, fetchError } = useFetchEvents();
@@ -269,6 +268,7 @@ function UserDashboard() {
   };
 
   const handleCreateEvent = () => {
+    const basePath = generateBasePath(userInfo, user); // Determine the base path
     router.push(`${basePath}/createEvent`); // Navigate to /user/createEvent
   };
 
