@@ -126,7 +126,7 @@ const InvitationForm = () => {
   const { userInfo } = useUserContext();
   const [basePath, setBasePath] = useState("");
   const [formData, setFormData] = useState({
-    
+
     title: "",
     startDate: null,
     endDate: null,
@@ -145,8 +145,8 @@ const InvitationForm = () => {
 
   const handleCancelButon = () => {
     const basePath = generateBasePath(userInfo, user); // Determine the base path
-  router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
-};
+    router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+  };
 
   useEffect(() => {
     if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
@@ -170,28 +170,28 @@ const InvitationForm = () => {
     }
   }, [event]);
 
-    // Geocoding-Funktion global definieren
-    const geocodeAddress = async (address) => {
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP-Error: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.length > 0) {
-          const { lat, lon } = data[0];
-          return [lat, lon]; // Koordinaten zurückgeben
-        } else {
-          console.error("Adresse nicht gefunden.");
-          return null;
-        }
-      } catch (error) {
-        console.error("Fehler beim Geocoding:", error);
+  // Geocoding-Funktion global definieren
+  const geocodeAddress = async (address) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP-Error: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        return [lat, lon]; // Koordinaten zurückgeben
+      } else {
+        console.error("Adresse nicht gefunden.");
         return null;
       }
-    };
+    } catch (error) {
+      console.error("Fehler beim Geocoding:", error);
+      return null;
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -200,10 +200,10 @@ const InvitationForm = () => {
       newErrors.title = "Der Titel muss mindestens 10 Zeichen lang sein.";
     }
 
- // Adresse nur prüfen, wenn Typ nicht "Online" ist
- if (eventType !== "Online" && !formData.address) {
-  newErrors.address = "Die Adresse ist ein Pflichtfeld.";
-}
+    // Adresse nur prüfen, wenn Typ nicht "Online" ist
+    if (eventType !== "Online" && !formData.address) {
+      newErrors.address = "Die Adresse ist ein Pflichtfeld.";
+    }
 
     if (!formData.startDate || isNaN(new Date(formData.startDate).getTime())) {
       newErrors.startDate = "Das Startdatum ist ein Pflichtfeld und muss gültig sein.";
@@ -233,9 +233,12 @@ const InvitationForm = () => {
 
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogContent,setDialogContent] = useState(null);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+  const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
+
 
   const handleOpenDialog = () => {
     if (validateForm()) {
@@ -254,7 +257,27 @@ const InvitationForm = () => {
     setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
     setDialogOpen(true); // Öffne den Dialog
   };
-  
+
+  const handleOpenPublishDialog = () => {
+    if (validateForm()) {
+      setPublishDialogOpen(true);
+    } else {
+      alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
+    }
+  };
+
+  const handleClosePublishDialog = () => {
+    setPublishDialogOpen(false);
+  };
+
+  const handleOpenInviteListDialog = () => {
+    setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
+    setInviteListDialogOpen(true);
+  };
+
+  const handleCloseInviteListDialog = () => {
+    setInviteListDialogOpen(false);
+  };
 
 
   const handleDialogAction = async (action) => {
@@ -415,44 +438,44 @@ const InvitationForm = () => {
               marginTop: "20px",
             }}
           >
-<div>
-  <p>
-    <strong>Start:</strong>{" "}
-    {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-  </p>
-  <p>
-    <strong>Adresse:</strong> {formData.address || "N/A"}
-  </p>
-  <div
-    style={{
-      position: "relative",
-      width: "100%",
-      height: "200px",
-      border: "1px solid #ccc",
-      marginTop: "10px",
-      overflow: "hidden",
-    }}
-  >
-    {formData.coordinates || formData.address ? (
-      <OpenStreetMap
-        address={formData.address}
-        coordinates={formData.coordinates}
-        interactive={false} // Interaktivität deaktivieren
-      />
-    ) : (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%",
-        }}
-      >
-        Keine Adresse eingegeben
-      </div>
-    )}
-  </div>
-</div>
+            <div>
+              <p>
+                <strong>Start:</strong>{" "}
+                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+              </p>
+              <p>
+                <strong>Adresse:</strong> {formData.address || "N/A"}
+              </p>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid #ccc",
+                  marginTop: "10px",
+                  overflow: "hidden",
+                }}
+              >
+                {formData.coordinates || formData.address ? (
+                  <OpenStreetMap
+                    address={formData.address}
+                    coordinates={formData.coordinates}
+                    interactive={false} // Interaktivität deaktivieren
+                  />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                    }}
+                  >
+                    Keine Adresse eingegeben
+                  </div>
+                )}
+              </div>
+            </div>
 
             <div>
               <p>
@@ -519,7 +542,7 @@ const InvitationForm = () => {
   const handleEventTypeChange = (e) => {
     const selectedType = e.target.value;
     setEventType(selectedType);
-  
+
     if (selectedType === "Online") {
       setFormData({ ...formData, address: "" }); // Adresse entfernen
     }
@@ -581,7 +604,7 @@ const InvitationForm = () => {
       }}
     >
 
-<StyledPaper
+      <StyledPaper
         elevation={3}
         style={{
           padding: "20px",
@@ -590,272 +613,272 @@ const InvitationForm = () => {
         }}
       >
 
-        
+
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
           Veranstaltung erstellen
         </DesignTitel>
 
-        <Box 
-         sx={{
-          marginTop:"70px"
-        }}
-      >
-        {/* Datei-Upload und Eventtyp */}
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id="event-type-label"
-                sx={{
-                  fontSize: "1.2rem", // Größere Schriftgröße
-                  top: "-10px",        // Beschriftung weiter nach oben
+        <Box
+          sx={{
+            marginTop: "70px"
+          }}
+        >
+          {/* Datei-Upload und Eventtyp */}
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="event-type-label"
+                  sx={{
+                    fontSize: "1.2rem", // Größere Schriftgröße
+                    top: "-10px",        // Beschriftung weiter nach oben
+                  }}
+                >Veranstaltungstyp:</InputLabel>
+                <Select
+                  labelId="event-type-label"
+                  value={eventType}
+                  onChange={handleEventTypeChange}
+                  fullWidth
+                  style={{
+                    backgroundColor: "white",
+                    height: "56px",
+                  }}
+                >
+                  <MenuItem value="Präsenz">Präsenz</MenuItem>
+                  <MenuItem value="Online">Online</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <input
+                accept="image/*"
+                type="file"
+                onChange={handleImageUpload}
+                style={{ marginBottom: "20px" }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Titel */}
+          <Grid container spacing={2} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} >
+              <DynamicTextStyler
+                label="Titel"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                onStyleChange={setTitleStyles}
+                error={!!errors.title}
+                helperText={errors.title}
+                multiline={false}
+                rows={1}
+                style={{
+                  height: "56px",
+                  backgroundColor: "white",
                 }}
-              >Veranstaltungstyp:</InputLabel>
-              <Select
-                labelId="event-type-label"
-                value={eventType}
-                onChange={handleEventTypeChange}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+            <Grid item xs={6}>
+              {/* Startdatum */}
+              <Grid container spacing={2}>
+                {/* Startdatum */}
+                <Grid item xs={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                    <DateTimePicker
+                      label="Startdatum & Uhrzeit"
+                      value={formData.startDate}
+                      onChange={(newValue) => handleDateChange("startDate", newValue)}
+                      inputFormat="DD.MM.YYYY HH:mm"
+                      ampm={false}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          style={{
+                            backgroundColor: "white",
+                            height: "56px",
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                {/* Enddatum */}
+                <Grid item xs={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                    <DateTimePicker
+                      label="Enddatum & Uhrzeit"
+                      value={formData.endDate}
+                      onChange={(newValue) => handleDateChange("endDate", newValue)}
+                      inputFormat="DD.MM.YYYY HH:mm"
+                      ampm={false}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          style={{
+                            backgroundColor: "white",
+                            height: "56px",
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+              </Grid>
+
+              {/* Adresse */}
+              <TextField
+                label="Adresse"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                error={!!errors.address}
+                helperText={errors.address}
                 fullWidth
+                disabled={eventType === "Online"}
                 style={{
                   backgroundColor: "white",
-                  height: "56px",
+                  marginTop: "10px", // Optionaler Abstand
+                }}
+              />
+
+              {/* Karte */}
+              <Box
+                style={{
+                  backgroundColor: "white",
+                  padding: "10px",
+                  border: "1px solid #ccc",
+                  height: "250px", // Höhe der Karte anpassen
+                  marginTop: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <MenuItem value="Präsenz">Präsenz</MenuItem>
-                <MenuItem value="Online">Online</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <input
-              accept="image/*"
-              type="file"
-              onChange={handleImageUpload}
-              style={{ marginBottom: "20px" }}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Titel */}
-        <Grid container spacing={2} style={{ marginTop: "20px" }}>
-          <Grid item xs={12} >
-            <DynamicTextStyler
-              label="Titel"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              onStyleChange={setTitleStyles}
-              error={!!errors.title}
-              helperText={errors.title}
-              multiline={false}
-              rows={1}
-              style={{
-                height: "56px",
-                backgroundColor: "white",
-              }}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-          <Grid item xs={6}>
-            {/* Startdatum */}
-            <Grid container spacing={2}>
-              {/* Startdatum */}
-              <Grid item xs={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-                  <DateTimePicker
-                    label="Startdatum & Uhrzeit"
-                    value={formData.startDate}
-                    onChange={(newValue) => handleDateChange("startDate", newValue)}
-                    inputFormat="DD.MM.YYYY HH:mm"
-                    ampm={false}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        style={{
-                          backgroundColor: "white",
-                          height: "56px",
-                        }}
-                      />
-                    )}
+                {formData.coordinates ? (
+                  <OpenStreetMap
+                    coordinates={formData.coordinates}
+                    address={formData.address}
                   />
-                </LocalizationProvider>
-              </Grid>
-
-              {/* Enddatum */}
-              <Grid item xs={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-                  <DateTimePicker
-                    label="Enddatum & Uhrzeit"
-                    value={formData.endDate}
-                    onChange={(newValue) => handleDateChange("endDate", newValue)}
-                    inputFormat="DD.MM.YYYY HH:mm"
-                    ampm={false}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        style={{
-                          backgroundColor: "white",
-                          height: "56px",
-                        }}
-                      />
-                    )}
-                  />
-                </LocalizationProvider>
-              </Grid>
+                ) : (
+                  <Typography variant="body2" align="center">
+                    Keine Adresse eingegeben
+                  </Typography>
+                )}
+              </Box>
             </Grid>
 
-            {/* Adresse */}
-            <TextField
-              label="Adresse"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              error={!!errors.address}
-              helperText={errors.address}
-              fullWidth
-              disabled={eventType === "Online"}
-              style={{
-                backgroundColor: "white",
-                marginTop: "10px", // Optionaler Abstand
-              }}
-            />
+            {/* Beschreibung */}
+            <Grid item xs={6} >
+              <DynamicTextStyler
+                label="Beschreibung"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                onStyleChange={setDescriptionStyles}
+                error={!!errors.description}
+                helperText={errors.description}
+                multiline={true}
+                rows={13} // Nur Höhe für Multiline
+                style={{
+                  marginTop: "-10px",
+                  height: "340px", // Fixe Höhe unabhängig von Schriftgröße
+                  backgroundColor: "white",
+                }}
 
-            {/* Karte */}
-            <Box
-              style={{
-                backgroundColor: "white",
-                padding: "10px",
-                border: "1px solid #ccc",
-                height: "250px", // Höhe der Karte anpassen
-                marginTop: "10px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+              />
+
+            </Grid>
+          </Grid>
+
+          {/* Zusätzliche Angaben */}
+          <Grid container spacing={2} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Kapazität"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleInputChange}
+                error={!!errors.capacity}
+                helperText={errors.capacity}
+                fullWidth
+                style={{ backgroundColor: "white" }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Maximale Gäste"
+                name="maxGuests"
+                value={formData.maxGuests}
+                onChange={(newValue) => handleInputChange(newValue)}
+                error={!!errors.maxGuests}
+                helperText={errors.maxGuests}
+                fullWidth
+                style={{ backgroundColor: "white" }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Erinnerung in Tagen"
+                name="reminderDays"
+                value={formData.reminderDays}
+                onChange={handleInputChange}
+                error={!!errors.reminderDays}
+                helperText={errors.reminderDays}
+                fullWidth
+                style={{ backgroundColor: "white" }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Buttons */}
+          <Box display="flex" justifyContent="space-between" marginTop="20px">
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "red",
+                "&:hover": { backgroundColor: "darkred" },
               }}
+              onClick={handleCancelButon}
             >
-              {formData.coordinates ? (
-                <OpenStreetMap
-                  coordinates={formData.coordinates}
-                  address={formData.address}
-                />
-              ) : (
-                <Typography variant="body2" align="center">
-                  Keine Adresse eingegeben
-                </Typography>
-              )}
-            </Box>
-          </Grid>
+              Abbrechen
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => handlePreview()}>
+              Vorschau
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleOpenInviteListDialog}
+            >
+              Einladungsliste
+            </Button>
 
-          {/* Beschreibung */}
-          <Grid item xs={6} >
-            <DynamicTextStyler
-              label="Beschreibung"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              onStyleChange={setDescriptionStyles}
-              error={!!errors.description}
-              helperText={errors.description}
-              multiline={true}
-              rows={13} // Nur Höhe für Multiline
-              style={{
-                marginTop: "-10px",
-                height: "340px", // Fixe Höhe unabhängig von Schriftgröße
-                backgroundColor: "white",
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "green",
+                "&:hover": { backgroundColor: "darkgreen" },
               }}
-
-            />
-
-          </Grid>
-        </Grid>
-
-        {/* Zusätzliche Angaben */}
-        <Grid container spacing={2} style={{ marginTop: "20px" }}>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Kapazität"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleInputChange}
-              error={!!errors.capacity}
-              helperText={errors.capacity}
-              fullWidth
-              style={{ backgroundColor: "white" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Maximale Gäste"
-              name="maxGuests"
-              value={formData.maxGuests}
-              onChange={(newValue) => handleInputChange(newValue)}
-              error={!!errors.maxGuests}
-              helperText={errors.maxGuests}
-              fullWidth
-              style={{ backgroundColor: "white" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Erinnerung in Tagen"
-              name="reminderDays"
-              value={formData.reminderDays}
-              onChange={handleInputChange}
-              error={!!errors.reminderDays}
-              helperText={errors.reminderDays}
-              fullWidth
-              style={{ backgroundColor: "white" }}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Buttons */}
-        <Box display="flex" justifyContent="space-between" marginTop="20px">
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "red",
-              "&:hover": { backgroundColor: "darkred" },
-            }}
-            onClick={handleCancelButon}
-          >
-            Abbrechen
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => handlePreview()}>
-            Vorschau
-          </Button>
-          <Button
-  variant="contained"
-  color="secondary"
-  onClick={openInvitesDialog}
->
-  Einladungsliste
-</Button> 
-
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "green",
-              "&:hover": { backgroundColor: "darkgreen" },
-            }}
-            onClick={handleOpenDialog}
-          >
-            Speichern
-          </Button>
-        </Box>
+              onClick={handleOpenPublishDialog}
+            >
+              Speichern
+            </Button>
+          </Box>
         </Box>
       </StyledPaper>
 
       {/* Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Änderungen vorgenommen?</DialogTitle>
+      <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
+        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
         <DialogContent>
           <Typography>
             Möchten Sie die Änderungen speichern und veröffentlichen?
@@ -875,17 +898,23 @@ const InvitationForm = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="lg">
 
-  <DialogContent>
-    {dialogContent} {/* Dynamischer Inhalt */}
-  </DialogContent>
-  <DialogActions>
-    <Button variant="outlined" onClick={() => setDialogOpen(false)}>
-      Schließen
-    </Button>
-  </DialogActions>
-</Dialog>
+      <Dialog
+        open={inviteListDialogOpen}
+        onClose={handleCloseInviteListDialog}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogContent>
+          {dialogContent} {/* Dynamischer Inhalt */}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleCloseInviteListDialog}>
+            Schließen
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
 
     </div>

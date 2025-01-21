@@ -210,8 +210,30 @@ const InvitationForm = () => {
   };
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogContent,setDialogContent] = useState(null);
-  
+  const [dialogContent, setDialogContent] = useState(null);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
+
+const handleOpenPublishDialog = () => {
+  if (validateForm()) {
+    setPublishDialogOpen(true);
+  } else {
+    alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
+  }
+};
+
+const handleClosePublishDialog = () => {
+  setPublishDialogOpen(false);
+};
+
+const handleOpenInviteListDialog = () => {
+  setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
+  setInviteListDialogOpen(true);
+};
+
+const handleCloseInviteListDialog = () => {
+  setInviteListDialogOpen(false);
+};
 
   const handleOpenDialog = () => {
     if (validateForm()) {
@@ -231,7 +253,7 @@ const InvitationForm = () => {
     setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
     setDialogOpen(true); // Öffne den Dialog
   };
-  
+
   const handleDialogAction = async (action) => {
     if (action === "publish") {
       try {
@@ -589,296 +611,301 @@ const InvitationForm = () => {
         }}
       >
 
-        
+
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
           Veranstaltung erstellen
         </DesignTitel>
 
-        <Box 
-         sx={{
-          marginTop:"70px"
-        }}
-      >
-        {/* Datei-Upload und Eventtyp */}
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id="event-type-label"
-                sx={{
-                  fontSize: "1.2rem", // Größere Schriftgröße
-                  top: "-10px",        // Beschriftung weiter nach oben
+        <Box
+          sx={{
+            marginTop: "70px"
+          }}
+        >
+          {/* Datei-Upload und Eventtyp */}
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="event-type-label"
+                  sx={{
+                    fontSize: "1.2rem", // Größere Schriftgröße
+                    top: "-10px",        // Beschriftung weiter nach oben
+                  }}
+                >Veranstaltungstyp:</InputLabel>
+                <Select
+                  labelId="event-type-label"
+                  value={eventType}
+                  onChange={handleEventTypeChange}
+                  fullWidth
+                  style={{
+                    backgroundColor: "white",
+                    height: "56px",
+                  }}
+                >
+                  <MenuItem value="Präsenz">Präsenz</MenuItem>
+                  <MenuItem value="Online">Online</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <input
+                accept="image/*"
+                type="file"
+                onChange={handleImageUpload}
+                style={{ marginBottom: "20px" }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Titel */}
+          <Grid container spacing={2} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} >
+              <DynamicTextStyler
+                label="Titel"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                onStyleChange={setTitleStyles}
+                error={!!errors.title}
+                helperText={errors.title}
+                multiline={false}
+                rows={1}
+                style={{
+                  height: "56px",
+                  backgroundColor: "white",
                 }}
-              >Veranstaltungstyp:</InputLabel>
-              <Select
-                labelId="event-type-label"
-                value={eventType}
-                onChange={handleEventTypeChange}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+            <Grid item xs={6}>
+              {/* Startdatum */}
+              <Grid container spacing={2}>
+                {/* Startdatum */}
+                <Grid item xs={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                    <DateTimePicker
+                      label="Startdatum & Uhrzeit"
+                      value={formData.startDate}
+                      onChange={(newValue) => handleDateChange("startDate", newValue)}
+                      inputFormat="DD.MM.YYYY HH:mm"
+                      ampm={false}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          style={{
+                            backgroundColor: "white",
+                            height: "56px",
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                {/* Enddatum */}
+                <Grid item xs={6}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                    <DateTimePicker
+                      label="Enddatum & Uhrzeit"
+                      value={formData.endDate}
+                      onChange={(newValue) => handleDateChange("endDate", newValue)}
+                      inputFormat="DD.MM.YYYY HH:mm"
+                      ampm={false}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          style={{
+                            backgroundColor: "white",
+                            height: "56px",
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+              </Grid>
+
+              {/* Adresse */}
+              <TextField
+                label="Adresse"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                error={!!errors.address}
+                helperText={errors.address}
                 fullWidth
+                disabled={eventType === "Online"}
                 style={{
                   backgroundColor: "white",
-                  height: "56px",
+                  marginTop: "10px", // Optionaler Abstand
+                }}
+              />
+
+              {/* Karte */}
+              <Box
+                style={{
+                  backgroundColor: "white",
+                  padding: "10px",
+                  border: "1px solid #ccc",
+                  height: "250px", // Höhe der Karte anpassen
+                  marginTop: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <MenuItem value="Präsenz">Präsenz</MenuItem>
-                <MenuItem value="Online">Online</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <input
-              accept="image/*"
-              type="file"
-              onChange={handleImageUpload}
-              style={{ marginBottom: "20px" }}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Titel */}
-        <Grid container spacing={2} style={{ marginTop: "20px" }}>
-          <Grid item xs={12} >
-            <DynamicTextStyler
-              label="Titel"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              onStyleChange={setTitleStyles}
-              error={!!errors.title}
-              helperText={errors.title}
-              multiline={false}
-              rows={1}
-              style={{
-                height: "56px",
-                backgroundColor: "white",
-              }}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-          <Grid item xs={6}>
-            {/* Startdatum */}
-            <Grid container spacing={2}>
-              {/* Startdatum */}
-              <Grid item xs={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-                  <DateTimePicker
-                    label="Startdatum & Uhrzeit"
-                    value={formData.startDate}
-                    onChange={(newValue) => handleDateChange("startDate", newValue)}
-                    inputFormat="DD.MM.YYYY HH:mm"
-                    ampm={false}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        style={{
-                          backgroundColor: "white",
-                          height: "56px",
-                        }}
-                      />
-                    )}
+                {formData.coordinates ? (
+                  <OpenStreetMap
+                    coordinates={formData.coordinates}
+                    address={formData.address}
                   />
-                </LocalizationProvider>
-              </Grid>
-
-              {/* Enddatum */}
-              <Grid item xs={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-                  <DateTimePicker
-                    label="Enddatum & Uhrzeit"
-                    value={formData.endDate}
-                    onChange={(newValue) => handleDateChange("endDate", newValue)}
-                    inputFormat="DD.MM.YYYY HH:mm"
-                    ampm={false}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        style={{
-                          backgroundColor: "white",
-                          height: "56px",
-                        }}
-                      />
-                    )}
-                  />
-                </LocalizationProvider>
-              </Grid>
+                ) : (
+                  <Typography variant="body2" align="center">
+                    Keine Adresse eingegeben
+                  </Typography>
+                )}
+              </Box>
             </Grid>
 
-            {/* Adresse */}
-            <TextField
-              label="Adresse"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              error={!!errors.address}
-              helperText={errors.address}
-              fullWidth
-              disabled={eventType === "Online"}
-              style={{
-                backgroundColor: "white",
-                marginTop: "10px", // Optionaler Abstand
-              }}
-            />
+            {/* Beschreibung */}
+            <Grid item xs={6} >
+              <DynamicTextStyler
+                label="Beschreibung"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                onStyleChange={setDescriptionStyles}
+                error={!!errors.description}
+                helperText={errors.description}
+                multiline={true}
+                rows={13} // Nur Höhe für Multiline
+                style={{
+                  marginTop: "-50px",
+                  height: "340px", // Fixe Höhe unabhängig von Schriftgröße
+                  backgroundColor: "white",
+                }}
 
-            {/* Karte */}
-            <Box
-              style={{
-                backgroundColor: "white",
-                padding: "10px",
-                border: "1px solid #ccc",
-                height: "250px", // Höhe der Karte anpassen
-                marginTop: "10px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+              />
+
+            </Grid>
+          </Grid>
+
+          {/* Zusätzliche Angaben */}
+          <Grid container spacing={2} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Kapazität"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleInputChange}
+                error={!!errors.capacity}
+                helperText={errors.capacity}
+                fullWidth
+                style={{ backgroundColor: "white" }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Maximale Gäste"
+                name="maxGuests"
+                value={formData.maxGuests}
+                onChange={(newValue) => handleInputChange(newValue)}
+                error={!!errors.maxGuests}
+                helperText={errors.maxGuests}
+                fullWidth
+                style={{ backgroundColor: "white" }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Erinnerung in Tagen"
+                name="reminderDays"
+                value={formData.reminderDays}
+                onChange={handleInputChange}
+                error={!!errors.reminderDays}
+                helperText={errors.reminderDays}
+                fullWidth
+                style={{ backgroundColor: "white" }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Buttons */}
+          <Box display="flex" justifyContent="space-between" marginTop="20px">
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "red",
+                "&:hover": { backgroundColor: "darkred" },
               }}
+              onClick={handleClearForm}
             >
-              {formData.coordinates ? (
-                <OpenStreetMap
-                  coordinates={formData.coordinates}
-                  address={formData.address}
-                />
-              ) : (
-                <Typography variant="body2" align="center">
-                  Keine Adresse eingegeben
-                </Typography>
-              )}
-            </Box>
-          </Grid>
-
-          {/* Beschreibung */}
-          <Grid item xs={6} >
-            <DynamicTextStyler
-              label="Beschreibung"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              onStyleChange={setDescriptionStyles}
-              error={!!errors.description}
-              helperText={errors.description}
-              multiline={true}
-              rows={13} // Nur Höhe für Multiline
-              style={{
-                marginTop: "-50px",
-                height: "340px", // Fixe Höhe unabhängig von Schriftgröße
-                backgroundColor: "white",
+              Formular leeren
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => handlePreview()}>
+              Vorschau
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleOpenInviteListDialog}
+            >
+              Einladungsliste
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "green",
+                "&:hover": { backgroundColor: "darkgreen" },
               }}
-
-            />
-
-          </Grid>
-        </Grid>
-
-        {/* Zusätzliche Angaben */}
-        <Grid container spacing={2} style={{ marginTop: "20px" }}>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Kapazität"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleInputChange}
-              error={!!errors.capacity}
-              helperText={errors.capacity}
-              fullWidth
-              style={{ backgroundColor: "white" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Maximale Gäste"
-              name="maxGuests"
-              value={formData.maxGuests}
-              onChange={(newValue) => handleInputChange(newValue)}
-              error={!!errors.maxGuests}
-              helperText={errors.maxGuests}
-              fullWidth
-              style={{ backgroundColor: "white" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Erinnerung in Tagen"
-              name="reminderDays"
-              value={formData.reminderDays}
-              onChange={handleInputChange}
-              error={!!errors.reminderDays}
-              helperText={errors.reminderDays}
-              fullWidth
-              style={{ backgroundColor: "white" }}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Buttons */}
-        <Box display="flex" justifyContent="space-between" marginTop="20px">
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "red",
-              "&:hover": { backgroundColor: "darkred" },
-            }}
-            onClick={handleClearForm}
-          >
-            Formular leeren
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => handlePreview()}>
-            Vorschau
-          </Button>
-          <Button
-  variant="contained"
-  color="secondary"
-  onClick={openInvitesDialog}
->
-  Einladungsliste
-</Button> 
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "green",
-              "&:hover": { backgroundColor: "darkgreen" },
-            }}
-            onClick={handleOpenDialog}
-          >
-            Weiter
-          </Button>
-        </Box>
+              onClick={handleOpenPublishDialog }
+            >
+              Weiter
+            </Button>
+          </Box>
         </Box>
       </StyledPaper>
 
       {/* Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Möchten Sie die Veranstaltung veröffentlichen?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
-            Abbrechen
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleDialogAction("publish")}
-          >
-            Veröffentlichen
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
+  <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
+  <DialogContent>
+    <Typography>
+      Möchten Sie die Veranstaltung veröffentlichen?
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
+      Abbrechen
+    </Button>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleDialogAction("publish")}
+    >
+      Veröffentlichen
+    </Button>
+  </DialogActions>
+</Dialog>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="lg">
+<Dialog
+  open={inviteListDialogOpen}
+  onClose={handleCloseInviteListDialog}
+  fullWidth
+  maxWidth="lg"
+>
   <DialogContent>
     {dialogContent} {/* Dynamischer Inhalt */}
   </DialogContent>
   <DialogActions>
-    <Button variant="outlined" onClick={() => setDialogOpen(false)}>
+    <Button variant="outlined" onClick={handleCloseInviteListDialog}>
       Schließen
     </Button>
   </DialogActions>
