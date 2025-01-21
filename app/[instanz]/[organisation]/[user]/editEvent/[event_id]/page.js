@@ -3,49 +3,55 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
-  Container,
   Grid,
   MenuItem,
   Select,
   TextField,
   Typography,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   FormControl,
-  InputLabel
+  InputLabel,
 } from "@mui/material";
+import ReactDOM from "react-dom/client";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import "dayjs/locale/de"; // Importiere die deutsche Lokalisierung
-import ReactDOM from "react-dom/client";
-import { usePostEvent } from "@/app/hooks/usePostEvent"
-import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
-import { useRouter } from "next/navigation";
+import "dayjs/locale/de";
+import { useFetchEventById } from "@/app/hooks/useFetchEventById";
+import { usePutEvent } from "@/app/hooks/usePutEvent";
+import { useParams } from "next/navigation";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import DynamicTextStyler from "@/app/components/DynamicTextStyler";
 import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
-import UserDashboard from "../invites/page"
+import { useUserContext } from "@/app/context/UserContext";
+import { generateBasePath } from "@/app/components/Sidebar";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { usePathname, useRouter } from 'next/navigation';
+import UserDashboard from "../../invites/page"
 
-
-
-// Setze die deutsche Lokalisierung global
 dayjs.locale("de");
 
-const OpenStreetMap = ({ address, coordinates }) => {
+const OpenStreetMap = ({ address, coordinates, interactive = true }) => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
   useEffect(() => {
     // Initialisiere die Karte nur einmal
     if (!mapInstance.current) {
-      const map = L.map(mapRef.current).setView([51.505, -0.09], 15);
+      const map = L.map(mapRef.current, {
+        dragging: interactive, // Ziehen aktivieren oder deaktivieren
+        scrollWheelZoom: interactive, // Mausrad-Zoom aktivieren oder deaktivieren
+        doubleClickZoom: interactive, // Doppelklick-Zoom aktivieren oder deaktivieren
+        touchZoom: interactive, // Touch-Zoom aktivieren oder deaktivieren
+        keyboard: interactive, // Tastaturinteraktion aktivieren oder deaktivieren
+      }).setView([51.505, -0.09], 15);
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 22,
         attribution:
@@ -108,33 +114,19 @@ const OpenStreetMap = ({ address, coordinates }) => {
         });
       }
     };
-  }, [address, coordinates]);
+  }, [address, coordinates, interactive]);
 
   return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
 };
 
 
-
-
 const InvitationForm = () => {
-  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
-  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-  const router = useRouter();
-
-  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
-  useEffect(() => {
-    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
-      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
-      setBasePath(path);
-    }
-  }, [userInfo]);
-
-
-  const { postEvent } = usePostEvent();
-  const [errors, setErrors] = useState({});
-  const [eventType, setEventType] = useState("Präsenz");
-  const [backgroundImage, setBackgroundImage] = useState(null);
+  const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
+  const { event, isLoading, fetchError } = useFetchEventById(event_id);
+  const { userInfo } = useUserContext();
+  const [basePath, setBasePath] = useState("");
   const [formData, setFormData] = useState({
+    
     title: "",
     startDate: null,
     endDate: null,
@@ -144,31 +136,62 @@ const InvitationForm = () => {
     description: "",
     reminderDays: "",
   });
+  const [errors, setErrors] = useState({});
+  const [eventType, setEventType] = useState("Präsenz");
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const { user } = useUser();
+  const router = useRouter();
+  const { putEvent } = usePutEvent(); // Hole die PUT-Logik aus dem Hook
 
+  const handleCancelButon = () => {
+    const basePath = generateBasePath(userInfo, user); // Determine the base path
+  router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+};
 
-  // Geocoding-Funktion global definieren
-  const geocodeAddress = async (address) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP-Error: ${response.status}`);
-      }
-      const data = await response.json();
-      if (data.length > 0) {
-        const { lat, lon } = data[0];
-        return [lat, lon]; // Koordinaten zurückgeben
-      } else {
-        console.error("Adresse nicht gefunden.");
+  useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        title: event.name || "",
+        startDate: dayjs(event.date_start) || null,
+        endDate: dayjs(event.date_end) || null,
+        address: event.location || "",
+        capacity: event.capacity?.toString() || "",
+        maxGuests: event.max_additional_guests?.toString() || "",
+        description: event.description || "",
+        reminderDays: event.reminder?.toString() || "",
+      });
+    }
+  }, [event]);
+
+    // Geocoding-Funktion global definieren
+    const geocodeAddress = async (address) => {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP-Error: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.length > 0) {
+          const { lat, lon } = data[0];
+          return [lat, lon]; // Koordinaten zurückgeben
+        } else {
+          console.error("Adresse nicht gefunden.");
+          return null;
+        }
+      } catch (error) {
+        console.error("Fehler beim Geocoding:", error);
         return null;
       }
-    } catch (error) {
-      console.error("Fehler beim Geocoding:", error);
-      return null;
-    }
-  };
-
+    };
 
   const validateForm = () => {
     const newErrors = {};
@@ -177,9 +200,10 @@ const InvitationForm = () => {
       newErrors.title = "Der Titel muss mindestens 10 Zeichen lang sein.";
     }
 
-    if (!formData.address) {
-      newErrors.address = "Die Adresse ist ein Pflichtfeld.";
-    }
+ // Adresse nur prüfen, wenn Typ nicht "Online" ist
+ if (eventType !== "Online" && !formData.address) {
+  newErrors.address = "Die Adresse ist ein Pflichtfeld.";
+}
 
     if (!formData.startDate || isNaN(new Date(formData.startDate).getTime())) {
       newErrors.startDate = "Das Startdatum ist ein Pflichtfeld und muss gültig sein.";
@@ -188,6 +212,7 @@ const InvitationForm = () => {
     if (!formData.endDate || isNaN(new Date(formData.endDate).getTime())) {
       newErrors.endDate = "Das Enddatum ist ein Pflichtfeld und muss gültig sein.";
     }
+
     if (!formData.description || formData.description.length < 50) {
       newErrors.description = "Die Beschreibung muss mindestens 50 Zeichen lang sein.";
     }
@@ -208,10 +233,9 @@ const InvitationForm = () => {
 
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent,setDialogContent] = useState(null);
-  
 
   const handleOpenDialog = () => {
     if (validateForm()) {
@@ -220,7 +244,6 @@ const InvitationForm = () => {
       alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
     }
   };
-
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -232,6 +255,8 @@ const InvitationForm = () => {
     setDialogOpen(true); // Öffne den Dialog
   };
   
+
+
   const handleDialogAction = async (action) => {
     if (action === "publish") {
       try {
@@ -248,7 +273,7 @@ const InvitationForm = () => {
         };
 
         // Sende die Daten an die API
-        const result = await postEvent(eventData);
+        const result = await putEvent(event_id, eventData);
 
         if (result.success) {
           router.push(`${basePath}/myevent`);
@@ -265,6 +290,7 @@ const InvitationForm = () => {
     }
     handleCloseDialog();
   };
+
 
   const [titleStyles, setTitleStyles] = useState({
     fontFamily: "Arial, sans-serif",
@@ -389,43 +415,45 @@ const InvitationForm = () => {
               marginTop: "20px",
             }}
           >
-            <div>
-              <p>
-                <strong>Start:</strong>{" "}
-                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <p>
-                <strong>Adresse:</strong> {formData.address || "N/A"}
-              </p>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "200px",
-                  border: "1px solid #ccc",
-                  marginTop: "10px",
-                  overflow: "hidden",
-                }}
-              >
-                {formData.coordinates || formData.address ? (
-                  <OpenStreetMap
-                    address={formData.address}
-                    coordinates={formData.coordinates}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                    }}
-                  >
-                    Keine Adresse eingegeben
-                  </div>
-                )}
-              </div>
-            </div>
+<div>
+  <p>
+    <strong>Start:</strong>{" "}
+    {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+  </p>
+  <p>
+    <strong>Adresse:</strong> {formData.address || "N/A"}
+  </p>
+  <div
+    style={{
+      position: "relative",
+      width: "100%",
+      height: "200px",
+      border: "1px solid #ccc",
+      marginTop: "10px",
+      overflow: "hidden",
+    }}
+  >
+    {formData.coordinates || formData.address ? (
+      <OpenStreetMap
+        address={formData.address}
+        coordinates={formData.coordinates}
+        interactive={false} // Interaktivität deaktivieren
+      />
+    ) : (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        Keine Adresse eingegeben
+      </div>
+    )}
+  </div>
+</div>
+
             <div>
               <p>
                 <strong>Ende:</strong>{" "}
@@ -489,9 +517,11 @@ const InvitationForm = () => {
   };
 
   const handleEventTypeChange = (e) => {
-    setEventType(e.target.value);
-    if (e.target.value === "Online") {
-      setFormData({ ...formData, address: "" });
+    const selectedType = e.target.value;
+    setEventType(selectedType);
+  
+    if (selectedType === "Online") {
+      setFormData({ ...formData, address: "" }); // Adresse entfernen
     }
   };
 
@@ -538,37 +568,8 @@ const InvitationForm = () => {
     }
   };
 
-  const handleClearForm = () => {
-    setFormData({
-      title: "",
-      startDate: null,
-      endDate: null,
-      address: "",
-      capacity: "",
-      maxGuests: "",
-      description: "",
-      reminderDays: "",
-    });
-    setDescriptionStyles({
-      fontFamily: "Arial, sans-serif", // Standard-Schriftart
-      fontSize: "16px", // Standard-Schriftgröße
-      color: "#333", // Standard-Textfarbe
-      fontWeight: "normal", // Standardgewicht
-      fontStyle: "normal", // Standardstil
-      textDecoration: "none", // Keine Unterstreichung
-    });
-    setTitleStyles({
-      fontFamily: "Arial, sans-serif", // Standard-Schriftart
-      fontSize: "16px", // Standard-Schriftgröße
-      color: "#333", // Standard-Textfarbe
-      fontWeight: "normal", // Standardgewicht
-      fontStyle: "normal", // Standardstil
-      textDecoration: "none", // Keine Unterstreichung
-    });
-    window.location.reload();
-    setEventType("Präsenz");
-    setBackgroundImage(null);
-  };
+
+
   return (
     <div
       style={{
@@ -580,7 +581,7 @@ const InvitationForm = () => {
       }}
     >
 
-      <StyledPaper
+<StyledPaper
         elevation={3}
         style={{
           padding: "20px",
@@ -763,7 +764,7 @@ const InvitationForm = () => {
               multiline={true}
               rows={13} // Nur Höhe für Multiline
               style={{
-                marginTop: "-50px",
+                marginTop: "-10px",
                 height: "340px", // Fixe Höhe unabhängig von Schriftgröße
                 backgroundColor: "white",
               }}
@@ -823,9 +824,9 @@ const InvitationForm = () => {
               backgroundColor: "red",
               "&:hover": { backgroundColor: "darkred" },
             }}
-            onClick={handleClearForm}
+            onClick={handleCancelButon}
           >
-            Formular leeren
+            Abbrechen
           </Button>
           <Button variant="contained" color="primary" onClick={() => handlePreview()}>
             Vorschau
@@ -837,6 +838,7 @@ const InvitationForm = () => {
 >
   Einladungsliste
 </Button> 
+
           <Button
             variant="contained"
             sx={{
@@ -845,7 +847,7 @@ const InvitationForm = () => {
             }}
             onClick={handleOpenDialog}
           >
-            Weiter
+            Speichern
           </Button>
         </Box>
         </Box>
@@ -853,10 +855,10 @@ const InvitationForm = () => {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
+        <DialogTitle>Änderungen vorgenommen?</DialogTitle>
         <DialogContent>
           <Typography>
-            Möchten Sie die Veranstaltung veröffentlichen?
+            Möchten Sie die Änderungen speichern und veröffentlichen?
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -868,12 +870,13 @@ const InvitationForm = () => {
             color="primary"
             onClick={() => handleDialogAction("publish")}
           >
-            Veröffentlichen
+            Ja
           </Button>
         </DialogActions>
       </Dialog>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="lg">
+
   <DialogContent>
     {dialogContent} {/* Dynamischer Inhalt */}
   </DialogContent>
@@ -883,6 +886,8 @@ const InvitationForm = () => {
     </Button>
   </DialogActions>
 </Dialog>
+
+
     </div>
   );
 };
