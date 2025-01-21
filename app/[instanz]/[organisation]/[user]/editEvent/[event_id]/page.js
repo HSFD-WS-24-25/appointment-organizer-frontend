@@ -878,7 +878,6 @@ const InvitationForm = () => {
 
       {/* Dialog */}
       <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
-        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
         <DialogContent>
           <Typography>
             Möchten Sie die Änderungen speichern und veröffentlichen?
