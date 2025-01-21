@@ -171,8 +171,6 @@ function AdminDashboard() {
         formats={formats}
         messages={germanMessages}
         eventPropGetter={eventPropGetter}
-        onSelectEvent={handleSelectEvent} // Handler für bestehende Events
-        onSelectSlot={handleSelectSlot} // Handler für neue Events
       />
 
       <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>

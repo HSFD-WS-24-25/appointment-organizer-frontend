@@ -38,7 +38,6 @@ function Sidebar() {
       mainMenuItems = [
         dashboard,
         { icon: "Group", text: "Benutzerverwaltung", action: () => router.push(`${basePath}/userControl`) },
-        { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
         { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
         { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
         { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
@@ -49,7 +48,6 @@ function Sidebar() {
     case "organisator":
       mainMenuItems = [
        dashboard,
-        { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
         { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
         { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
         { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
@@ -62,7 +60,6 @@ function Sidebar() {
       case "teilnehmer":
         mainMenuItems = [
           dashboard,
-          { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
           { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
         ];
         break;
