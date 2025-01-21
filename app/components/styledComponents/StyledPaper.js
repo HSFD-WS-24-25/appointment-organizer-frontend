@@ -30,4 +30,4 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
 
 }));
 
-//export default StyledPaper;
+export default StyledPaper;
