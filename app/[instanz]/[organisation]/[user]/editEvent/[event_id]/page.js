@@ -314,193 +314,194 @@ const InvitationForm = () => {
     handleCloseDialog();
   };
 
-
-  const [titleStyles, setTitleStyles] = useState({
-    fontFamily: "Arial, sans-serif",
+   const Preview = ({ formData = {}, backgroundImage }) => {
+     useEffect(() => {
+       setTimeout(() => {
+         const mapElements = document.querySelectorAll(".leaflet-container");
+         mapElements.forEach((element) => {
+           const mapInstance = element._leaflet_map;
+           if (mapInstance) {
+             mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
+           }
+         });
+       }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
+     }, []);
+ 
+     return (
+       <div
+         style={{
+           fontFamily: "Arial, sans-serif",
+           fontSize: "16px",
+           color: "#333",
+           margin: "0",
+           padding: "50px",
+           backgroundImage: `url(${backgroundImage})`,
+           backgroundSize: "cover",
+           backgroundPosition: "center",
+         }}
+       >
+         <div
+           style={{
+             maxWidth: "1080px",
+             margin: "auto",
+             backgroundColor: "rgba(255, 255, 255, 0.7)",
+             padding: "20px",
+             borderRadius: "10px",
+           }}
+         >
+           <div
+             style={{
+               display: "flex",
+               justifyContent: "space-between",
+               alignItems: "center",
+               marginBottom: "20px",
+             }}
+           >
+             <h1
+               style={{
+                 fontSize: "2.5em",
+                 fontWeight: "bold",
+                 color: "#333",
+               }}
+             >
+               Einladung
+             </h1>
+             <div style={{ display: "flex", gap: "10px" }}>
+               <button
+                 style={{
+                   padding: "8px 12px",
+                   fontSize: "0.9em",
+                   borderRadius: "5px",
+                   backgroundColor: "green",
+                   color: "white",
+                   border: "none",
+                   cursor: "pointer",
+                 }}
+               >
+                 Teilnehmen
+               </button>
+               <button
+                 style={{
+                   padding: "8px 12px",
+                   fontSize: "0.9em",
+                   borderRadius: "5px",
+                   backgroundColor: "red",
+                   color: "white",
+                   border: "none",
+                   cursor: "pointer",
+                 }}
+               >
+                 Nicht Teilnehmen
+               </button>
+             </div>
+           </div>
+ 
+           {/* Titel */}
+           <p
+             style={{
+               fontSize:  "24px",
+               fontFamily:  "Arial, sans-serif",
+               fontWeight: "normal", 
+               fontStyle:  "normal", 
+               textDecoration:  "none", 
+               color:  "#333",
+             }}
+           >
+             <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
+           </p>
+ 
+           {/* Typ */}
+           <p>
+             <strong>Typ:</strong> {formData.eventType || "N/A"}
+           </p>
+ 
+           {/* Inhalt */}
+           <div
+             style={{
+               display: "grid",
+               gridTemplateColumns: "1fr 1fr",
+               gap: "20px",
+               marginTop: "20px",
+             }}
+           >
+             <div>
+               <p>
+                 <strong>Start:</strong>{" "}
+                 {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+               </p>
+               <p>
+                 <strong>Adresse:</strong> {formData.address || "N/A"}
+               </p>
+               <div
+   style={{
+     position: "relative",
+     width: "100%",
+     height: "200px",
+     border: "1px solid #ccc",
+     marginTop: "10px",
+     overflow: "hidden",
+   }}
+ >
+   {formData.coordinates || formData.address ? (
+     <OpenStreetMap
+       address={formData.address}
+       coordinates={formData.coordinates}
+       mapOptions={{
+         dragging: false, // Deaktiviert das Ziehen der Karte
+         scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
+         doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
+         keyboard: false, // Deaktiviert Tastaturinteraktion
+         zoomControl: false, // Entfernt die Zoom-Steuerung
+       }}
+     />
+   ) : (
+     <div
+       style={{
+         display: "flex",
+         alignItems: "center",
+         justifyContent: "center",
+         height: "100%",
+       }}
+     >
+       Keine Adresse eingegeben
+     </div>
+   )}
+ </div>
+ 
+             </div>
+             <div>
+               <p>
+                 <strong>Ende:</strong>{" "}
+                 {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+               </p>
+               <strong>Beschreibung:</strong>{" "}
+               <p
+  style={{
     fontSize: "16px",
-    color: "#333",
-    fontWeight: "normal",
-  });
-
-  const [descriptionStyles, setDescriptionStyles] = useState({
     fontFamily: "Arial, sans-serif",
-    fontSize: "16px",
-    color: "#333",
     fontWeight: "normal",
-  });
-  const Preview = ({ formData, dynamicStyles = {}, backgroundImage }) => {
-    useEffect(() => {
-      setTimeout(() => {
-        const mapElements = document.querySelectorAll(".leaflet-container");
-        mapElements.forEach((element) => {
-          const mapInstance = element._leaflet_map;
-          if (mapInstance) {
-            mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
-          }
-        });
-      }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
-    }, []);
+    fontStyle: "normal",
+    textDecoration: "none",
+    color: "#333",
+    wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
+    whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
+    overflowWrap: "break-word", // Zusätzliche Absicherung
+    maxWidth: "100%", // Passt sich an die Breite des Containers an
+    margin: 0, // Entfernt Standardabstände
+    maxHeight: "380px", // Maximale Höhe auf 500px begrenzen
+    overflowY: "auto", // Scrollbar aktivieren, wenn Inhalt die Höhe überschreitet
+  }}
+>
+  {formData.description || "Beschreibung nicht angegeben"}
+</p>
 
-    return (
-      <div
-        style={{
-          fontFamily: "Arial, sans-serif",
-          fontSize: "16px",
-          color: "#333",
-          margin: "0",
-          padding: "50px",
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1080px",
-            margin: "auto",
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "2.5em",
-                fontWeight: "bold",
-                color: "#333",
-              }}
-            >
-              Einladung
-            </h1>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "0.9em",
-                  borderRadius: "5px",
-                  backgroundColor: "green",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Teilnehmen
-              </button>
-              <button
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "0.9em",
-                  borderRadius: "5px",
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Nicht Teilnehmen
-              </button>
-            </div>
-          </div>
-
-          {/* Titel */}
-          <p
-            style={{
-              fontSize: titleStyles.fontSize || "24px",
-              fontFamily: titleStyles.fontFamily || "Arial, sans-serif",
-              fontWeight: titleStyles.fontWeight || "normal", // Dynamisches Gewicht
-              fontStyle: titleStyles.fontStyle || "normal", // Dynamischer Stil
-              textDecoration: titleStyles.textDecoration || "none", // Dynamische Dekoration
-              color: titleStyles.color || "#333",
-            }}
-          >
-            <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
-          </p>
-
-          {/* Typ */}
-          <p>
-            <strong>Typ:</strong> {formData.eventType || "N/A"}
-          </p>
-
-          {/* Inhalt */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginTop: "20px",
-            }}
-          >
-            <div>
-              <p>
-                <strong>Start:</strong>{" "}
-                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <p>
-                <strong>Adresse:</strong> {formData.address || "N/A"}
-              </p>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "200px",
-                  border: "1px solid #ccc",
-                  marginTop: "10px",
-                  overflow: "hidden",
-                }}
-              >
-                {formData.coordinates || formData.address ? (
-                  <OpenStreetMap
-                    address={formData.address}
-                    coordinates={formData.coordinates}
-                    interactive={false} // Interaktivität deaktivieren
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                    }}
-                  >
-                    Keine Adresse eingegeben
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <p>
-                <strong>Ende:</strong>{" "}
-                {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <p
-                style={{
-                  fontSize: descriptionStyles.fontSize || "16px",
-                  fontFamily: descriptionStyles.fontFamily || "Arial, sans-serif",
-                  fontWeight: descriptionStyles.fontWeight || "normal",
-                  fontStyle: descriptionStyles.fontStyle || "normal",
-                  textDecoration: descriptionStyles.textDecoration || "none",
-                  color: descriptionStyles.color || "#333",
-                }}
-              >
-                {formData.description || "Beschreibung nicht angegeben"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
+             </div>
+           </div>
+         </div>
+       </div>
+     );
+   };
+ 
 
 
   let debounceTimer;
@@ -516,6 +517,7 @@ const InvitationForm = () => {
 
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
 
   const handleBlur = async (e) => {
     const { name, value } = e.target;
@@ -559,38 +561,15 @@ const InvitationForm = () => {
     }
   };
 
+
+  const [open, setOpen] = useState(false);
   const handlePreview = () => {
-    const previewWindow = window.open("", "Vorschau", "width=1000,height=700");
-    if (previewWindow) {
-      const rootElement = previewWindow.document.createElement("div");
-      previewWindow.document.body.appendChild(rootElement);
-
-      const root = ReactDOM.createRoot(rootElement);
-      root.render(
-        <Preview
-          formData={formData}
-          titleStyles={titleStyles} // Individuelle Titel-Stile
-          descriptionStyles={descriptionStyles} // Individuelle Beschreibung-Stile
-          backgroundImage={backgroundImage}
-        />
-      );
-
-      const styleElement = previewWindow.document.createElement("style");
-      styleElement.textContent = `
-        body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 20px;
-          background-image: url(${backgroundImage});
-          background-size: cover;
-          background-position: center;
-          color: #333;
-        }
-      `;
-      previewWindow.document.head.appendChild(styleElement);
-    }
+    setOpen(true); // Öffnet das Dialogfeld
   };
-
+  
+  const handleClose = () => {
+    setOpen(false); // Schließt das Dialogfeld
+  };
 
 
   return (
@@ -661,17 +640,17 @@ const InvitationForm = () => {
 
           {/* Titel */}
           <Grid container spacing={2} style={{ marginTop: "20px" }}>
-            <Grid item xs={12} >
-              <DynamicTextStyler
+            <Grid item xs={12} sm={12} >
+              <TextField
                 label="Titel"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                onStyleChange={setTitleStyles}
                 error={!!errors.title}
                 helperText={errors.title}
                 multiline={false}
                 rows={1}
+                fullWidth
                 style={{
                   height: "56px",
                   backgroundColor: "white",
@@ -775,20 +754,19 @@ const InvitationForm = () => {
             </Grid>
 
             {/* Beschreibung */}
-            <Grid item xs={6} >
-              <DynamicTextStyler
+            <Grid item xs={6} marginTop={"10px"} >
+              <TextField
                 label="Beschreibung"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                onStyleChange={setDescriptionStyles}
                 error={!!errors.description}
                 helperText={errors.description}
                 multiline={true}
-                rows={13} // Nur Höhe für Multiline
+                rows={15} // Nur Höhe für Multiline
+                fullWidth
                 style={{
-                  marginTop: "-10px",
-                  height: "340px", // Fixe Höhe unabhängig von Schriftgröße
+                  height: "375px", // Fixe Höhe unabhängig von Schriftgröße
                   backgroundColor: "white",
                 }}
 
@@ -914,6 +892,14 @@ const InvitationForm = () => {
         </DialogActions>
       </Dialog>
 
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
+        <DialogContent>
+          <Preview formData={formData} backgroundImage={backgroundImage} />
+                  <Button variant="outlined" onClick={handleClose}>
+      Schließen
+    </Button>
+        </DialogContent>
+      </Dialog>
 
 
     </div>

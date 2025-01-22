@@ -21,7 +21,6 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import "dayjs/locale/de"; // Importiere die deutsche Lokalisierung
-import ReactDOM from "react-dom/client";
 import { usePostEvent } from "@/app/hooks/usePostEvent"
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import { useRouter } from "next/navigation";
@@ -29,9 +28,12 @@ import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import DynamicTextStyler from "@/app/components/DynamicTextStyler";
 import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
 import UserDashboard from "../invites/page"
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
+
+
 
 
 
@@ -45,7 +47,16 @@ const OpenStreetMap = ({ address, coordinates }) => {
   useEffect(() => {
     // Initialisiere die Karte nur einmal
     if (!mapInstance.current) {
-      const map = L.map(mapRef.current).setView([51.505, -0.09], 15);
+      const map = L.map(mapRef.current, {
+        center: [51.505, -0.09], // Standardkoordinaten
+        zoom: 18, // Erhöhter Zoom-Level
+        dragging: false, // Ziehen deaktivieren
+        scrollWheelZoom: false, // Zoomen mit Scrollrad deaktivieren
+        doubleClickZoom: false, // Doppelklick-Zoomen deaktivieren
+        keyboard: false, // Tastatursteuerung deaktivieren
+        zoomControl: false, // Zoom-Steuerung ausblenden
+      });
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 22,
         attribution:
@@ -65,7 +76,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
     const updateMap = async () => {
       if (coordinates) {
         const [lat, lon] = coordinates;
-        mapInstance.current.setView([lat, lon], 15);
+        mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
         L.marker([lat, lon], { icon: customIcon })
           .addTo(mapInstance.current)
           .bindPopup("Gewählte Adresse")
@@ -80,7 +91,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
           const data = await response.json();
           if (data.length > 0) {
             const { lat, lon } = data[0];
-            mapInstance.current.setView([lat, lon], 15);
+            mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
             L.marker([lat, lon], { icon: customIcon })
               .addTo(mapInstance.current)
               .bindPopup(`Adresse: ${address}`)
@@ -112,6 +123,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
 
   return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
 };
+
 
 
 
@@ -235,13 +247,14 @@ const handleCloseInviteListDialog = () => {
   setInviteListDialogOpen(false);
 };
 
-  const handleOpenDialog = () => {
-    if (validateForm()) {
-      setDialogOpen(true);
-    } else {
-      alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
-    }
-  };
+const [open, setOpen] = useState(false);
+const handlePreview = () => {
+  setOpen(true); // Öffnet das Dialogfeld
+};
+
+const handleClose = () => {
+  setOpen(false); // Schließt das Dialogfeld
+};
 
 
   const handleCloseDialog = () => {
@@ -301,7 +314,9 @@ const handleCloseInviteListDialog = () => {
     color: "#333",
     fontWeight: "normal",
   });
-  const Preview = ({ formData, dynamicStyles = {}, backgroundImage }) => {
+
+
+  const Preview = ({ formData = {}, backgroundImage }) => {
     useEffect(() => {
       setTimeout(() => {
         const mapElements = document.querySelectorAll(".leaflet-container");
@@ -386,12 +401,12 @@ const handleCloseInviteListDialog = () => {
           {/* Titel */}
           <p
             style={{
-              fontSize: titleStyles.fontSize || "24px",
-              fontFamily: titleStyles.fontFamily || "Arial, sans-serif",
-              fontWeight: titleStyles.fontWeight || "normal", // Dynamisches Gewicht
-              fontStyle: titleStyles.fontStyle || "normal", // Dynamischer Stil
-              textDecoration: titleStyles.textDecoration || "none", // Dynamische Dekoration
-              color: titleStyles.color || "#333",
+              fontSize:  "24px",
+              fontFamily:  "Arial, sans-serif",
+              fontWeight: "normal", 
+              fontStyle:  "normal", 
+              textDecoration:  "none", 
+              color:  "#333",
             }}
           >
             <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
@@ -420,51 +435,65 @@ const handleCloseInviteListDialog = () => {
                 <strong>Adresse:</strong> {formData.address || "N/A"}
               </p>
               <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "200px",
-                  border: "1px solid #ccc",
-                  marginTop: "10px",
-                  overflow: "hidden",
-                }}
-              >
-                {formData.coordinates || formData.address ? (
-                  <OpenStreetMap
-                    address={formData.address}
-                    coordinates={formData.coordinates}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                    }}
-                  >
-                    Keine Adresse eingegeben
-                  </div>
-                )}
-              </div>
+  style={{
+    position: "relative",
+    width: "100%",
+    height: "200px",
+    border: "1px solid #ccc",
+    marginTop: "10px",
+    overflow: "hidden",
+  }}
+>
+  {formData.coordinates || formData.address ? (
+    <OpenStreetMap
+      address={formData.address}
+      coordinates={formData.coordinates}
+      mapOptions={{
+        dragging: false, // Deaktiviert das Ziehen der Karte
+        scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
+        doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
+        keyboard: false, // Deaktiviert Tastaturinteraktion
+        zoomControl: false, // Entfernt die Zoom-Steuerung
+      }}
+    />
+  ) : (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+      }}
+    >
+      Keine Adresse eingegeben
+    </div>
+  )}
+</div>
+
             </div>
             <div>
               <p>
                 <strong>Ende:</strong>{" "}
                 {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
               </p>
-              <p
-                style={{
-                  fontSize: descriptionStyles.fontSize || "16px",
-                  fontFamily: descriptionStyles.fontFamily || "Arial, sans-serif",
-                  fontWeight: descriptionStyles.fontWeight || "normal",
-                  fontStyle: descriptionStyles.fontStyle || "normal",
-                  textDecoration: descriptionStyles.textDecoration || "none",
-                  color: descriptionStyles.color || "#333",
-                }}
-              >
-                {formData.description || "Beschreibung nicht angegeben"}
-              </p>
+              <strong>Beschreibung:</strong>{" "}
+           <p
+  style={{
+    fontSize: "16px",
+    fontFamily: "Arial, sans-serif",
+    fontWeight: "normal",
+    fontStyle: "normal",
+    textDecoration: "none",
+    color: "#333",
+    wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
+    whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
+    overflowWrap: "break-word", // Zusätzliche Absicherung
+    maxWidth: "100%", // Passt sich an die Breite des Containers an
+    margin: 0, // Entfernt Standardabstände
+  }}
+>
+  {formData.description || "Beschreibung nicht angegeben"}
+</p>
             </div>
           </div>
         </div>
@@ -528,37 +557,6 @@ const handleCloseInviteListDialog = () => {
     }
   };
 
-  const handlePreview = () => {
-    const previewWindow = window.open("", "Vorschau", "width=1000,height=700");
-    if (previewWindow) {
-      const rootElement = previewWindow.document.createElement("div");
-      previewWindow.document.body.appendChild(rootElement);
-
-      const root = ReactDOM.createRoot(rootElement);
-      root.render(
-        <Preview
-          formData={formData}
-          titleStyles={titleStyles} // Individuelle Titel-Stile
-          descriptionStyles={descriptionStyles} // Individuelle Beschreibung-Stile
-          backgroundImage={backgroundImage}
-        />
-      );
-
-      const styleElement = previewWindow.document.createElement("style");
-      styleElement.textContent = `
-        body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 20px;
-          background-image: url(${backgroundImage});
-          background-size: cover;
-          background-position: center;
-          color: #333;
-        }
-      `;
-      previewWindow.document.head.appendChild(styleElement);
-    }
-  };
 
   const handleClearForm = () => {
     setFormData({
@@ -570,22 +568,6 @@ const handleCloseInviteListDialog = () => {
       maxGuests: "",
       description: "",
       reminderDays: "",
-    });
-    setDescriptionStyles({
-      fontFamily: "Arial, sans-serif", // Standard-Schriftart
-      fontSize: "16px", // Standard-Schriftgröße
-      color: "#333", // Standard-Textfarbe
-      fontWeight: "normal", // Standardgewicht
-      fontStyle: "normal", // Standardstil
-      textDecoration: "none", // Keine Unterstreichung
-    });
-    setTitleStyles({
-      fontFamily: "Arial, sans-serif", // Standard-Schriftart
-      fontSize: "16px", // Standard-Schriftgröße
-      color: "#333", // Standard-Textfarbe
-      fontWeight: "normal", // Standardgewicht
-      fontStyle: "normal", // Standardstil
-      textDecoration: "none", // Keine Unterstreichung
     });
     window.location.reload();
     setEventType("Präsenz");
@@ -624,7 +606,7 @@ const handleCloseInviteListDialog = () => {
         >
           {/* Datei-Upload und Eventtyp */}
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={8}>
               <FormControl fullWidth>
                 <InputLabel id="event-type-label"
                   sx={{
@@ -647,7 +629,7 @@ const handleCloseInviteListDialog = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <input
                 accept="image/*"
                 type="file"
@@ -659,17 +641,17 @@ const handleCloseInviteListDialog = () => {
 
           {/* Titel */}
           <Grid container spacing={2} style={{ marginTop: "20px" }}>
-            <Grid item xs={12} >
-              <DynamicTextStyler
+            <Grid item xs={12} sm={12} >
+              <TextField
                 label="Titel"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                onStyleChange={setTitleStyles}
                 error={!!errors.title}
                 helperText={errors.title}
                 multiline={false}
                 rows={1}
+                fullWidth
                 style={{
                   height: "56px",
                   backgroundColor: "white",
@@ -683,7 +665,7 @@ const handleCloseInviteListDialog = () => {
               {/* Startdatum */}
               <Grid container spacing={2}>
                 {/* Startdatum */}
-                <Grid item xs={6}>
+                <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <DateTimePicker
                       label="Startdatum & Uhrzeit"
@@ -706,7 +688,7 @@ const handleCloseInviteListDialog = () => {
                 </Grid>
 
                 {/* Enddatum */}
-                <Grid item xs={6}>
+                <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <DateTimePicker
                       label="Enddatum & Uhrzeit"
@@ -750,11 +732,12 @@ const handleCloseInviteListDialog = () => {
               <Box
                 style={{
                   backgroundColor: "white",
-                  padding: "10px",
+                 // padding: "10px",
                   border: "1px solid #ccc",
                   height: "250px", // Höhe der Karte anpassen
                   marginTop: "10px",
-                  display: "flex",
+                  width: "100%",
+                 // display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -773,20 +756,19 @@ const handleCloseInviteListDialog = () => {
             </Grid>
 
             {/* Beschreibung */}
-            <Grid item xs={6} >
-              <DynamicTextStyler
+            <Grid item xs={6} marginTop={"10px"} >
+              <TextField
                 label="Beschreibung"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                onStyleChange={setDescriptionStyles}
                 error={!!errors.description}
                 helperText={errors.description}
                 multiline={true}
-                rows={13} // Nur Höhe für Multiline
+                rows={15} // Nur Höhe für Multiline
+                fullWidth
                 style={{
-                  marginTop: "-50px",
-                  height: "340px", // Fixe Höhe unabhängig von Schriftgröße
+                  height: "375px", // Fixe Höhe unabhängig von Schriftgröße
                   backgroundColor: "white",
                 }}
 
@@ -910,6 +892,15 @@ const handleCloseInviteListDialog = () => {
     </Button>
   </DialogActions>
 </Dialog>
+
+<Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
+        <DialogContent>
+          <Preview formData={formData} backgroundImage={backgroundImage} />
+                  <Button variant="outlined" onClick={handleClose}>
+      Schließen
+    </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
