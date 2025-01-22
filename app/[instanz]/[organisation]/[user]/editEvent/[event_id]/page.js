@@ -605,7 +605,7 @@ const InvitationForm = () => {
         >
           {/* Datei-Upload und Eventtyp */}
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={8}>
               <FormControl fullWidth>
                 <InputLabel id="event-type-label"
                   sx={{
@@ -628,7 +628,7 @@ const InvitationForm = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <input
                 accept="image/*"
                 type="file"
@@ -664,7 +664,7 @@ const InvitationForm = () => {
               {/* Startdatum */}
               <Grid container spacing={2}>
                 {/* Startdatum */}
-                <Grid item xs={6}>
+                <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <DateTimePicker
                       label="Startdatum & Uhrzeit"
@@ -687,7 +687,7 @@ const InvitationForm = () => {
                 </Grid>
 
                 {/* Enddatum */}
-                <Grid item xs={6}>
+                <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <DateTimePicker
                       label="Enddatum & Uhrzeit"
