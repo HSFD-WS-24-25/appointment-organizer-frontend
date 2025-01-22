@@ -45,6 +45,7 @@ export default function JoinPage() {
                     action,
                 }),
             });
+            alert(`You have ${action}ed the invitation.`);
         } catch (err) {
             console.error(err);
         }
