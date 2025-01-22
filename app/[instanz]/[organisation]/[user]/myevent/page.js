@@ -40,6 +40,14 @@ function EventCard({ event, view }) {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const { user, authError, isLoading, events, fetchError } = useFetchEvents();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
 
   const handleEditEvent = () => {
     const basePath = generateBasePath(userInfo, user); // Determine the base path
@@ -208,6 +216,7 @@ function EventCard({ event, view }) {
         />
       </Box>
 
+      <>
       <Box
         sx={{
           textAlign: "center",
@@ -215,33 +224,85 @@ function EventCard({ event, view }) {
           borderRadius: 2,
           backgroundColor: "#f5f5f5",
           width: "90%",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
         }}
       >
         <Typography variant="h6" component="p" sx={{ marginBottom: 1 }}>
           {event.name}
         </Typography>
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="textSecondary" noWrap>
           {event.description.split(".")[0]}.
         </Typography>
-
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="textSecondary" noWrap>
           {new Date(event.date_start).toLocaleString("de-DE", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-          })} Uhr -{" "}
+          })}{" "}
+          Uhr -{" "}
           {new Date(event.date_end).toLocaleString("de-DE", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-          })} Uhr
+          })}{" "}
+          Uhr
         </Typography>
-
+        <Button
+          size="small"
+          variant="outlined"
+          sx={{ marginTop: 1 }}
+          onClick={handleOpenDialog}
+        >
+          Mehr anzeigen
+        </Button>
       </Box>
+
+      {/* Dialog for full details */}
+      <Dialog open={isDialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>{event.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            Start:{" "}
+            {new Date(event.date_start).toLocaleString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            Uhr
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Ende:{" "}
+            {new Date(event.date_end).toLocaleString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            Uhr
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Ort: {event.location}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Beschreibung: {event.description}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} variant="outlined">
+            Schließen
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
     </Paper>
   );
 }
