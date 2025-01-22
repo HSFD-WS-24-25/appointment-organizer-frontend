@@ -30,8 +30,9 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
 import UserDashboard from "../invites/page"
-import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill';
+import { generateBasePath } from "@/app/components/Sidebar";
+import { useUser } from "@auth0/nextjs-auth0/client";
+
 
 
 
@@ -124,14 +125,11 @@ const OpenStreetMap = ({ address, coordinates }) => {
   return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
 };
 
-
-
-
-
 const InvitationForm = () => {
-  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
   const router = useRouter();
+  const { user } = useUser();
+  const basePath = generateBasePath(userInfo, user); // Determine the base path
 
   // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
   useEffect(() => {
@@ -140,6 +138,9 @@ const InvitationForm = () => {
       setBasePath(path);
     }
   }, [userInfo]);
+  
+  
+
 
 
   const { postEvent } = usePostEvent();
@@ -224,48 +225,44 @@ const InvitationForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
-const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
+  const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
 
-const handleOpenPublishDialog = () => {
-  if (validateForm()) {
-    setPublishDialogOpen(true);
-  } else {
-    alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
-  }
-};
+  const handleOpenPublishDialog = () => {
+    if (validateForm()) {
+      setPublishDialogOpen(true);
+    } else {
+      alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
+    }
+  };
 
-const handleClosePublishDialog = () => {
-  setPublishDialogOpen(false);
-};
+  const handleClosePublishDialog = () => {
+    setPublishDialogOpen(false);
+  };
 
-const handleOpenInviteListDialog = () => {
-  setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
-  setInviteListDialogOpen(true);
-};
+  const handleOpenInviteListDialog = () => {
+    setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
+    setInviteListDialogOpen(true);
+  };
 
-const handleCloseInviteListDialog = () => {
-  setInviteListDialogOpen(false);
-};
+  const handleCloseInviteListDialog = () => {
+    setInviteListDialogOpen(false);
+  };
 
-const [open, setOpen] = useState(false);
-const handlePreview = () => {
-  setOpen(true); // Öffnet das Dialogfeld
-};
+  const [open, setOpen] = useState(false);
+  const handlePreview = () => {
+    setOpen(true); // Öffnet das Dialogfeld
+  };
 
-const handleClose = () => {
-  setOpen(false); // Schließt das Dialogfeld
-};
+  const handleClose = () => {
+    setOpen(false); // Schließt das Dialogfeld
+  };
 
 
   const handleCloseDialog = () => {
-    setDialogOpen(false);
+
   };
 
-  const openInvitesDialog = () => {
-    console.log("Einladungsliste wird geöffnet...");
-    setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
-    setDialogOpen(true); // Öffne den Dialog
-  };
+
 
   const handleDialogAction = async (action) => {
     if (action === "publish") {
@@ -284,9 +281,8 @@ const handleClose = () => {
 
         // Sende die Daten an die API
         const result = await postEvent(eventData);
-
         if (result.success) {
-          router.push(`${basePath}/myevent`);
+          router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
           console.log("Erstelltes Event:", result.data);
         } else {
           alert(`Fehler beim Veröffentlichen: ${result.message}`);
@@ -300,21 +296,6 @@ const handleClose = () => {
     }
     handleCloseDialog();
   };
-
-  const [titleStyles, setTitleStyles] = useState({
-    fontFamily: "Arial, sans-serif",
-    fontSize: "16px",
-    color: "#333",
-    fontWeight: "normal",
-  });
-
-  const [descriptionStyles, setDescriptionStyles] = useState({
-    fontFamily: "Arial, sans-serif",
-    fontSize: "16px",
-    color: "#333",
-    fontWeight: "normal",
-  });
-
 
   const Preview = ({ formData = {}, backgroundImage }) => {
     useEffect(() => {
@@ -401,12 +382,12 @@ const handleClose = () => {
           {/* Titel */}
           <p
             style={{
-              fontSize:  "24px",
-              fontFamily:  "Arial, sans-serif",
-              fontWeight: "normal", 
-              fontStyle:  "normal", 
-              textDecoration:  "none", 
-              color:  "#333",
+              fontSize: "24px",
+              fontFamily: "Arial, sans-serif",
+              fontWeight: "normal",
+              fontStyle: "normal",
+              textDecoration: "none",
+              color: "#333",
             }}
           >
             <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
@@ -435,40 +416,40 @@ const handleClose = () => {
                 <strong>Adresse:</strong> {formData.address || "N/A"}
               </p>
               <div
-  style={{
-    position: "relative",
-    width: "100%",
-    height: "200px",
-    border: "1px solid #ccc",
-    marginTop: "10px",
-    overflow: "hidden",
-  }}
->
-  {formData.coordinates || formData.address ? (
-    <OpenStreetMap
-      address={formData.address}
-      coordinates={formData.coordinates}
-      mapOptions={{
-        dragging: false, // Deaktiviert das Ziehen der Karte
-        scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
-        doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
-        keyboard: false, // Deaktiviert Tastaturinteraktion
-        zoomControl: false, // Entfernt die Zoom-Steuerung
-      }}
-    />
-  ) : (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100%",
-      }}
-    >
-      Keine Adresse eingegeben
-    </div>
-  )}
-</div>
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid #ccc",
+                  marginTop: "10px",
+                  overflow: "hidden",
+                }}
+              >
+                {formData.coordinates || formData.address ? (
+                  <OpenStreetMap
+                    address={formData.address}
+                    coordinates={formData.coordinates}
+                    mapOptions={{
+                      dragging: false, // Deaktiviert das Ziehen der Karte
+                      scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
+                      doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
+                      keyboard: false, // Deaktiviert Tastaturinteraktion
+                      zoomControl: false, // Entfernt die Zoom-Steuerung
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                    }}
+                  >
+                    Keine Adresse eingegeben
+                  </div>
+                )}
+              </div>
 
             </div>
             <div>
@@ -477,33 +458,29 @@ const handleClose = () => {
                 {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
               </p>
               <strong>Beschreibung:</strong>{" "}
-           <p
-  style={{
-    fontSize: "16px",
-    fontFamily: "Arial, sans-serif",
-    fontWeight: "normal",
-    fontStyle: "normal",
-    textDecoration: "none",
-    color: "#333",
-    wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
-    whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
-    overflowWrap: "break-word", // Zusätzliche Absicherung
-    maxWidth: "100%", // Passt sich an die Breite des Containers an
-    margin: 0, // Entfernt Standardabstände
-  }}
->
-  {formData.description || "Beschreibung nicht angegeben"}
-</p>
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontFamily: "Arial, sans-serif",
+                  fontWeight: "normal",
+                  fontStyle: "normal",
+                  textDecoration: "none",
+                  color: "#333",
+                  wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
+                  whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
+                  overflowWrap: "break-word", // Zusätzliche Absicherung
+                  maxWidth: "100%", // Passt sich an die Breite des Containers an
+                  margin: 0, // Entfernt Standardabstände
+                }}
+              >
+                {formData.description || "Beschreibung nicht angegeben"}
+              </p>
             </div>
           </div>
         </div>
       </div>
     );
   };
-
-
-
-  let debounceTimer;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -732,12 +709,12 @@ const handleClose = () => {
               <Box
                 style={{
                   backgroundColor: "white",
-                 // padding: "10px",
+                  // padding: "10px",
                   border: "1px solid #ccc",
                   height: "250px", // Höhe der Karte anpassen
                   marginTop: "10px",
                   width: "100%",
-                 // display: "flex",
+                  // display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -847,7 +824,7 @@ const handleClose = () => {
                 backgroundColor: "green",
                 "&:hover": { backgroundColor: "darkgreen" },
               }}
-              onClick={handleOpenPublishDialog }
+              onClick={handleOpenPublishDialog}
             >
               Weiter
             </Button>
@@ -857,48 +834,48 @@ const handleClose = () => {
 
       {/* Dialog */}
       <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
-  <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
-  <DialogContent>
-    <Typography>
-      Möchten Sie die Veranstaltung veröffentlichen?
-    </Typography>
-  </DialogContent>
-  <DialogActions>
-    <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
-      Abbrechen
-    </Button>
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={() => handleDialogAction("publish")}
-    >
-      Veröffentlichen
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Möchten Sie die Veranstaltung veröffentlichen?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
+            Abbrechen
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDialogAction("publish")}
+          >
+            Veröffentlichen
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-<Dialog
-  open={inviteListDialogOpen}
-  onClose={handleCloseInviteListDialog}
-  fullWidth
-  maxWidth="lg"
->
-  <DialogContent>
-    {dialogContent} {/* Dynamischer Inhalt */}
-  </DialogContent>
-  <DialogActions>
-    <Button variant="outlined" onClick={handleCloseInviteListDialog}>
-      Schließen
-    </Button>
-  </DialogActions>
-</Dialog>
+      <Dialog
+        open={inviteListDialogOpen}
+        onClose={handleCloseInviteListDialog}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogContent>
+          {dialogContent} {/* Dynamischer Inhalt */}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleCloseInviteListDialog}>
+            Schließen
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-<Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogContent>
           <Preview formData={formData} backgroundImage={backgroundImage} />
-                  <Button variant="outlined" onClick={handleClose}>
-      Schließen
-    </Button>
+          <Button variant="outlined" onClick={handleClose}>
+            Schließen
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

@@ -15,7 +15,6 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import ReactDOM from "react-dom/client";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -27,7 +26,6 @@ import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import DynamicTextStyler from "@/app/components/DynamicTextStyler";
 import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
 import { useUserContext } from "@/app/context/UserContext";
 import { generateBasePath } from "@/app/components/Sidebar";
@@ -124,7 +122,6 @@ const InvitationForm = () => {
   const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
   const { event, isLoading, fetchError } = useFetchEventById(event_id);
   const { userInfo } = useUserContext();
-  const [basePath, setBasePath] = useState("");
   const [formData, setFormData] = useState({
 
     title: "",
@@ -142,9 +139,9 @@ const InvitationForm = () => {
   const { user } = useUser();
   const router = useRouter();
   const { putEvent } = usePutEvent(); // Hole die PUT-Logik aus dem Hook
+  const basePath = generateBasePath(userInfo, user); // Determine the base path
 
   const handleCancelButon = () => {
-    const basePath = generateBasePath(userInfo, user); // Determine the base path
     router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
   };
 
@@ -234,28 +231,12 @@ const InvitationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
 
-
-  const handleOpenDialog = () => {
-    if (validateForm()) {
-      setDialogOpen(true);
-    } else {
-      alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
-    }
-  };
-
   const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const openInvitesDialog = () => {
-    console.log("Einladungsliste wird geöffnet...");
-    setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
-    setDialogOpen(true); // Öffne den Dialog
   };
 
   const handleOpenPublishDialog = () => {
@@ -314,197 +295,193 @@ const InvitationForm = () => {
     handleCloseDialog();
   };
 
-   const Preview = ({ formData = {}, backgroundImage }) => {
-     useEffect(() => {
-       setTimeout(() => {
-         const mapElements = document.querySelectorAll(".leaflet-container");
-         mapElements.forEach((element) => {
-           const mapInstance = element._leaflet_map;
-           if (mapInstance) {
-             mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
-           }
-         });
-       }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
-     }, []);
- 
-     return (
-       <div
-         style={{
-           fontFamily: "Arial, sans-serif",
-           fontSize: "16px",
-           color: "#333",
-           margin: "0",
-           padding: "50px",
-           backgroundImage: `url(${backgroundImage})`,
-           backgroundSize: "cover",
-           backgroundPosition: "center",
-         }}
-       >
-         <div
-           style={{
-             maxWidth: "1080px",
-             margin: "auto",
-             backgroundColor: "rgba(255, 255, 255, 0.7)",
-             padding: "20px",
-             borderRadius: "10px",
-           }}
-         >
-           <div
-             style={{
-               display: "flex",
-               justifyContent: "space-between",
-               alignItems: "center",
-               marginBottom: "20px",
-             }}
-           >
-             <h1
-               style={{
-                 fontSize: "2.5em",
-                 fontWeight: "bold",
-                 color: "#333",
-               }}
-             >
-               Einladung
-             </h1>
-             <div style={{ display: "flex", gap: "10px" }}>
-               <button
-                 style={{
-                   padding: "8px 12px",
-                   fontSize: "0.9em",
-                   borderRadius: "5px",
-                   backgroundColor: "green",
-                   color: "white",
-                   border: "none",
-                   cursor: "pointer",
-                 }}
-               >
-                 Teilnehmen
-               </button>
-               <button
-                 style={{
-                   padding: "8px 12px",
-                   fontSize: "0.9em",
-                   borderRadius: "5px",
-                   backgroundColor: "red",
-                   color: "white",
-                   border: "none",
-                   cursor: "pointer",
-                 }}
-               >
-                 Nicht Teilnehmen
-               </button>
-             </div>
-           </div>
- 
-           {/* Titel */}
-           <p
-             style={{
-               fontSize:  "24px",
-               fontFamily:  "Arial, sans-serif",
-               fontWeight: "normal", 
-               fontStyle:  "normal", 
-               textDecoration:  "none", 
-               color:  "#333",
-             }}
-           >
-             <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
-           </p>
- 
-           {/* Typ */}
-           <p>
-             <strong>Typ:</strong> {formData.eventType || "N/A"}
-           </p>
- 
-           {/* Inhalt */}
-           <div
-             style={{
-               display: "grid",
-               gridTemplateColumns: "1fr 1fr",
-               gap: "20px",
-               marginTop: "20px",
-             }}
-           >
-             <div>
-               <p>
-                 <strong>Start:</strong>{" "}
-                 {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-               </p>
-               <p>
-                 <strong>Adresse:</strong> {formData.address || "N/A"}
-               </p>
-               <div
-   style={{
-     position: "relative",
-     width: "100%",
-     height: "200px",
-     border: "1px solid #ccc",
-     marginTop: "10px",
-     overflow: "hidden",
-   }}
- >
-   {formData.coordinates || formData.address ? (
-     <OpenStreetMap
-       address={formData.address}
-       coordinates={formData.coordinates}
-       mapOptions={{
-         dragging: false, // Deaktiviert das Ziehen der Karte
-         scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
-         doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
-         keyboard: false, // Deaktiviert Tastaturinteraktion
-         zoomControl: false, // Entfernt die Zoom-Steuerung
-       }}
-     />
-   ) : (
-     <div
-       style={{
-         display: "flex",
-         alignItems: "center",
-         justifyContent: "center",
-         height: "100%",
-       }}
-     >
-       Keine Adresse eingegeben
-     </div>
-   )}
- </div>
- 
-             </div>
-             <div>
-               <p>
-                 <strong>Ende:</strong>{" "}
-                 {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-               </p>
-               <strong>Beschreibung:</strong>{" "}
-               <p
-  style={{
-    fontSize: "16px",
-    fontFamily: "Arial, sans-serif",
-    fontWeight: "normal",
-    fontStyle: "normal",
-    textDecoration: "none",
-    color: "#333",
-    wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
-    whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
-    overflowWrap: "break-word", // Zusätzliche Absicherung
-    maxWidth: "100%", // Passt sich an die Breite des Containers an
-    margin: 0, // Entfernt Standardabstände
-    maxHeight: "380px", // Maximale Höhe auf 500px begrenzen
-    overflowY: "auto", // Scrollbar aktivieren, wenn Inhalt die Höhe überschreitet
-  }}
->
-  {formData.description || "Beschreibung nicht angegeben"}
-</p>
+  const Preview = ({ formData = {}, backgroundImage }) => {
+    useEffect(() => {
+      setTimeout(() => {
+        const mapElements = document.querySelectorAll(".leaflet-container");
+        mapElements.forEach((element) => {
+          const mapInstance = element._leaflet_map;
+          if (mapInstance) {
+            mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
+          }
+        });
+      }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
+    }, []);
 
-             </div>
-           </div>
-         </div>
-       </div>
-     );
-   };
- 
+    return (
+      <div
+        style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "16px",
+          color: "#333",
+          margin: "0",
+          padding: "50px",
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1080px",
+            margin: "auto",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h1
+              style={{
+                fontSize: "2.5em",
+                fontWeight: "bold",
+                color: "#333",
+              }}
+            >
+              Einladung
+            </h1>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "green",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Teilnehmen
+              </button>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Nicht Teilnehmen
+              </button>
+            </div>
+          </div>
 
+          {/* Titel */}
+          <p
+            style={{
+              fontSize: "24px",
+              fontFamily: "Arial, sans-serif",
+              fontWeight: "normal",
+              fontStyle: "normal",
+              textDecoration: "none",
+              color: "#333",
+            }}
+          >
+            <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
+          </p>
 
-  let debounceTimer;
+          {/* Typ */}
+          <p>
+            <strong>Typ:</strong> {formData.eventType || "N/A"}
+          </p>
+
+          {/* Inhalt */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <div>
+              <p>
+                <strong>Start:</strong>{" "}
+                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+              </p>
+              <p>
+                <strong>Adresse:</strong> {formData.address || "N/A"}
+              </p>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid #ccc",
+                  marginTop: "10px",
+                  overflow: "hidden",
+                }}
+              >
+                {formData.coordinates || formData.address ? (
+                  <OpenStreetMap
+                    address={formData.address}
+                    coordinates={formData.coordinates}
+                    mapOptions={{
+                      dragging: false, // Deaktiviert das Ziehen der Karte
+                      scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
+                      doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
+                      keyboard: false, // Deaktiviert Tastaturinteraktion
+                      zoomControl: false, // Entfernt die Zoom-Steuerung
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                    }}
+                  >
+                    Keine Adresse eingegeben
+                  </div>
+                )}
+              </div>
+
+            </div>
+            <div>
+              <p>
+                <strong>Ende:</strong>{" "}
+                {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+              </p>
+              <strong>Beschreibung:</strong>{" "}
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontFamily: "Arial, sans-serif",
+                  fontWeight: "normal",
+                  fontStyle: "normal",
+                  textDecoration: "none",
+                  color: "#333",
+                  wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
+                  whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
+                  overflowWrap: "break-word", // Zusätzliche Absicherung
+                  maxWidth: "100%", // Passt sich an die Breite des Containers an
+                  margin: 0, // Entfernt Standardabstände
+                  maxHeight: "380px", // Maximale Höhe auf 500px begrenzen
+                  overflowY: "auto", // Scrollbar aktivieren, wenn Inhalt die Höhe überschreitet
+                }}
+              >
+                {formData.description || "Beschreibung nicht angegeben"}
+              </p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -566,7 +543,7 @@ const InvitationForm = () => {
   const handlePreview = () => {
     setOpen(true); // Öffnet das Dialogfeld
   };
-  
+
   const handleClose = () => {
     setOpen(false); // Schließt das Dialogfeld
   };
@@ -895,9 +872,9 @@ const InvitationForm = () => {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogContent>
           <Preview formData={formData} backgroundImage={backgroundImage} />
-                  <Button variant="outlined" onClick={handleClose}>
-      Schließen
-    </Button>
+          <Button variant="outlined" onClick={handleClose}>
+            Schließen
+          </Button>
         </DialogContent>
       </Dialog>
 
