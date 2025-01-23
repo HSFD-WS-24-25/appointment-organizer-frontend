@@ -131,14 +131,6 @@ const InvitationForm = () => {
   const { user } = useUser();
   const basePath = generateBasePath(userInfo, user); // Determine the base path
 
-  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
-  useEffect(() => {
-    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
-      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
-      setBasePath(path);
-    }
-  }, [userInfo]);
-  
   
 
 

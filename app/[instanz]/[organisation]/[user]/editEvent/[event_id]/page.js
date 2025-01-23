@@ -145,12 +145,6 @@ const InvitationForm = () => {
     router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
   };
 
-  useEffect(() => {
-    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
-      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
-      setBasePath(path);
-    }
-  }, [userInfo]);
 
   useEffect(() => {
     if (event) {
