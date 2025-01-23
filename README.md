@@ -1,3 +1,12 @@
+
+
+## NPM INSTALL WITHOUT CONFLICTS
+ - für npm instll bitte
+```bash
+   npm install --force 
+   ```
+
+
 ## Prerequisites
    - [Node.js (v18.18 or later)](https://nodejs.org/en)
 
