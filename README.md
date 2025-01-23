@@ -47,7 +47,7 @@
    - Follow the [Airbnb](https://airbnb.io/javascript/react/) style guide for writing code
 
 
-##Wichtige Abhängigkeiten:
+## Wichtige Abhängigkeiten:
 npm install @mui/x-date-pickers @mui/x-date-pickers-pro @mui/icons-material
 npm install @mui/material @emotion/react @emotion/styled
 npm install react react-dom
