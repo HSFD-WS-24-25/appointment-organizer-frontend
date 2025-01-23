@@ -4,16 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { 
   Paper, TextField, Box, Stack, Autocomplete, 
 } from '@mui/material';
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { BlueButton, RedButton } from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import {StyledTableContainer, 
    StyledTable, 
    StyledTableRow,
    StyledTableHeadCell,
    StyledTableBody,
    StyledTableCell, 
-   StyledTableHead } from "../../../../components/styledComponents/StyledTable";
+   StyledTableHead } from "@/app/components/styledComponents/StyledTable";
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
+import { useRouter } from 'next/navigation';
 
 const data = [
   { title: 'Closed for Server Maintenance', method: 'On Login', startDate: '12.11.2024', endDate: '-', status: 'Active' },
@@ -24,6 +26,19 @@ const data = [
 
 //test
 export default function AdminAnnouncements() {
+
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+  const router = useRouter();
+
+   // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+   useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
 
@@ -34,6 +49,12 @@ export default function AdminAnnouncements() {
       )
     );
   }, [searchTerm]);
+
+  const newAnnouncementClick = () => {
+    router.push(`${basePath}/create-announcements`);
+  };
+
+
 
   return (
 
@@ -105,7 +126,7 @@ export default function AdminAnnouncements() {
           <RedButton>
             Ankündigung Deaktivieren
           </RedButton>
-          <BlueButton href="/admin/create-announcements">
+          <BlueButton onClick={newAnnouncementClick}>
             Neue Ankündigung
           </BlueButton>
 

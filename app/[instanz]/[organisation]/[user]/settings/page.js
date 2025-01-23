@@ -1,22 +1,33 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Box, Button, Typography, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import StyledPaper from "../../../../components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton, ToggleButton} from "../../../../components/styledComponents/StyledButton";
-import DesignTitel from "../../../../components/styledComponents/DesignTitel";
-
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import { GreenButton, RedButton, ToggleButton} from "@/app/components/styledComponents/StyledButton";
+import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 
 function UserSettings() {
   const router = useRouter();
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+
+   // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+   useEffect(() => {
+    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+      setBasePath(path);
+    }
+  }, [userInfo]);
+
 
   const handleSaveChangesClick = () => {
     alert("Änderungen erfolgreich gespeichert.");
   };
 
   const handleGoBackClick = () => {
-    router.push("/user");
+    router.push(`${basePath}`);
   };
 
   const [language, setLanguage] = useState('');
