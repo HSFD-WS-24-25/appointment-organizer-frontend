@@ -3,7 +3,7 @@
 ## NPM INSTALL WITHOUT CONFLICTS
  - für npm instll bitte
 ```bash
-   npm install --force 
+   npm install --legacy-peer-deps 
    ```
 
 
