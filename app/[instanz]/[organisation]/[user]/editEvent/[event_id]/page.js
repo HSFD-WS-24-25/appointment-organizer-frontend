@@ -3,47 +3,41 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
-  Container,
   Grid,
   MenuItem,
   Select,
   TextField,
   Typography,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   FormControl,
-  InputLabel
+  InputLabel,
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import "dayjs/locale/de"; // Importiere die deutsche Lokalisierung
-import { usePostEvent } from "@/app/hooks/usePostEvent"
-import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
-import { useRouter } from "next/navigation";
+import "dayjs/locale/de";
+import { useFetchEventById } from "@/app/hooks/useFetchEventById";
+import { usePutEvent } from "@/app/hooks/usePutEvent";
+import { useParams } from "next/navigation";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
-import UserDashboard from "../invites/page"
+import { useUserContext } from "@/app/context/UserContext";
 import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { usePathname, useRouter } from 'next/navigation';
+import UserDashboard from "../../invites/page"
 import MUIRichTextEditor from "mui-rte";
-import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import { EditorState, convertFromRaw, convertToRaw, ContentState } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 
 
-
-
-
-
-// Setze die deutsche Lokalisierung global
 dayjs.locale("de");
-
 const OpenStreetMap = ({ address, coordinates }) => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
@@ -60,7 +54,6 @@ const OpenStreetMap = ({ address, coordinates }) => {
         keyboard: false, // Tastatursteuerung deaktivieren
         zoomControl: false, // Zoom-Steuerung ausblenden
       });
-
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 22,
         attribution:
@@ -127,20 +120,12 @@ const OpenStreetMap = ({ address, coordinates }) => {
 
   return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
 };
-
 const InvitationForm = () => {
-  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-  const router = useRouter();
-  const { user } = useUser();
-  const basePath = generateBasePath(userInfo, user); // Determine the base path
-
-
-
-  const { postEvent } = usePostEvent();
-  const [errors, setErrors] = useState({});
-  const [eventType, setEventType] = useState("Präsenz");
-  const [backgroundImage, setBackgroundImage] = useState(null);
+  const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
+  const { event, isLoading, fetchError } = useFetchEventById(event_id);
+  const { userInfo } = useUserContext();
   const [formData, setFormData] = useState({
+
     title: "",
     startDate: null,
     endDate: null,
@@ -150,6 +135,122 @@ const InvitationForm = () => {
     description: "",
     reminderDays: "",
   });
+  const [errors, setErrors] = useState({});
+  const [eventType, setEventType] = useState("Präsenz");
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const { user } = useUser();
+  const router = useRouter();
+  const { putEvent } = usePutEvent(); // Hole die PUT-Logik aus dem Hook
+  const basePath = generateBasePath(userInfo, user); // Determine the base path
+  const extractPlainTextFromRaw = (rawContent) => {
+    try {
+      const content = JSON.parse(rawContent);
+      return content.blocks.map((block) => block.text).join(" ").trim();
+    } catch (error) {
+      console.error("Fehler beim Extrahieren des Texts:", error);
+      return ""; // Rückgabe eines leeren Strings bei Fehler
+    }
+  };
+
+  const convertRawToHTML = (rawContent) => {
+    try {
+      // Wenn rawContent nicht existiert oder leer ist, Fallback verwenden
+      if (!rawContent) {
+        return "<p>Keine Beschreibung verfügbar</p>"; // Fallback für die Vorschau
+      }
+
+      // Konvertiere den Raw Content zu HTML
+      const contentState = convertFromRaw(JSON.parse(rawContent));
+      return stateToHTML(contentState, {
+        inlineStyles: {
+          HIGHLIGHT: { style: { backgroundColor: "yellow" } }, // Highlighting
+        },
+      });
+    } catch (error) {
+      console.error("Fehler beim Parsen von rawContent:", error);
+      return "<p>Ungültige Beschreibung</p>"; // Fehler-Fallback
+    }
+  };
+
+
+
+  const handleCancelButon = () => {
+    router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+  };
+
+  const parseDescriptionToJSON = (description) => {
+    if (!description) {
+      return JSON.stringify({
+        blocks: [
+          {
+            key: "default",
+            text: "",
+            type: "unstyled",
+            depth: 0,
+            inlineStyleRanges: [],
+            entityRanges: [],
+            data: {},
+          },
+        ],
+        entityMap: {},
+      });
+    }
+
+    try {
+      // Prüfen, ob die Eingabe ein JSON-String ist
+      const parsed = JSON.parse(description);
+      return JSON.stringify(parsed);
+    } catch {
+      // Eingabe ist ein einfacher Text, nicht JSON
+      return JSON.stringify({
+        blocks: [
+          {
+            key: "default",
+            text: description,
+            type: "unstyled",
+            depth: 0,
+            inlineStyleRanges: [],
+            entityRanges: [],
+            data: {},
+          },
+        ],
+        entityMap: {},
+      });
+    }
+  };
+
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (event?.description) {
+      const newDescription = parseDescriptionToJSON(event.description);
+
+      if (description !== newDescription) {
+        setDescription(newDescription); // Zustand nur aktualisieren, wenn nötig
+      }
+    }
+  }, [event?.description, description]); // Abhängigkeit nur auf `event.description` und `description`
+
+
+
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        title: event.name || "",
+        startDate: dayjs(event.date_start) || null,
+        endDate: dayjs(event.date_end) || null,
+        address: event.location || "",
+        capacity: event.capacity?.toString() || "",
+        maxGuests: event.max_additional_guests?.toString() || "",
+        // description: parseDescriptionToJSON(event.description), // Hilfsfunktion hier aufrufen 
+        reminderDays: event.reminder?.toString() || "",
+      });
+    }
+  }, [event]);
+
+
+
+
 
 
   // Geocoding-Funktion global definieren
@@ -175,7 +276,6 @@ const InvitationForm = () => {
     }
   };
 
-
   const validateForm = () => {
     const newErrors = {};
 
@@ -183,7 +283,8 @@ const InvitationForm = () => {
       newErrors.title = "Der Titel muss mindestens 10 Zeichen lang sein.";
     }
 
-    if (!formData.address) {
+    // Adresse nur prüfen, wenn Typ nicht "Online" ist
+    if (eventType !== "Online" && !formData.address) {
       newErrors.address = "Die Adresse ist ein Pflichtfeld.";
     }
 
@@ -195,7 +296,7 @@ const InvitationForm = () => {
       newErrors.endDate = "Das Enddatum ist ein Pflichtfeld und muss gültig sein.";
     }
 
-    if (!formData.description || extractTextFromRaw(formData.description).length < 50) {
+    if (!formData.description || formData.description.length < 50) {
       newErrors.description = "Die Beschreibung muss mindestens 50 Zeichen lang sein.";
     }
 
@@ -216,10 +317,13 @@ const InvitationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
+
+  const handleCloseDialog = () => {
+  };
 
   const handleOpenPublishDialog = () => {
     if (validateForm()) {
@@ -242,54 +346,6 @@ const InvitationForm = () => {
     setInviteListDialogOpen(false);
   };
 
-  const [open, setOpen] = useState(false);
-  const handlePreview = () => {
-    setOpen(true); // Öffnet das Dialogfeld
-  };
-
-  const handleClose = () => {
-    setOpen(false); // Schließt das Dialogfeld
-  };
-
-
-  const handleCloseDialog = () => {
-
-  };
-
-
-  const convertRawToHTML = (rawContent) => {
-    try {
-      const contentState = convertFromRaw(JSON.parse(rawContent)); // Konvertiere Raw Content in ContentState
-      return stateToHTML(contentState, {
-        inlineStyles: {
-          HIGHLIGHT: { style: { backgroundColor: "yellow" } }, // Highlight als Inline-Stil definieren
-        },
-      });
-    } catch (error) {
-      console.error("Fehler beim Konvertieren in HTML:", error);
-      return "<p>Ungültiger Inhalt</p>";
-    }
-  };
-
-  const extractTextFromRaw = (rawContent) => {
-    try {
-      const content = JSON.parse(rawContent);
-      return content.blocks.map((block) => block.text).join("").trim();
-    } catch (error) {
-      console.error("Fehler beim Extrahieren des Textes:", error);
-      return ""; // Fallback: leerer String
-    }
-  };
-
-  const extractPlainTextFromRaw = (rawContent) => {
-    try {
-      const content = JSON.parse(rawContent);
-      return content.blocks.map((block) => block.text).join(" ").trim();
-    } catch (error) {
-      console.error("Fehler beim Extrahieren des Texts:", error);
-      return ""; // Rückgabe eines leeren Strings bei Fehler
-    }
-  };
 
   const handleDialogAction = async (action) => {
     if (action === "publish") {
@@ -307,9 +363,10 @@ const InvitationForm = () => {
         };
 
         // Sende die Daten an die API
-        const result = await postEvent(eventData);
+        const result = await putEvent(event_id, eventData);
+
         if (result.success) {
-          router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+          router.push(`${basePath}/myevent`);
           console.log("Erstelltes Event:", result.data);
         } else {
           alert(`Fehler beim Veröffentlichen: ${result.message}`);
@@ -325,241 +382,13 @@ const InvitationForm = () => {
   };
 
 
-  const Preview = ({ formData = {}, backgroundImage }) => {
-    useEffect(() => {
-      setTimeout(() => {
-        const mapElements = document.querySelectorAll(".leaflet-container");
-        mapElements.forEach((element) => {
-          const mapInstance = element._leaflet_map;
-          if (mapInstance) {
-            mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
-          }
-        });
-      }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
-    }, []);
-
-    return (
-      <div
-        style={{
-          fontFamily: "Arial, sans-serif",
-          fontSize: "16px",
-          color: "#333",
-          margin: "0",
-          padding: "50px",
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1080px",
-            margin: "auto",
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "2.5em",
-                fontWeight: "bold",
-                color: "#333",
-              }}
-            >
-              Einladung
-            </h1>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "0.9em",
-                  borderRadius: "5px",
-                  backgroundColor: "green",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Teilnehmen
-              </button>
-              <button
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "0.9em",
-                  borderRadius: "5px",
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Nicht Teilnehmen
-              </button>
-            </div>
-          </div>
-
-          {/* Titel */}
-          <p
-            style={{
-              fontSize: "24px",
-              fontFamily: "Arial, sans-serif",
-              fontWeight: "bold",
-              fontStyle: "normal",
-              textDecoration: "underline",
-              color: "#333",
-            }}
-          >
-           {formData.title || "Titel nicht angegeben"}
-          </p>
-
-          {/* Typ */}
-          <p>
-            <strong>Typ:</strong> {formData.eventType || "N/A"}
-          </p>
-
-          {/* Inhalt */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginTop: "20px",
-            }}
-          >
-            <div>
-            <strong>Start:</strong>{" "}
-              <div
-                                   style={{
-                                    display: "flex",
-                                    overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                                    alignItems: "center",
-                                    maxHeight: "160px",
-                                    height: "50px",
-                                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                                    fontSize: "18px", // Optional: Schriftgröße anpassen
-                                  }}
-              >
-              <p>
-            
-                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              </div>
-              <strong>Adresse:</strong> 
-              <div
-                     style={{
-                      display: "flex",
-                      overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                      alignItems: "center",
-                      maxHeight: "160px",
-                      height: "50px",
-                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                      fontSize: "18px", // Optional: Schriftgröße anpassen
-                    }}
-              >
-              <p>
-                 {formData.address || "N/A"}
-              </p>
-              </div>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "200px",
-                  border: "1px solid #ccc",
-                  marginTop: "10px",
-                  overflow: "hidden",
-                  fontSize: "16px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                {formData.coordinates || formData.address ? (
-                  <OpenStreetMap
-                    address={formData.address}
-                    coordinates={formData.coordinates}
-                    mapOptions={{
-                      dragging: false, // Deaktiviert das Ziehen der Karte
-                      scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
-                      doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
-                      keyboard: false, // Deaktiviert Tastaturinteraktion
-                      zoomControl: false, // Entfernt die Zoom-Steuerung
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    }}
-                  >
-                    Keine Adresse eingegeben
-                  </div>
-                )}
-              </div>
-
-            </div>
-            <div>
-            <strong>Ende:</strong>{" "}
-              <div
-                                   style={{
-                                    display: "flex",
-                                    overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                                    alignItems: "center",
-                                    maxHeight: "160px",
-                                    height: "50px",
-                                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                                    fontSize: "18px", // Optional: Schriftgröße anpassen
-                                  }}
-              >
-              <p>
-            
-                {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              </div>
-              <div>
-              
-  <strong>Beschreibung:</strong>
-  <div
-    style={{
-      //marginTop: "5px",
-      height: "300px",
-      maxHeight: "300px", // Maximale Höhe der Vorschau
-      overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-      padding: "10px", // Innenabstand für den Text
-      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-      fontSize: "14px", // Optional: Schriftgröße anpassen
-      lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
-    }}
-    dangerouslySetInnerHTML={{
-      __html: convertRawToHTML(formData.description),
-    }}
-  />
-</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const handleRichTextChange = (name, value) => {
+    try {
+      // Nur Text weitergeben, keine JSON-Parsing-Operation
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    } catch (error) {
+      console.error("Fehler beim Verarbeiten des Rich Text Editor Inhalts:", error);
+    }
   };
 
   const initializeEditorContent = (content) => {
@@ -576,20 +405,250 @@ const InvitationForm = () => {
       return EditorState.createEmpty();
     }
   };
-
   // Beispiel für die Initialisierung
   const [editorState, setEditorState] = useState(() =>
     initializeEditorContent(formData.description)
   );
 
-  const handleRichTextChange = (name, value) => {
-    try {
-      // Nur Text weitergeben, keine JSON-Parsing-Operation
-      setFormData((prevData) => ({ ...prevData, [name]: value }));
-    } catch (error) {
-      console.error("Fehler beim Verarbeiten des Rich Text Editor Inhalts:", error);
-    }
-  };
+  const descriptionRef = useRef("");
+
+    const Preview = ({ formData = {}, backgroundImage }) => {
+      useEffect(() => {
+        setTimeout(() => {
+          const mapElements = document.querySelectorAll(".leaflet-container");
+          mapElements.forEach((element) => {
+            const mapInstance = element._leaflet_map;
+            if (mapInstance) {
+              mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
+            }
+          });
+        }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
+      }, []);
+  
+      return (
+        <div
+          style={{
+            fontFamily: "Arial, sans-serif",
+            fontSize: "16px",
+            color: "#333",
+            margin: "0",
+            padding: "50px",
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "1080px",
+              margin: "auto",
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
+            >
+              <h1
+                style={{
+                  fontSize: "2.5em",
+                  fontWeight: "bold",
+                  color: "#333",
+                }}
+              >
+                Einladung
+              </h1>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  style={{
+                    padding: "8px 12px",
+                    fontSize: "0.9em",
+                    borderRadius: "5px",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Teilnehmen
+                </button>
+                <button
+                  style={{
+                    padding: "8px 12px",
+                    fontSize: "0.9em",
+                    borderRadius: "5px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Nicht Teilnehmen
+                </button>
+              </div>
+            </div>
+  
+            {/* Titel */}
+            <p
+              style={{
+                fontSize: "24px",
+                fontFamily: "Arial, sans-serif",
+                fontWeight: "bold",
+                fontStyle: "normal",
+                textDecoration: "underline",
+                color: "#333",
+              }}
+            >
+             {formData.title || "Titel nicht angegeben"}
+            </p>
+  
+            {/* Typ */}
+            <p>
+              <strong>Typ:</strong> {formData.eventType || "N/A"}
+            </p>
+  
+            {/* Inhalt */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+                marginTop: "20px",
+              }}
+            >
+              <div>
+              <strong>Start:</strong>{" "}
+                <div
+                                     style={{
+                                      display: "flex",
+                                      overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                                      alignItems: "center",
+                                      maxHeight: "160px",
+                                      height: "50px",
+                                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                                      fontSize: "18px", // Optional: Schriftgröße anpassen
+                                    }}
+                >
+                <p>
+              
+                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+                </div>
+                <strong>Adresse:</strong> 
+                <div
+                       style={{
+                        display: "flex",
+                        overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                        alignItems: "center",
+                        maxHeight: "160px",
+                        height: "50px",
+                        backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                        border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                        borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                        fontSize: "18px", // Optional: Schriftgröße anpassen
+                      }}
+                >
+                <p>
+                   {formData.address || "N/A"}
+                </p>
+                </div>
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "200px",
+                    border: "1px solid #ccc",
+                    marginTop: "10px",
+                    overflow: "hidden",
+                    fontSize: "16px", // Optional: Schriftgröße anpassen
+                  }}
+                >
+                  {formData.coordinates || formData.address ? (
+                    <OpenStreetMap
+                      address={formData.address}
+                      coordinates={formData.coordinates}
+                      mapOptions={{
+                        dragging: false, // Deaktiviert das Ziehen der Karte
+                        scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
+                        doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
+                        keyboard: false, // Deaktiviert Tastaturinteraktion
+                        zoomControl: false, // Entfernt die Zoom-Steuerung
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                        border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                        borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                      }}
+                    >
+                      Keine Adresse eingegeben
+                    </div>
+                  )}
+                </div>
+  
+              </div>
+              <div>
+              <strong>Ende:</strong>{" "}
+                <div
+                                     style={{
+                                      display: "flex",
+                                      overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                                      alignItems: "center",
+                                      maxHeight: "160px",
+                                      height: "50px",
+                                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                                      fontSize: "18px", // Optional: Schriftgröße anpassen
+                                    }}
+                >
+                <p>
+              
+                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+                </div>
+                <div>
+                
+    <strong>Beschreibung:</strong>
+    <div
+      style={{
+        //marginTop: "5px",
+        height: "300px",
+        maxHeight: "300px", // Maximale Höhe der Vorschau
+        overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+        border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+        padding: "10px", // Innenabstand für den Text
+        backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+        borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+        fontSize: "14px", // Optional: Schriftgröße anpassen
+        lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+      }}
+      dangerouslySetInnerHTML={{
+        __html: convertRawToHTML(descriptionRef.current),
+      }}
+    />
+  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -601,6 +660,7 @@ const InvitationForm = () => {
 
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
 
   const handleBlur = async (e) => {
     const { name, value } = e.target;
@@ -625,9 +685,11 @@ const InvitationForm = () => {
   };
 
   const handleEventTypeChange = (e) => {
-    setEventType(e.target.value);
-    if (e.target.value === "Online") {
-      setFormData({ ...formData, address: "" });
+    const selectedType = e.target.value;
+    setEventType(selectedType);
+
+    if (selectedType === "Online") {
+      setFormData({ ...formData, address: "" }); // Adresse entfernen
     }
   };
 
@@ -643,24 +705,18 @@ const InvitationForm = () => {
   };
 
 
-  const handleClearForm = () => {
-    setFormData({
-      title: "",
-      startDate: null,
-      endDate: null,
-      address: "",
-      capacity: "",
-      maxGuests: "",
-      description: "",
-      reminderDays: "",
-    });
-    window.location.reload();
-    setEventType("Präsenz");
-    setBackgroundImage(null);
+  const [open, setOpen] = useState(false);
+  const handlePreview = () => {
+    setOpen(true); // Öffnet das Dialogfeld
   };
+
+  const handleClose = () => {
+    setOpen(false); // Schließt das Dialogfeld
+  };
+
+
   return (
     <div
-
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -856,11 +912,13 @@ const InvitationForm = () => {
                 }}
               >
                 <MUIRichTextEditor
-                  label="Besschreibung Hinzufügen"
-                  defaultValue={JSON.stringify(convertToRaw(editorState.getCurrentContent()))} // Initialwert setzen
+                  label="Beschreibung hinzufügen"
+                  defaultValue={description}
                   onChange={(state) => {
                     const content = JSON.stringify(convertToRaw(state.getCurrentContent())); // Inhalt als JSON speichern
                     handleRichTextChange("description", content);
+                    descriptionRef.current = content; // Aktualisiere das Ref
+
                   }}
                   controls={["bold", "italic", "underline", "strikethrough", "highlight", "undo", "redo"]} // Nur gewünschte Steuerelemente anzeigen
                   style={{
@@ -871,7 +929,6 @@ const InvitationForm = () => {
               </div>
             </Grid>
           </Grid>
-
           {/* Zusätzliche Angaben */}
           <Grid container spacing={2} style={{ marginTop: "20px" }}>
             <Grid item xs={12} sm={4}>
@@ -922,9 +979,9 @@ const InvitationForm = () => {
                 backgroundColor: "red",
                 "&:hover": { backgroundColor: "darkred" },
               }}
-              onClick={handleClearForm}
+              onClick={handleCancelButon}
             >
-              Formular leeren
+              Abbrechen
             </Button>
             <Button variant="contained" color="primary" onClick={() => handlePreview()}>
               Vorschau
@@ -936,6 +993,7 @@ const InvitationForm = () => {
             >
               Einladungsliste
             </Button>
+
             <Button
               variant="contained"
               sx={{
@@ -944,7 +1002,7 @@ const InvitationForm = () => {
               }}
               onClick={handleOpenPublishDialog}
             >
-              Weiter
+              Speichern
             </Button>
           </Box>
         </Box>
@@ -952,10 +1010,9 @@ const InvitationForm = () => {
 
       {/* Dialog */}
       <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
-        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
         <DialogContent>
           <Typography>
-            Möchten Sie die Veranstaltung veröffentlichen?
+            Möchten Sie die Änderungen speichern und veröffentlichen?
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -967,10 +1024,11 @@ const InvitationForm = () => {
             color="primary"
             onClick={() => handleDialogAction("publish")}
           >
-            Veröffentlichen
+            Ja
           </Button>
         </DialogActions>
       </Dialog>
+
 
       <Dialog
         open={inviteListDialogOpen}
@@ -996,6 +1054,8 @@ const InvitationForm = () => {
           </Button>
         </DialogContent>
       </Dialog>
+
+
     </div>
   );
 };

@@ -1,16 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from "next/navigation";
 import { Box, Link, Typography } from '@mui/material';
+import { useFetchApiData } from "@/app/lib/useFetchApiData";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Footer from '@/app/components/Footer';
 import { BlueButton, RedButton, GreenButton } from '@/app/components/styledComponents/StyledButton';
 
+// Funktion zur Generierung des Base Path
+export const generateBasePath = (userInfo, user) => {
+  return userInfo
+    ? `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`
+    : `/defaultInstanz/defaultOrganisation/${user?.sub}`;
+};
+
 const LogInOut = () => {
-  const { user, isLoading } = useUser();
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
+  const router = useRouter();
+
+  // Daten über Auth0 und die API laden
+  const { user, error: authError, isLoading } = useUser();
+  const path = "/api/users"; // Endpoint zum Abrufen der Benutzerdaten
+  const method = "GET";
+  const { data: users, error: fetchError } = useFetchApiData(user, path, method);
+
+  // Base Path generieren
+  const basePath = generateBasePath(userInfo, user);
+
+   // Weiterleitung zu basePath bei Login
+   useEffect(() => {
+    if (!isLoading && user && window.location.pathname === '/') {
+      const basePath = generateBasePath(userInfo, user);
+      router.push(basePath);
+    }
+  }, [user, userInfo, isLoading]);
+
 
   const carousel1 = [
     {
@@ -71,9 +99,9 @@ const LogInOut = () => {
         }}
       >
         {!isLoading && !user ? (
-          <Link href="/api/auth/login">
-            <GreenButton>Login</GreenButton>
-          </Link>
+          <Link href={`/api/auth/login?returnTo=${basePath}`}>
+  <GreenButton>Login</GreenButton>
+</Link>
         ) : (
           <Box>
             <Box
@@ -83,12 +111,6 @@ const LogInOut = () => {
                 gap: '1rem',
               }}
             >
-              <Link href="/user">
-                <BlueButton>User</BlueButton>
-              </Link>
-              <Link href="/admin">
-                <BlueButton>Admin</BlueButton>
-              </Link>
             </Box>
             <Box
               sx={{
@@ -97,9 +119,6 @@ const LogInOut = () => {
                 marginTop: '1rem',
               }}
             >
-              <Link href="/api/auth/logout">
-                <RedButton>Logout</RedButton>
-              </Link>
             </Box>
           </Box>
         )}
@@ -297,5 +316,4 @@ const LogInOut = () => {
     </Box>
   );
 };
-
 export default LogInOut;
