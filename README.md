@@ -53,8 +53,8 @@
 - npm install react react-dom
 - npm install leaflet
 - npm install mui-rte --save --legacy-peer-deps
-- npm install --save draft-js react react-dom
-- npm install --save draft-js-export-html
+- npm install --save draft-js react react-dom  --legacy-peer-deps
+- npm install --save draft-js-export-html  --legacy-peer-deps
 - npm install @mui/styles --legacy-peer-deps
 - npm install @mui/icons-material --legacy-peer-deps
 - npm install @mui/material --legacy-peer-deps  
