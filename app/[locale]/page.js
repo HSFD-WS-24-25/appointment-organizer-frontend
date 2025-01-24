@@ -1,5 +1,5 @@
-import SimpleLogin from "@/app/[locale]/components/SimpleLogin"
+import LogInOut from '../app/[locale]/components/LogInOut';
 
 export default function HomePage() {
-  return <SimpleLogin />;
+  return <LogInOut />;
 }
