@@ -9,3 +9,4 @@ export const useFetchEventById = (eventId) => {
 
   return { user, authError, isLoading, event, fetchError };
 };
+

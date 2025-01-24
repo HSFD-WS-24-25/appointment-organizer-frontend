@@ -37,10 +37,6 @@ import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 
 
-
-
-
-
 // Setze die deutsche Lokalisierung global
 dayjs.locale("de");
 
@@ -133,7 +129,6 @@ const InvitationForm = () => {
   const router = useRouter();
   const { user } = useUser();
   const basePath = generateBasePath(userInfo, user); // Determine the base path
-
 
 
   const { postEvent } = usePostEvent();
@@ -291,6 +286,8 @@ const InvitationForm = () => {
     }
   };
 
+
+
   const handleDialogAction = async (action) => {
     if (action === "publish") {
       try {
@@ -323,7 +320,6 @@ const InvitationForm = () => {
     }
     handleCloseDialog();
   };
-
 
   const Preview = ({ formData = {}, backgroundImage }) => {
     useEffect(() => {
@@ -590,6 +586,7 @@ const InvitationForm = () => {
       console.error("Fehler beim Verarbeiten des Rich Text Editor Inhalts:", error);
     }
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -886,6 +883,7 @@ const InvitationForm = () => {
                 style={{ backgroundColor: "white" }}
               />
             </Grid>
+
 
             <Grid item xs={12} sm={4}>
               <TextField

@@ -13,22 +13,35 @@ import {
   Typography,
   Paper,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
-import FilterListIcon from '@mui/icons-material/FilterList'; // Import the filter icon
-import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import {BlueButton,GreenButton ,RedButton} from "@/app/components/styledComponents/StyledButton";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import  StyledPaper  from "@/app/components/styledComponents/StyledPaper";
+import { BlueButton, GreenButton, RedButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import { useRouter } from 'next/navigation';
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 
 function UserDashboard() {
   const [searchText, setSearchText] = useState('');
-  const [filteredGuests, setFilteredGuests] = useState(["Max Mustermann", "Alice Müller", "Tom Gast", "Julia Schmidt", "Peter Neumann", "Franz Gast"]);
+  const [filterPreviousInvite, setFilterPreviousInvite] = useState(false);
+  const [guests] = useState([
+    { name: "Max Mustermann", email: "max.mustermann@beispiel.de", invited: true, known: true },
+    { name: "Alice Müller", email: "alice.mueller@example.com", invited: false, known: true },
+    { name: "Tom Gast", email: "tom.gast@fakedomain.com", invited: false, known: false },
+    { name: "Julia Schmidt", email: "julia.schmidt@website.net", invited: true, known: true },
+    { name: "Peter Neumann", email: "peter.neumann@anotherdomain.org", invited: true, known: false },
+    { name: "Franz Gast", email: "franz.gast@someplace.co", invited: false, known: false },
+    { name: "Mia Schulze", email: "mia.schulze@randommail.com", invited: false, known: true },
+    { name: "Lena Becker", email: "lena.becker@samplemail.de", invited: false, known: false },
+  ]);
+  const [filteredData, setFilteredData] = useState(guests); // useState für gefilterte Daten
+
   const router = useRouter();
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
   
-  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
   useEffect(() => {
     if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
       const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
@@ -38,21 +51,28 @@ function UserDashboard() {
 
   // Handle search filter action
   const handleSearch = () => {
-    // Filtering based on the search text and matching guests' names
-    if (searchText) {
-      setFilteredGuests(filteredGuests.filter(name => name.toLowerCase().includes(searchText.toLowerCase())));
-    } else {
-      setFilteredGuests(["Max Mustermann", "Alice Müller", "Tom Gast", "Julia Schmidt", "Peter Neumann", "Franz Gast"]); // Reset when search is empty
+    const lowercasedSearchText = searchText.toLowerCase();
+    let filtered = guests.filter(guest => {
+      const nameMatches = guest.name.toLowerCase().includes(lowercasedSearchText);
+      const emailMatches = guest.email.toLowerCase().includes(lowercasedSearchText); // Suche auch in der E-Mail-Adresse
+      return nameMatches || emailMatches; // Beide Felder prüfen
+    });
+
+    if (filterPreviousInvite) {
+      filtered = filtered.filter(guest => guest.invited); // Nur Gäste, die bereits eingeladen sind
     }
+
+    setFilteredData(filtered); // Setze gefilterte Daten
   };
 
-  // Function to highlight the search text within the names
-  const highlightText = (text) => {
-    const regex = new RegExp(`(${searchText})`, 'gi');
-    return text.split(regex).map((part, index) =>
-      part.toLowerCase() === searchText.toLowerCase() ? <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span> : part
-    );
+  // Handle Filter Checkbox Change
+  const handleFilterChange = () => {
+    setFilterPreviousInvite(!filterPreviousInvite); // Toggle den Filter
   };
+
+  useEffect(() => {
+    handleSearch(); // Führe den Suchfilter erneut aus, wenn der Suchtext oder der Filter geändert wird
+  }, [searchText, filterPreviousInvite]);
 
   const handleBackToEventClick = () => {
     router.push(`${basePath}/createEvent`);
@@ -66,10 +86,7 @@ function UserDashboard() {
           Einladungsliste
         </DesignTitel>
 
-        {/* Section for guests who have participated before */}
-        <Typography variant="h6" gutterBottom>
-          Gäste die schon an anderen Veranstaltungen teilgenommen haben:
-        </Typography>
+        {/* Search Bar */}
         <Box
           sx={{
             display: 'flex',
@@ -79,14 +96,13 @@ function UserDashboard() {
             justifyContent: 'center',
           }}
         >
-          {/* Search Bar with Filter Icon on the Right */}
           <TextField
             variant="outlined"
             placeholder="Search"
             size="small"
             sx={{ width: { xs: '100%', sm: '80%' }, marginRight: { sm: 2 } }}
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={(e) => setSearchText(e.target.value)} // Setze den Suchtext
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -100,10 +116,23 @@ function UserDashboard() {
           />
         </Box>
 
-        <TableContainer
-          component={Paper}
-          sx={{marginBottom: 3}}
-        >
+        {/* Filter for Previous Invitation */}
+        <Box sx={{ marginBottom: 3 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={filterPreviousInvite}
+                onChange={handleFilterChange} // Filter anwenden
+                name="previousInvite"
+                color="primary"
+              />
+            }
+            label="Nur Gäste mit vorheriger Einladung anzeigen"
+          />
+        </Box>
+
+        {/* Table for guests */}
+        <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -114,54 +143,27 @@ function UserDashboard() {
                   Email
                 </TableCell>
                 <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Teilgenommen
+                  Einladen
+                </TableCell>
+                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
+                  Vorherige Einladung
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredGuests.map((name, index) => (
+              {filteredData.map((guest, index) => (
                 <TableRow key={index}>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
-                    {/* Highlight matching text */}
-                    {highlightText(name)}
+                    {guest.name}
                   </TableCell>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
-                    {name.toLowerCase().replace(" ", ".")}@beispiel.de
+                    {guest.email}
                   </TableCell>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
                     <input type="checkbox" />
                   </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        {/* Section for new guest email input */}
-        <Typography variant="h6" gutterBottom>
-          Für Neue Gäste tragen Sie bitte die Emails ein:
-        </Typography>
-        <TableContainer
-          component={Paper}
-          sx={{ marginBottom: 3 }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Gast-Informationen
-                </TableCell>
-                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Email
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {["Julia Schmidt", "Peter Neumann", "Franz Gast"].map((name, index) => (
-                <TableRow key={index}>
-                  <TableCell sx={{ border: '1px solid #ddd' }}>{name}</TableCell>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
-                    {name.toLowerCase().replace(" ", ".")}@beispiel.de
+                    <input type="checkbox" checked={guest.invited} readOnly />
                   </TableCell>
                 </TableRow>
               ))}
@@ -180,8 +182,8 @@ function UserDashboard() {
             alignItems: 'center',
           }}
         >
-           <RedButton>
-             Abbrechen
+          <RedButton>
+            Abbrechen
           </RedButton>
           <BlueButton>
             Einladung Schicken
@@ -196,3 +198,13 @@ function UserDashboard() {
 }
 
 export default UserDashboard;
+
+
+
+
+
+
+
+
+
+

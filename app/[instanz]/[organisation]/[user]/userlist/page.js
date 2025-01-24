@@ -2,19 +2,18 @@
 
 import React, { useState } from "react";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Paper,
+  Box,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { StyledBox } from "@/app/components/styledComponents/StyledBox";
-import { StyledPaper } from "@/app/components/styledComponents/StyledPaper";
-import { StyledTextField } from "@/app/components/styledComponents/StyledTextField";
-import {StyledTableContainer, 
-  StyledTable, 
-  StyledTableRow,
-  StyledTableHeadCell,
-  StyledTableBody,
-  StyledTableCell, 
-  StyledTableHead } from "@/app/components/styledComponents/StyledTable";
 
 // Beispiel-Daten, später dann mit echten Nutzern über Backend
 const users = [
@@ -66,7 +65,7 @@ export default function UserTable() {
   );
 
   return (
-    <StyledBox
+    <Box
       sx={{
         p: 2,
         display: "flex",
@@ -75,14 +74,14 @@ export default function UserTable() {
       }}
     >
       {/* Suchfeld */}
-      <StyledBox
+      <Box
         sx={{
           width: "100%",
           maxWidth: "800px",
           mb: 2,
         }}
       >
-        <StyledTextField
+        <TextField
           fullWidth
           label="Search"
           variant="outlined"
@@ -90,11 +89,11 @@ export default function UserTable() {
           value={searchTerm}
           onChange={handleSearch}
         />
-      </StyledBox>
+      </Box>
 
       {/* Tabelle oder Kartenansicht */}
-      <StyledTableContainer
-        component={StyledPaper}
+      <TableContainer
+        component={Paper}
         sx={{
           width: "100%",
           maxWidth: "800px",
@@ -103,7 +102,7 @@ export default function UserTable() {
       >
         {isMobile ? (
           filteredUsers.map((user, index) => (
-            <StyledBox
+            <Box
               key={index}
               sx={{
                 mb: 2,
@@ -125,31 +124,31 @@ export default function UserTable() {
               <Typography variant="body1">
                 <strong>Zuletzt aktiv:</strong> {user.lastActive}
               </Typography>
-            </StyledBox>
+            </Box>
           ))
         ) : (
-          <StyledTable>
-            <StyledTableHead>
-              <StyledTableRow>
-                <StyledTableCell>Benutzer</StyledTableCell>
-                <StyledTableCell>Kontaktdaten</StyledTableCell>
-                <StyledTableCell>Veranstalter</StyledTableCell>
-                <StyledTableCell>Zuletzt aktiv</StyledTableCell>
-              </StyledTableRow>
-            </StyledTableHead>
-            <StyledTableBody>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Benutzer</TableCell>
+                <TableCell>Kontaktdaten</TableCell>
+                <TableCell>Veranstalter</TableCell>
+                <TableCell>Zuletzt aktiv</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {filteredUsers.map((user, index) => (
-                <StyledTableRow key={index} sx={{ backgroundColor: "#d1edda" }}>
-                  <StyledTableCell>{user.name}</StyledTableCell>
-                  <StyledTableCell>{user.contact}</StyledTableCell>
-                  <StyledTableCell>{user.assignment}</StyledTableCell>
-                  <StyledTableCell>{user.lastActive}</StyledTableCell>
-                </StyledTableRow>
+                <TableRow key={index} sx={{ backgroundColor: "#d1edda" }}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.contact}</TableCell>
+                  <TableCell>{user.assignment}</TableCell>
+                  <TableCell>{user.lastActive}</TableCell>
+                </TableRow>
               ))}
-            </StyledTableBody>
-          </StyledTable>
+            </TableBody>
+          </Table>
         )}
-      </StyledTableContainer>
-    </StyledBox>
+      </TableContainer>
+    </Box>
   );
 }

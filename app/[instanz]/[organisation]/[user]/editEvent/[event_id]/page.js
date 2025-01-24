@@ -32,6 +32,7 @@ import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { usePathname, useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
+
 import MUIRichTextEditor from "mui-rte";
 import { EditorState, convertFromRaw, convertToRaw, ContentState } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
@@ -39,6 +40,7 @@ import { stateToHTML } from "draft-js-export-html";
 
 dayjs.locale("de");
 const OpenStreetMap = ({ address, coordinates }) => {
+
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
@@ -54,6 +56,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
         keyboard: false, // Tastatursteuerung deaktivieren
         zoomControl: false, // Zoom-Steuerung ausblenden
       });
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 22,
         attribution:
@@ -74,6 +77,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
       if (coordinates) {
         const [lat, lon] = coordinates;
         mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
+
         L.marker([lat, lon], { icon: customIcon })
           .addTo(mapInstance.current)
           .bindPopup("Gewählte Adresse")
@@ -89,6 +93,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
           if (data.length > 0) {
             const { lat, lon } = data[0];
             mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
+
             L.marker([lat, lon], { icon: customIcon })
               .addTo(mapInstance.current)
               .bindPopup(`Adresse: ${address}`)
@@ -120,6 +125,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
 
   return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
 };
+
 const InvitationForm = () => {
   const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
   const { event, isLoading, fetchError } = useFetchEventById(event_id);
@@ -171,7 +177,6 @@ const InvitationForm = () => {
       return "<p>Ungültige Beschreibung</p>"; // Fehler-Fallback
     }
   };
-
 
 
   const handleCancelButon = () => {
@@ -232,7 +237,6 @@ const InvitationForm = () => {
   }, [event?.description, description]); // Abhängigkeit nur auf `event.description` und `description`
 
 
-
   useEffect(() => {
     if (event) {
       setFormData({
@@ -242,16 +246,10 @@ const InvitationForm = () => {
         address: event.location || "",
         capacity: event.capacity?.toString() || "",
         maxGuests: event.max_additional_guests?.toString() || "",
-        // description: parseDescriptionToJSON(event.description), // Hilfsfunktion hier aufrufen 
         reminderDays: event.reminder?.toString() || "",
       });
     }
   }, [event]);
-
-
-
-
-
 
   // Geocoding-Funktion global definieren
   const geocodeAddress = async (address) => {
@@ -354,6 +352,7 @@ const InvitationForm = () => {
         const eventData = {
           name: formData.title,
           description: extractPlainTextFromRaw(formData.description), // Nur den Text speichern
+
           date_start: formData.startDate?.toISOString(),
           date_end: formData.endDate?.toISOString(),
           location: formData.address,
@@ -649,6 +648,7 @@ const InvitationForm = () => {
       );
     };
   
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -929,6 +929,7 @@ const InvitationForm = () => {
               </div>
             </Grid>
           </Grid>
+          
           {/* Zusätzliche Angaben */}
           <Grid container spacing={2} style={{ marginTop: "20px" }}>
             <Grid item xs={12} sm={4}>
@@ -1061,3 +1062,4 @@ const InvitationForm = () => {
 };
 
 export default InvitationForm;
+
