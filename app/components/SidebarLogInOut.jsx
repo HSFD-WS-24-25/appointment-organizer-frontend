@@ -19,9 +19,12 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import React, { useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { usePathname, useRouter } from 'next/navigation';
+import { generateBasePath } from "@/app/components/Sidebar";
+
 
 export function SidebarLogInOut({ expanded }) {
     const { user } = useUser();
+    const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
     const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
     const router = useRouter();
     const pathname = usePathname(); // Get the current route
@@ -31,12 +34,12 @@ export function SidebarLogInOut({ expanded }) {
     };
 
     const handleProfileClick = () => {
-        const basePath = pathname.startsWith("/admin") ? "/admin" : "/user"; // Determine the base path
-        router.push(`${basePath}/profile`); // Navigate to the appropriate settings page
+          const basePath = generateBasePath(userInfo, user); // Determine the base path
+        router.push(`${basePath}/profile_auth0`); // Navigate to the appropriate settings page
     };
 
     const handleSettingClick = () => {
-        const basePath = pathname.startsWith("/admin") ? "/admin" : "/user"; // Determine the base path
+        const basePath = generateBasePath(userInfo, user); // Determine the base path
         router.push(`${basePath}/settings`); // Navigate to the appropriate settings page
     };
 
