@@ -19,7 +19,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import React, { useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { usePathname, useRouter } from 'next/navigation';
-import { generateBasePath } from "@/app/components/Sidebar";
+import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 
 
 export function SidebarLogInOut({ expanded }) {
