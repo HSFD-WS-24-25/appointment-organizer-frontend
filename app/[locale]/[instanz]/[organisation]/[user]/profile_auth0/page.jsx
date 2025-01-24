@@ -3,8 +3,8 @@
 import React from 'react';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import { Avatar, Box, Card, CardContent, Typography, Button } from '@mui/material';
-import DesignTitel from "@/app/components/styledComponents/DesignTitel";
-import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 
 //import ErrorMessage from '../../components/ErrorMessage';
 

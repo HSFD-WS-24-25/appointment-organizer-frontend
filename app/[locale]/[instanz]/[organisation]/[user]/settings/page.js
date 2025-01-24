@@ -9,7 +9,6 @@ import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel"
 import { useUserContext } from "@/app/[locale]/context/UserContext"; // Benutzerkontext importieren
 import LocaleSwitcher from "@/app/[locale]/components/LocaleSwitcher";
 import {useTranslations} from 'next-intl';
-import {Link} from '@/i18n/routing';
 
 function UserSettings() {
   const t = useTranslations('UserSettings');

@@ -33,7 +33,7 @@ import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/[locale]
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
-import { generateBasePath } from "@/app/components/Sidebar";
+import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 
 function EventCard({ event, view }) {
   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook

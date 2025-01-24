@@ -5,7 +5,6 @@ import { useTransition } from "react"
 import { usePathname, useRouter } from "@/i18n/routing"
 import { Box, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import {useTranslations} from 'next-intl';
-import {Link} from '@/i18n/routing';
 
 export default function LocaleSwitcherSelect({
   children,
