@@ -28,9 +28,9 @@ import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel"
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
+import customMarkerIcon from "@/app/[locale]/components/styledComponents/IconMarker.png";
 import UserDashboard from "../invites/page"
-import { generateBasePath } from "@/app/components/Sidebar";
+import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
 

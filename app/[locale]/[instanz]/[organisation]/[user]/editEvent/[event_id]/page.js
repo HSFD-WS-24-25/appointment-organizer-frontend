@@ -22,13 +22,13 @@ import "dayjs/locale/de";
 import { useFetchEventById } from "@/app/hooks/useFetchEventById";
 import { usePutEvent } from "@/app/hooks/usePutEvent";
 import { useParams } from "next/navigation";
-import DesignTitel from "@/app/components/styledComponents/DesignTitel";
-import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
-import { useUserContext } from "@/app/context/UserContext";
-import { generateBasePath } from "@/app/components/Sidebar";
+import customMarkerIcon from "@/app/[locale]/components/styledComponents/IconMarker.png";
+import { useUserContext } from "@/app/[locale]/context/UserContext";
+import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { usePathname, useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
