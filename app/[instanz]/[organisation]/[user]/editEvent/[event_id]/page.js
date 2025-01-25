@@ -32,10 +32,12 @@ import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { usePathname, useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
+import QuillEditor from "@/app/components/styledComponents/QuillEditor";
+
 
 dayjs.locale("de");
+const OpenStreetMap = ({ address, coordinates }) => {
 
-const OpenStreetMap = ({ address, coordinates, interactive = true }) => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
@@ -43,12 +45,14 @@ const OpenStreetMap = ({ address, coordinates, interactive = true }) => {
     // Initialisiere die Karte nur einmal
     if (!mapInstance.current) {
       const map = L.map(mapRef.current, {
-        dragging: interactive, // Ziehen aktivieren oder deaktivieren
-        scrollWheelZoom: interactive, // Mausrad-Zoom aktivieren oder deaktivieren
-        doubleClickZoom: interactive, // Doppelklick-Zoom aktivieren oder deaktivieren
-        touchZoom: interactive, // Touch-Zoom aktivieren oder deaktivieren
-        keyboard: interactive, // Tastaturinteraktion aktivieren oder deaktivieren
-      }).setView([51.505, -0.09], 15);
+        center: [51.505, -0.09], // Standardkoordinaten
+        zoom: 18, // Erhöhter Zoom-Level
+        dragging: false, // Ziehen deaktivieren
+        scrollWheelZoom: false, // Zoomen mit Scrollrad deaktivieren
+        doubleClickZoom: false, // Doppelklick-Zoomen deaktivieren
+        keyboard: false, // Tastatursteuerung deaktivieren
+        zoomControl: false, // Zoom-Steuerung ausblenden
+      });
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 22,
@@ -69,7 +73,8 @@ const OpenStreetMap = ({ address, coordinates, interactive = true }) => {
     const updateMap = async () => {
       if (coordinates) {
         const [lat, lon] = coordinates;
-        mapInstance.current.setView([lat, lon], 15);
+        mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
+
         L.marker([lat, lon], { icon: customIcon })
           .addTo(mapInstance.current)
           .bindPopup("Gewählte Adresse")
@@ -84,7 +89,8 @@ const OpenStreetMap = ({ address, coordinates, interactive = true }) => {
           const data = await response.json();
           if (data.length > 0) {
             const { lat, lon } = data[0];
-            mapInstance.current.setView([lat, lon], 15);
+            mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
+
             L.marker([lat, lon], { icon: customIcon })
               .addTo(mapInstance.current)
               .bindPopup(`Adresse: ${address}`)
@@ -112,11 +118,10 @@ const OpenStreetMap = ({ address, coordinates, interactive = true }) => {
         });
       }
     };
-  }, [address, coordinates, interactive]);
+  }, [address, coordinates]);
 
   return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
 };
-
 
 const InvitationForm = () => {
   const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
@@ -140,9 +145,80 @@ const InvitationForm = () => {
   const router = useRouter();
   const { putEvent } = usePutEvent(); // Hole die PUT-Logik aus dem Hook
   const basePath = generateBasePath(userInfo, user); // Determine the base path
+  const extractPlainTextFromRaw = (rawContent) => {
+    try {
+      const content = JSON.parse(rawContent);
+      return content.blocks.map((block) => block.text).join(" ").trim();
+    } catch (error) {
+      console.error("Fehler beim Extrahieren des Texts:", error);
+      return ""; // Rückgabe eines leeren Strings bei Fehler
+    }
+  };
+
+  const convertRawToHTML = (rawContent) => {
+    try {
+      // Wenn rawContent nicht existiert oder leer ist, Fallback verwenden
+      if (!rawContent) {
+        return "<p>Keine Beschreibung verfügbar</p>"; // Fallback für die Vorschau
+      }
+
+      // Konvertiere den Raw Content zu HTML
+      const contentState = convertFromRaw(JSON.parse(rawContent));
+      return stateToHTML(contentState, {
+        inlineStyles: {
+          HIGHLIGHT: { style: { backgroundColor: "yellow" } }, // Highlighting
+        },
+      });
+    } catch (error) {
+      console.error("Fehler beim Parsen von rawContent:", error);
+      return "<p>Ungültige Beschreibung</p>"; // Fehler-Fallback
+    }
+  };
+
 
   const handleCancelButon = () => {
     router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+  };
+
+  const parseDescriptionToJSON = (description) => {
+    if (!description) {
+      return JSON.stringify({
+        blocks: [
+          {
+            key: "default",
+            text: "",
+            type: "unstyled",
+            depth: 0,
+            inlineStyleRanges: [],
+            entityRanges: [],
+            data: {},
+          },
+        ],
+        entityMap: {},
+      });
+    }
+
+    try {
+      // Prüfen, ob die Eingabe ein JSON-String ist
+      const parsed = JSON.parse(description);
+      return JSON.stringify(parsed);
+    } catch {
+      // Eingabe ist ein einfacher Text, nicht JSON
+      return JSON.stringify({
+        blocks: [
+          {
+            key: "default",
+            text: description,
+            type: "unstyled",
+            depth: 0,
+            inlineStyleRanges: [],
+            entityRanges: [],
+            data: {},
+          },
+        ],
+        entityMap: {},
+      });
+    }
   };
 
 
@@ -155,8 +231,8 @@ const InvitationForm = () => {
         address: event.location || "",
         capacity: event.capacity?.toString() || "",
         maxGuests: event.max_additional_guests?.toString() || "",
-        description: event.description || "",
         reminderDays: event.reminder?.toString() || "",
+        description: event.description || "", // Beschreibung laden
       });
     }
   }, [event]);
@@ -262,6 +338,7 @@ const InvitationForm = () => {
         const eventData = {
           name: formData.title,
           description: formData.description,
+
           date_start: formData.startDate?.toISOString(),
           date_end: formData.endDate?.toISOString(),
           location: formData.address,
@@ -288,6 +365,39 @@ const InvitationForm = () => {
     }
     handleCloseDialog();
   };
+
+
+  const handleRichTextChange = (name, value) => {
+    try {
+      // Nur Text weitergeben, keine JSON-Parsing-Operation
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    } catch (error) {
+      console.error("Fehler beim Verarbeiten des Rich Text Editor Inhalts:", error);
+    }
+  };
+  /*
+    const initializeEditorContent = (content) => {
+      if (content) {
+        try {
+          const rawContent = JSON.parse(content); // Versuche, den Text als JSON zu interpretieren
+          return EditorState.createWithContent(convertFromRaw(rawContent));
+        } catch (error) {
+          // Falls der Inhalt kein JSON ist, starte mit leerem Editor
+          console.error("Ungültiges JSON, starte mit leerem Editor:", error);
+          return EditorState.createEmpty();
+        }
+      } else {
+        return EditorState.createEmpty();
+      }
+    };
+  */
+  /*
+    // Beispiel für die Initialisierung
+    const [editorState, setEditorState] = useState(() =>
+      initializeEditorContent(formData.description)
+    ); */
+
+  const descriptionRef = useRef("");
 
   const Preview = ({ formData = {}, backgroundImage }) => {
     useEffect(() => {
@@ -376,13 +486,13 @@ const InvitationForm = () => {
             style={{
               fontSize: "24px",
               fontFamily: "Arial, sans-serif",
-              fontWeight: "normal",
+              fontWeight: "bold",
               fontStyle: "normal",
-              textDecoration: "none",
+              textDecoration: "underline",
               color: "#333",
             }}
           >
-            <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
+            {formData.title || "Titel nicht angegeben"}
           </p>
 
           {/* Typ */}
@@ -400,13 +510,43 @@ const InvitationForm = () => {
             }}
           >
             <div>
-              <p>
-                <strong>Start:</strong>{" "}
-                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <p>
-                <strong>Adresse:</strong> {formData.address || "N/A"}
-              </p>
+              <strong>Start:</strong>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+
+                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+              </div>
+              <strong>Adresse:</strong>
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+                  {formData.address || "N/A"}
+                </p>
+              </div>
               <div
                 style={{
                   position: "relative",
@@ -415,6 +555,7 @@ const InvitationForm = () => {
                   border: "1px solid #ccc",
                   marginTop: "10px",
                   overflow: "hidden",
+                  fontSize: "16px", // Optional: Schriftgröße anpassen
                 }}
               >
                 {formData.coordinates || formData.address ? (
@@ -436,6 +577,9 @@ const InvitationForm = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       height: "100%",
+                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
                     }}
                   >
                     Keine Adresse eingegeben
@@ -445,37 +589,53 @@ const InvitationForm = () => {
 
             </div>
             <div>
-              <p>
-                <strong>Ende:</strong>{" "}
-                {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <strong>Beschreibung:</strong>{" "}
-              <p
+              <strong>Ende:</strong>{" "}
+              <div
                 style={{
-                  fontSize: "16px",
-                  fontFamily: "Arial, sans-serif",
-                  fontWeight: "normal",
-                  fontStyle: "normal",
-                  textDecoration: "none",
-                  color: "#333",
-                  wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
-                  whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
-                  overflowWrap: "break-word", // Zusätzliche Absicherung
-                  maxWidth: "100%", // Passt sich an die Breite des Containers an
-                  margin: 0, // Entfernt Standardabstände
-                  maxHeight: "380px", // Maximale Höhe auf 500px begrenzen
-                  overflowY: "auto", // Scrollbar aktivieren, wenn Inhalt die Höhe überschreitet
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
                 }}
               >
-                {formData.description || "Beschreibung nicht angegeben"}
-              </p>
+                <p>
 
+                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+              </div>
+              <div>
+
+                <strong>Beschreibung:</strong>
+                <div
+                  style={{
+                    //marginTop: "5px",
+                    height: "300px",
+                    maxHeight: "300px", // Maximale Höhe der Vorschau
+                    overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                    padding: "10px", // Innenabstand für den Text
+                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                    // fontSize: "14px", // Optional: Schriftgröße anpassen
+                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: formData.description || "Keine Beschreibung angegeben",
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
     );
   };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -566,7 +726,7 @@ const InvitationForm = () => {
 
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
-          Veranstaltung erstellen
+        Veranstaltung "{formData.title}" bearbeiten
         </DesignTitel>
 
         <Box
@@ -702,11 +862,12 @@ const InvitationForm = () => {
               <Box
                 style={{
                   backgroundColor: "white",
-                  padding: "10px",
+                  // padding: "10px",
                   border: "1px solid #ccc",
                   height: "250px", // Höhe der Karte anpassen
                   marginTop: "10px",
-                  display: "flex",
+                  width: "100%",
+                  // display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -725,24 +886,32 @@ const InvitationForm = () => {
             </Grid>
 
             {/* Beschreibung */}
-            <Grid item xs={6} marginTop={"10px"} >
-              <TextField
-                label="Beschreibung"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                error={!!errors.description}
-                helperText={errors.description}
-                multiline={true}
-                rows={15} // Nur Höhe für Multiline
-                fullWidth
+            <Grid item xs={6} marginTop={"10px"}>
+              <Typography variant="h6" gutterBottom>
+                Beschreibung
+              </Typography>
+              <div
                 style={{
-                  height: "375px", // Fixe Höhe unabhängig von Schriftgröße
+                  height: "360px",
+                  maxHeight: "360px",
                   backgroundColor: "white",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  padding: "10px",
                 }}
-
-              />
-
+              >
+                <QuillEditor
+                  value={formData.description}
+                  onChange={(value) =>
+                    setFormData((prevData) => ({ ...prevData, description: value }))
+                  }
+                />
+              </div>
+              {errors.description && (
+                <Typography color="error" variant="caption">
+                  {errors.description}
+                </Typography>
+              )}
             </Grid>
           </Grid>
 

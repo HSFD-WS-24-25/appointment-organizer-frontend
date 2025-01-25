@@ -32,11 +32,8 @@ import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
 import UserDashboard from "../invites/page"
 import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
-
-
-
-
-
+import "quill/dist/quill.snow.css";
+import QuillCreator from "@/app/components/styledComponents/QuillCreator"
 
 // Setze die deutsche Lokalisierung global
 dayjs.locale("de");
@@ -131,9 +128,6 @@ const InvitationForm = () => {
   const { user } = useUser();
   const basePath = generateBasePath(userInfo, user); // Determine the base path
 
-  
-
-
 
   const { postEvent } = usePostEvent();
   const [errors, setErrors] = useState({});
@@ -193,9 +187,12 @@ const InvitationForm = () => {
     if (!formData.endDate || isNaN(new Date(formData.endDate).getTime())) {
       newErrors.endDate = "Das Enddatum ist ein Pflichtfeld und muss gültig sein.";
     }
+
     if (!formData.description || formData.description.length < 50) {
       newErrors.description = "Die Beschreibung muss mindestens 50 Zeichen lang sein.";
     }
+
+
 
     if (!formData.capacity) {
       newErrors.capacity = "Die Kapazität ist ein Pflichtfeld.";
@@ -255,6 +252,30 @@ const InvitationForm = () => {
   };
 
 
+  const convertRawToHTML = (htmlContent) => htmlContent || "<p>Keine Beschreibung angegeben</p>";
+
+
+  const extractTextFromRaw = (rawContent) => {
+    try {
+      const content = JSON.parse(rawContent);
+      return content.blocks.map((block) => block.text).join("").trim();
+    } catch (error) {
+      console.error("Fehler beim Extrahieren des Textes:", error);
+      return ""; // Fallback: leerer String
+    }
+  };
+
+  const extractPlainTextFromRaw = (rawContent) => {
+    try {
+      const content = JSON.parse(rawContent);
+      return content.blocks.map((block) => block.text).join(" ").trim();
+    } catch (error) {
+      console.error("Fehler beim Extrahieren des Texts:", error);
+      return ""; // Rückgabe eines leeren Strings bei Fehler
+    }
+  };
+
+
 
   const handleDialogAction = async (action) => {
     if (action === "publish") {
@@ -262,7 +283,7 @@ const InvitationForm = () => {
         // Bereite die Daten für die POST-Anfrage vor
         const eventData = {
           name: formData.title,
-          description: formData.description,
+          description: formData.description, // Nur den Text speichern
           date_start: formData.startDate?.toISOString(),
           date_end: formData.endDate?.toISOString(),
           location: formData.address,
@@ -376,13 +397,13 @@ const InvitationForm = () => {
             style={{
               fontSize: "24px",
               fontFamily: "Arial, sans-serif",
-              fontWeight: "normal",
+              fontWeight: "bold",
               fontStyle: "normal",
-              textDecoration: "none",
+              textDecoration: "underline",
               color: "#333",
             }}
           >
-            <strong>Titel:</strong> {formData.title || "Titel nicht angegeben"}
+            {formData.title || "Titel nicht angegeben"}
           </p>
 
           {/* Typ */}
@@ -400,13 +421,43 @@ const InvitationForm = () => {
             }}
           >
             <div>
-              <p>
-                <strong>Start:</strong>{" "}
-                {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <p>
-                <strong>Adresse:</strong> {formData.address || "N/A"}
-              </p>
+              <strong>Start:</strong>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+
+                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+              </div>
+              <strong>Adresse:</strong>
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+                  {formData.address || "N/A"}
+                </p>
+              </div>
               <div
                 style={{
                   position: "relative",
@@ -415,6 +466,7 @@ const InvitationForm = () => {
                   border: "1px solid #ccc",
                   marginTop: "10px",
                   overflow: "hidden",
+                  fontSize: "16px", // Optional: Schriftgröße anpassen
                 }}
               >
                 {formData.coordinates || formData.address ? (
@@ -436,6 +488,9 @@ const InvitationForm = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       height: "100%",
+                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
                     }}
                   >
                     Keine Adresse eingegeben
@@ -445,28 +500,46 @@ const InvitationForm = () => {
 
             </div>
             <div>
-              <p>
-                <strong>Ende:</strong>{" "}
-                {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-              </p>
-              <strong>Beschreibung:</strong>{" "}
-              <p
+              <strong>Ende:</strong>{" "}
+              <div
                 style={{
-                  fontSize: "16px",
-                  fontFamily: "Arial, sans-serif",
-                  fontWeight: "normal",
-                  fontStyle: "normal",
-                  textDecoration: "none",
-                  color: "#333",
-                  wordBreak: "break-word", // Bricht Wörter um, wenn sie zu lang sind
-                  whiteSpace: "pre-wrap", // Erlaubt Zeilenumbrüche und behält Leerzeichen bei
-                  overflowWrap: "break-word", // Zusätzliche Absicherung
-                  maxWidth: "100%", // Passt sich an die Breite des Containers an
-                  margin: 0, // Entfernt Standardabstände
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
                 }}
               >
-                {formData.description || "Beschreibung nicht angegeben"}
-              </p>
+                <p>
+
+                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+              </div>
+              <div>
+
+                <strong>Beschreibung:</strong>
+                <div
+                  style={{
+                    //marginTop: "5px",
+                    height: "300px",
+                    maxHeight: "300px", // Maximale Höhe der Vorschau
+                    overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                    padding: "10px", // Innenabstand für den Text
+                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                    //fontSize: "14px", // Optional: Schriftgröße anpassen
+                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -474,17 +547,43 @@ const InvitationForm = () => {
     );
   };
 
+  /*
+  const initializeEditorContent = (content) => {
+    if (content) {
+      try {
+        const rawContent = JSON.parse(content); // Versuche, den Text als JSON zu interpretieren
+        return EditorState.createWithContent(convertFromRaw(rawContent));
+      } catch (error) {
+        // Falls der Inhalt kein JSON ist, starte mit leerem Editor
+        console.error("Ungültiges JSON, starte mit leerem Editor:", error);
+        return EditorState.createEmpty();
+      }
+    } else {
+      return EditorState.createEmpty();
+    }
+  }; */
+
+  /*
+  // Beispiel für die Initialisierung
+  const [editorState, setEditorState] = useState(() =>
+    initializeEditorContent(formData.description)
+  ); */
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // Beschränke Titel auf 50 Zeichen
     if (name === "title" && value.length > 50) return;
 
+    // Erlaube nur Zahlen für bestimmte Felder
     if (["capacity", "maxGuests", "reminderDays"].includes(name) && !/^\d*$/.test(value)) {
       return;
     }
 
+    // Aktualisiere das entsprechende Feld im formData
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
 
   const handleBlur = async (e) => {
     const { name, value } = e.target;
@@ -544,6 +643,7 @@ const InvitationForm = () => {
   };
   return (
     <div
+
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -725,24 +825,29 @@ const InvitationForm = () => {
             </Grid>
 
             {/* Beschreibung */}
-            <Grid item xs={6} marginTop={"10px"} >
-              <TextField
-                label="Beschreibung"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                error={!!errors.description}
-                helperText={errors.description}
-                multiline={true}
-                rows={15} // Nur Höhe für Multiline
-                fullWidth
+            <Grid item xs={6} marginTop={"10px"}>
+              <h2>Beschreibung:</h2>
+              <div
                 style={{
-                  height: "375px", // Fixe Höhe unabhängig von Schriftgröße
+                  height: "360px",
+                  maxHeight: "360px",
                   backgroundColor: "white",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  padding: "10px",
                 }}
+              >
+                <QuillCreator
+                  value={formData.description}
+                  onChange={(value) => {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      description: value, // Nur description aktualisieren
+                    }));
+                  }}
+                />
 
-              />
-
+              </div>
             </Grid>
           </Grid>
 
@@ -760,6 +865,7 @@ const InvitationForm = () => {
                 style={{ backgroundColor: "white" }}
               />
             </Grid>
+
 
             <Grid item xs={12} sm={4}>
               <TextField
