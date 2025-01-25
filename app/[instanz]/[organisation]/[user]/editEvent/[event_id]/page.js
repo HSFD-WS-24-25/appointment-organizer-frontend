@@ -30,7 +30,7 @@ import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
 import { useUserContext } from "@/app/context/UserContext";
 import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
 import QuillEditor from "@/app/components/styledComponents/QuillEditor";
 
@@ -145,80 +145,10 @@ const InvitationForm = () => {
   const router = useRouter();
   const { putEvent } = usePutEvent(); // Hole die PUT-Logik aus dem Hook
   const basePath = generateBasePath(userInfo, user); // Determine the base path
-  const extractPlainTextFromRaw = (rawContent) => {
-    try {
-      const content = JSON.parse(rawContent);
-      return content.blocks.map((block) => block.text).join(" ").trim();
-    } catch (error) {
-      console.error("Fehler beim Extrahieren des Texts:", error);
-      return ""; // Rückgabe eines leeren Strings bei Fehler
-    }
-  };
-
-  const convertRawToHTML = (rawContent) => {
-    try {
-      // Wenn rawContent nicht existiert oder leer ist, Fallback verwenden
-      if (!rawContent) {
-        return "<p>Keine Beschreibung verfügbar</p>"; // Fallback für die Vorschau
-      }
-
-      // Konvertiere den Raw Content zu HTML
-      const contentState = convertFromRaw(JSON.parse(rawContent));
-      return stateToHTML(contentState, {
-        inlineStyles: {
-          HIGHLIGHT: { style: { backgroundColor: "yellow" } }, // Highlighting
-        },
-      });
-    } catch (error) {
-      console.error("Fehler beim Parsen von rawContent:", error);
-      return "<p>Ungültige Beschreibung</p>"; // Fehler-Fallback
-    }
-  };
 
 
   const handleCancelButon = () => {
     router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
-  };
-
-  const parseDescriptionToJSON = (description) => {
-    if (!description) {
-      return JSON.stringify({
-        blocks: [
-          {
-            key: "default",
-            text: "",
-            type: "unstyled",
-            depth: 0,
-            inlineStyleRanges: [],
-            entityRanges: [],
-            data: {},
-          },
-        ],
-        entityMap: {},
-      });
-    }
-
-    try {
-      // Prüfen, ob die Eingabe ein JSON-String ist
-      const parsed = JSON.parse(description);
-      return JSON.stringify(parsed);
-    } catch {
-      // Eingabe ist ein einfacher Text, nicht JSON
-      return JSON.stringify({
-        blocks: [
-          {
-            key: "default",
-            text: description,
-            type: "unstyled",
-            depth: 0,
-            inlineStyleRanges: [],
-            entityRanges: [],
-            data: {},
-          },
-        ],
-        entityMap: {},
-      });
-    }
   };
 
 
@@ -301,12 +231,12 @@ const InvitationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
 
   const handleCloseDialog = () => {
+    setPublishDialogOpen(false);
   };
 
   const handleOpenPublishDialog = () => {
@@ -365,39 +295,6 @@ const InvitationForm = () => {
     }
     handleCloseDialog();
   };
-
-
-  const handleRichTextChange = (name, value) => {
-    try {
-      // Nur Text weitergeben, keine JSON-Parsing-Operation
-      setFormData((prevData) => ({ ...prevData, [name]: value }));
-    } catch (error) {
-      console.error("Fehler beim Verarbeiten des Rich Text Editor Inhalts:", error);
-    }
-  };
-  /*
-    const initializeEditorContent = (content) => {
-      if (content) {
-        try {
-          const rawContent = JSON.parse(content); // Versuche, den Text als JSON zu interpretieren
-          return EditorState.createWithContent(convertFromRaw(rawContent));
-        } catch (error) {
-          // Falls der Inhalt kein JSON ist, starte mit leerem Editor
-          console.error("Ungültiges JSON, starte mit leerem Editor:", error);
-          return EditorState.createEmpty();
-        }
-      } else {
-        return EditorState.createEmpty();
-      }
-    };
-  */
-  /*
-    // Beispiel für die Initialisierung
-    const [editorState, setEditorState] = useState(() =>
-      initializeEditorContent(formData.description)
-    ); */
-
-  const descriptionRef = useRef("");
 
   const Preview = ({ formData = {}, backgroundImage }) => {
     useEffect(() => {
@@ -612,18 +509,23 @@ const InvitationForm = () => {
 
                 <strong>Beschreibung:</strong>
                 <div
-                  style={{
-                    //marginTop: "5px",
-                    height: "300px",
-                    maxHeight: "300px", // Maximale Höhe der Vorschau
-                    overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                    padding: "10px", // Innenabstand für den Text
-                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    // fontSize: "14px", // Optional: Schriftgröße anpassen
-                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
-                  }}
+style={{
+  height: "300px",
+  maxHeight: "300px", // Maximale Höhe der Vorschau
+  maxWidth: "500px", // Maximale Breite festlegen
+  overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
+  overflowX: "hidden", // Keine Scrollbar für die Breite
+  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+  padding: "10px", // Innenabstand für den Text
+  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+  lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+  margin: "0 auto", // Optional: Zentrierung des Elements horizontal
+  wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
+  overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
+  whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
+}}
+
                   dangerouslySetInnerHTML={{
                     __html: formData.description || "Keine Beschreibung angegeben",
                   }}
@@ -726,7 +628,7 @@ const InvitationForm = () => {
 
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
-        Veranstaltung "{formData.title}" bearbeiten
+          Veranstaltung "{formData.title}" bearbeiten
         </DesignTitel>
 
         <Box
@@ -891,14 +793,7 @@ const InvitationForm = () => {
                 Beschreibung
               </Typography>
               <div
-                style={{
-                  height: "360px",
-                  maxHeight: "360px",
-                  backgroundColor: "white",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  padding: "10px",
-                }}
+
               >
                 <QuillEditor
                   value={formData.description}

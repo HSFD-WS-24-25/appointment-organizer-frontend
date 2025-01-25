@@ -31,7 +31,7 @@ const QuillCreator = ({ value, onChange }) => {
         const { ops } = delta;
         ops[0].insert.image = {
           src: node.getAttribute("src"),
-          style: "max-width: 100%; height: auto; max-height: 300px;", // Standardgröße
+          style: "max-width: 100%; height: 100%; max-height: 300px;", // Standardgröße
         };
         return delta;
       });

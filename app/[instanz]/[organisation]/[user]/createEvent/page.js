@@ -211,7 +211,6 @@ const InvitationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
@@ -252,31 +251,6 @@ const InvitationForm = () => {
   };
 
 
-  const convertRawToHTML = (htmlContent) => htmlContent || "<p>Keine Beschreibung angegeben</p>";
-
-
-  const extractTextFromRaw = (rawContent) => {
-    try {
-      const content = JSON.parse(rawContent);
-      return content.blocks.map((block) => block.text).join("").trim();
-    } catch (error) {
-      console.error("Fehler beim Extrahieren des Textes:", error);
-      return ""; // Fallback: leerer String
-    }
-  };
-
-  const extractPlainTextFromRaw = (rawContent) => {
-    try {
-      const content = JSON.parse(rawContent);
-      return content.blocks.map((block) => block.text).join(" ").trim();
-    } catch (error) {
-      console.error("Fehler beim Extrahieren des Texts:", error);
-      return ""; // Rückgabe eines leeren Strings bei Fehler
-    }
-  };
-
-
-
   const handleDialogAction = async (action) => {
     if (action === "publish") {
       try {
@@ -308,6 +282,7 @@ const InvitationForm = () => {
       console.log("Aktion abgebrochen.");
     }
     handleCloseDialog();
+    setPublishDialogOpen(false);
   };
 
   const Preview = ({ formData = {}, backgroundImage }) => {
@@ -524,17 +499,22 @@ const InvitationForm = () => {
                 <strong>Beschreibung:</strong>
                 <div
                   style={{
-                    //marginTop: "5px",
                     height: "300px",
                     maxHeight: "300px", // Maximale Höhe der Vorschau
-                    overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                    maxWidth: "500px", // Maximale Breite festlegen
+                    overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
+                    overflowX: "hidden", // Keine Scrollbar für die Breite
                     border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
                     padding: "10px", // Innenabstand für den Text
                     backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
                     borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    //fontSize: "14px", // Optional: Schriftgröße anpassen
                     lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+                    margin: "0 auto", // Optional: Zentrierung des Elements horizontal
+                    wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
+                    overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
+                    whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
                   }}
+
                   dangerouslySetInnerHTML={{
                     __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
                   }}
@@ -547,28 +527,6 @@ const InvitationForm = () => {
     );
   };
 
-  /*
-  const initializeEditorContent = (content) => {
-    if (content) {
-      try {
-        const rawContent = JSON.parse(content); // Versuche, den Text als JSON zu interpretieren
-        return EditorState.createWithContent(convertFromRaw(rawContent));
-      } catch (error) {
-        // Falls der Inhalt kein JSON ist, starte mit leerem Editor
-        console.error("Ungültiges JSON, starte mit leerem Editor:", error);
-        return EditorState.createEmpty();
-      }
-    } else {
-      return EditorState.createEmpty();
-    }
-  }; */
-
-  /*
-  // Beispiel für die Initialisierung
-  const [editorState, setEditorState] = useState(() =>
-    initializeEditorContent(formData.description)
-  ); */
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -579,7 +537,6 @@ const InvitationForm = () => {
     if (["capacity", "maxGuests", "reminderDays"].includes(name) && !/^\d*$/.test(value)) {
       return;
     }
-
     // Aktualisiere das entsprechende Feld im formData
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
@@ -828,14 +785,7 @@ const InvitationForm = () => {
             <Grid item xs={6} marginTop={"10px"}>
               <h2>Beschreibung:</h2>
               <div
-                style={{
-                  height: "360px",
-                  maxHeight: "360px",
-                  backgroundColor: "white",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  padding: "10px",
-                }}
+
               >
                 <QuillCreator
                   value={formData.description}

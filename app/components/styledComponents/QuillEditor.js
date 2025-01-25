@@ -32,7 +32,7 @@ const QuillCreate = ({ value, onChange }) => {
         const { ops } = delta;
         ops[0].insert.image = {
           src: node.getAttribute("src"),
-          style: "max-width: 100%; height: auto; max-height: 300px;",
+          style: "max-width: 100%; height: 100%; max-height: 300px;", // Standardgröße
         };
         return delta;
       });
@@ -73,6 +73,10 @@ const QuillCreate = ({ value, onChange }) => {
         }
         .ql-font-courier {
           font-family: "Courier New", monospace;
+        }
+        /* Hintergrundfarbe des Editors */
+        .quill-editor {
+          background-color: #fff;
         }
         .ql-font-comic-sans {
           font-family: "Comic Sans MS", cursive, sans-serif;
