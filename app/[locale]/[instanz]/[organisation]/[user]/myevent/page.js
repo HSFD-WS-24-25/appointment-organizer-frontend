@@ -106,10 +106,13 @@ function EventCard({ event, view }) {
           sx={{ flex: 1, marginRight: 2 }}
         />
 
-        <Box sx={{ textAlign: "left", flex: 1, paddingRight: 2 }}>
-          <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
-          <p style={{ margin: 0 }}>{event.description}</p>
-        </Box>
+<Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
+  <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
+  <div
+    dangerouslySetInnerHTML={{ __html: event.description }}
+  />
+</Box>
+
 
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
           <Button size="small" startIcon={<EditIcon />} onClick={handleEditEvent}>
@@ -232,9 +235,14 @@ function EventCard({ event, view }) {
         <Typography variant="h6" component="p" sx={{ marginBottom: 1 }}>
           {event.name}
         </Typography>
-        <Typography variant="body2" color="textSecondary" noWrap>
-          {event.description.split(".")[0]}.
-        </Typography>
+        <Box>
+  <div
+    dangerouslySetInnerHTML={{
+      __html: event.description.split(".")[0] + ".",
+    }}
+  />
+</Box>
+
         <Typography variant="body2" color="textSecondary" noWrap>
           {new Date(event.date_start).toLocaleString("de-DE", {
             day: "2-digit",
@@ -293,7 +301,12 @@ function EventCard({ event, view }) {
             Ort: {event.location}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Beschreibung: {event.description}
+            Beschreibung:
+            <div
+  dangerouslySetInnerHTML={{
+    __html: event.description
+  }}
+/>
           </Typography>
         </DialogContent>
         <DialogActions>
