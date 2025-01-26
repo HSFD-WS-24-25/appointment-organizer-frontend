@@ -32,7 +32,7 @@ import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
-import QuillEditor from "@/app/components/styledComponents/QuillEditor";
+import QuillEditor from "@/app/[locale]/components/styledComponents/QuillEditor";
 
 
 dayjs.locale("de");

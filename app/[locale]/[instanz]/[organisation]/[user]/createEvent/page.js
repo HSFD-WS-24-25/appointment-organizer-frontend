@@ -33,7 +33,7 @@ import UserDashboard from "../invites/page"
 import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import "quill/dist/quill.snow.css";
-import QuillCreator from "@/app/components/styledComponents/QuillCreator"
+import QuillCreator from "@/app/[locale]/components/styledComponents/QuillCreator"
 
 // Setze die deutsche Lokalisierung global
 dayjs.locale("de");
