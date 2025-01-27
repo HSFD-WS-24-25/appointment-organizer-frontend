@@ -3,42 +3,41 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
-  Container,
   Grid,
   MenuItem,
   Select,
   TextField,
   Typography,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   FormControl,
-  InputLabel
+  InputLabel,
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import "dayjs/locale/de"; // Importiere die deutsche Lokalisierung
-import { usePostEvent } from "@/app/hooks/usePostEvent"
-import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
-import { useRouter } from "next/navigation";
+import "dayjs/locale/de";
+import { useFetchEventById } from "@/app/hooks/useFetchEventById";
+import { usePutEvent } from "@/app/hooks/usePutEvent";
+import { useParams } from "next/navigation";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
-import UserDashboard from "../invites/page"
+import { useUserContext } from "@/app/context/UserContext";
 import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import "quill/dist/quill.snow.css";
-import QuillCreator from "@/app/components/styledComponents/QuillCreator"
+import { useRouter } from 'next/navigation';
+import UserDashboard from "../../invites/page"
+import QuillEditor from "@/app/components/styledComponents/QuillEditor";
 
-// Setze die deutsche Lokalisierung global
+
 dayjs.locale("de");
-
 const OpenStreetMap = ({ address, coordinates }) => {
+
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
@@ -75,6 +74,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
       if (coordinates) {
         const [lat, lon] = coordinates;
         mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
+
         L.marker([lat, lon], { icon: customIcon })
           .addTo(mapInstance.current)
           .bindPopup("Gewählte Adresse")
@@ -90,6 +90,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
           if (data.length > 0) {
             const { lat, lon } = data[0];
             mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
+
             L.marker([lat, lon], { icon: customIcon })
               .addTo(mapInstance.current)
               .bindPopup(`Adresse: ${address}`)
@@ -123,17 +124,11 @@ const OpenStreetMap = ({ address, coordinates }) => {
 };
 
 const InvitationForm = () => {
-  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-  const router = useRouter();
-  const { user } = useUser();
-  const basePath = generateBasePath(userInfo, user); // Determine the base path
-
-
-  const { postEvent } = usePostEvent();
-  const [errors, setErrors] = useState({});
-  const [eventType, setEventType] = useState("Präsenz");
-  const [backgroundImage, setBackgroundImage] = useState(null);
+  const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
+  const { event, isLoading, fetchError } = useFetchEventById(event_id);
+  const { userInfo } = useUserContext();
   const [formData, setFormData] = useState({
+
     title: "",
     startDate: null,
     endDate: null,
@@ -143,7 +138,34 @@ const InvitationForm = () => {
     description: "",
     reminderDays: "",
   });
+  const [errors, setErrors] = useState({});
+  const [eventType, setEventType] = useState("Präsenz");
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const { user } = useUser();
+  const router = useRouter();
+  const { putEvent } = usePutEvent(); // Hole die PUT-Logik aus dem Hook
+  const basePath = generateBasePath(userInfo, user); // Determine the base path
 
+
+  const handleCancelButon = () => {
+    router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+  };
+
+
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        title: event.name || "",
+        startDate: dayjs(event.date_start) || null,
+        endDate: dayjs(event.date_end) || null,
+        address: event.location || "",
+        capacity: event.capacity?.toString() || "",
+        maxGuests: event.max_additional_guests?.toString() || "",
+        reminderDays: event.reminder?.toString() || "",
+        description: event.description || "", // Beschreibung laden
+      });
+    }
+  }, [event]);
 
   // Geocoding-Funktion global definieren
   const geocodeAddress = async (address) => {
@@ -175,7 +197,8 @@ const InvitationForm = () => {
       newErrors.title = "Der Titel muss mindestens 10 Zeichen lang sein.";
     }
 
-    if (!formData.address) {
+    // Adresse nur prüfen, wenn Typ nicht "Online" ist
+    if (eventType !== "Online" && !formData.address) {
       newErrors.address = "Die Adresse ist ein Pflichtfeld.";
     }
 
@@ -190,8 +213,6 @@ const InvitationForm = () => {
     if (!formData.description || formData.description.length < 50) {
       newErrors.description = "Die Beschreibung muss mindestens 50 Zeichen lang sein.";
     }
-
-
 
     if (!formData.capacity) {
       newErrors.capacity = "Die Kapazität ist ein Pflichtfeld.";
@@ -214,6 +235,10 @@ const InvitationForm = () => {
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
 
+  const handleCloseDialog = () => {
+    setPublishDialogOpen(false);
+  };
+
   const handleOpenPublishDialog = () => {
     if (validateForm()) {
       setPublishDialogOpen(true);
@@ -235,20 +260,6 @@ const InvitationForm = () => {
     setInviteListDialogOpen(false);
   };
 
-  const [open, setOpen] = useState(false);
-  const handlePreview = () => {
-    setOpen(true); // Öffnet das Dialogfeld
-  };
-
-  const handleClose = () => {
-    setOpen(false); // Schließt das Dialogfeld
-  };
-
-
-  const handleCloseDialog = () => {
-
-  };
-
 
   const handleDialogAction = async (action) => {
     if (action === "publish") {
@@ -256,7 +267,8 @@ const InvitationForm = () => {
         // Bereite die Daten für die POST-Anfrage vor
         const eventData = {
           name: formData.title,
-          description: formData.description, // Nur den Text speichern
+          description: formData.description,
+
           date_start: formData.startDate?.toISOString(),
           date_end: formData.endDate?.toISOString(),
           location: formData.address,
@@ -266,9 +278,10 @@ const InvitationForm = () => {
         };
 
         // Sende die Daten an die API
-        const result = await postEvent(eventData);
+        const result = await putEvent(event_id, eventData);
+
         if (result.success) {
-          router.push(`${basePath}/myevent`); // Navigate to the appropriate settings page
+          router.push(`${basePath}/myevent`);
           console.log("Erstelltes Event:", result.data);
         } else {
           alert(`Fehler beim Veröffentlichen: ${result.message}`);
@@ -281,7 +294,6 @@ const InvitationForm = () => {
       console.log("Aktion abgebrochen.");
     }
     handleCloseDialog();
-    setPublishDialogOpen(false);
   };
 
   const Preview = ({ formData = {}, backgroundImage }) => {
@@ -497,25 +509,25 @@ const InvitationForm = () => {
 
                 <strong>Beschreibung:</strong>
                 <div
-                  style={{
-                    height: "300px",
-                    maxHeight: "300px", // Maximale Höhe der Vorschau
-                    maxWidth: "500px", // Maximale Breite festlegen
-                    overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
-                    overflowX: "hidden", // Keine Scrollbar für die Breite
-                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                    padding: "10px", // Innenabstand für den Text
-                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
-                    margin: "0 auto", // Optional: Zentrierung des Elements horizontal
-                    wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
-                    overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
-                    whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
-                  }}
+style={{
+  height: "300px",
+  maxHeight: "300px", // Maximale Höhe der Vorschau
+  maxWidth: "500px", // Maximale Breite festlegen
+  overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
+  overflowX: "hidden", // Keine Scrollbar für die Breite
+  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+  padding: "10px", // Innenabstand für den Text
+  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+  lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+  margin: "0 auto", // Optional: Zentrierung des Elements horizontal
+  wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
+  overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
+  whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
+}}
 
                   dangerouslySetInnerHTML={{
-                    __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
+                    __html: formData.description || "Keine Beschreibung angegeben",
                   }}
                 />
               </div>
@@ -526,17 +538,16 @@ const InvitationForm = () => {
     );
   };
 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Beschränke Titel auf 50 Zeichen
     if (name === "title" && value.length > 50) return;
 
-    // Erlaube nur Zahlen für bestimmte Felder
     if (["capacity", "maxGuests", "reminderDays"].includes(name) && !/^\d*$/.test(value)) {
       return;
     }
-    // Aktualisiere das entsprechende Feld im formData
+
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
@@ -558,14 +569,17 @@ const InvitationForm = () => {
     }
   };
 
+
   const handleDateChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
 
   const handleEventTypeChange = (e) => {
-    setEventType(e.target.value);
-    if (e.target.value === "Online") {
-      setFormData({ ...formData, address: "" });
+    const selectedType = e.target.value;
+    setEventType(selectedType);
+
+    if (selectedType === "Online") {
+      setFormData({ ...formData, address: "" }); // Adresse entfernen
     }
   };
 
@@ -580,22 +594,17 @@ const InvitationForm = () => {
     }
   };
 
-  const handleClearForm = () => {
-    setFormData({
-      title: "",
-      startDate: null,
-      endDate: null,
-      address: "",
-      capacity: "",
-      maxGuests: "",
-      description: "",
-      reminderDays: "",
-    });
 
-    window.location.reload();
-    setEventType("Präsenz");
-    setBackgroundImage(null);
+  const [open, setOpen] = useState(false);
+  const handlePreview = () => {
+    setOpen(true); // Öffnet das Dialogfeld
   };
+
+  const handleClose = () => {
+    setOpen(false); // Schließt das Dialogfeld
+  };
+
+
   return (
     <div
       style={{
@@ -616,10 +625,12 @@ const InvitationForm = () => {
         }}
       >
 
+
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
-          Veranstaltung erstellen
+          Veranstaltung "{formData.title}" bearbeiten
         </DesignTitel>
+
         <Box
           sx={{
             marginTop: "70px"
@@ -778,21 +789,24 @@ const InvitationForm = () => {
 
             {/* Beschreibung */}
             <Grid item xs={6} marginTop={"10px"}>
-              <h2>Beschreibung:</h2>
+              <Typography variant="h6" gutterBottom>
+                Beschreibung
+              </Typography>
               <div
 
               >
-                <QuillCreator
+                <QuillEditor
                   value={formData.description}
-                  onChange={(value) => {
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      description: value, // Nur description aktualisieren
-                    }));
-                  }}
+                  onChange={(value) =>
+                    setFormData((prevData) => ({ ...prevData, description: value }))
+                  }
                 />
-
               </div>
+              {errors.description && (
+                <Typography color="error" variant="caption">
+                  {errors.description}
+                </Typography>
+              )}
             </Grid>
           </Grid>
 
@@ -810,7 +824,6 @@ const InvitationForm = () => {
                 style={{ backgroundColor: "white" }}
               />
             </Grid>
-
 
             <Grid item xs={12} sm={4}>
               <TextField
@@ -847,9 +860,9 @@ const InvitationForm = () => {
                 backgroundColor: "red",
                 "&:hover": { backgroundColor: "darkred" },
               }}
-              onClick={handleClearForm}
+              onClick={handleCancelButon}
             >
-              Formular leeren
+              Abbrechen
             </Button>
             <Button variant="contained" color="primary" onClick={() => handlePreview()}>
               Vorschau
@@ -861,6 +874,7 @@ const InvitationForm = () => {
             >
               Einladungsliste
             </Button>
+
             <Button
               variant="contained"
               sx={{
@@ -869,7 +883,7 @@ const InvitationForm = () => {
               }}
               onClick={handleOpenPublishDialog}
             >
-              Weiter
+              Speichern
             </Button>
           </Box>
         </Box>
@@ -877,10 +891,9 @@ const InvitationForm = () => {
 
       {/* Dialog */}
       <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
-        <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
         <DialogContent>
           <Typography>
-            Möchten Sie die Veranstaltung veröffentlichen?
+            Möchten Sie die Änderungen speichern und veröffentlichen?
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -892,10 +905,12 @@ const InvitationForm = () => {
             color="primary"
             onClick={() => handleDialogAction("publish")}
           >
-            Veröffentlichen
+            Ja
           </Button>
         </DialogActions>
       </Dialog>
+
+
       <Dialog
         open={inviteListDialogOpen}
         onClose={handleCloseInviteListDialog}
@@ -920,7 +935,10 @@ const InvitationForm = () => {
           </Button>
         </DialogContent>
       </Dialog>
+
+
     </div>
   );
 };
+
 export default InvitationForm;

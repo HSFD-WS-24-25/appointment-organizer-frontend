@@ -31,12 +31,28 @@ import { useRouter } from "next/navigation";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
-import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
+import { generateBasePath } from "@/app/components/Sidebar";
 
 function EventCard({ event, view }) {
   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
+  const router = useRouter();
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
+  const { user, authError, isLoading, events, fetchError } = useFetchEvents();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handleEditEvent = () => {
+    const basePath = generateBasePath(userInfo, user); // Determine the base path
+    router.push(`${basePath}/editEvent/${event.id}`); // Navigate to /user/createEvent
+  };
 
   const [open, setOpen] = useState(false);
 
@@ -89,14 +105,16 @@ function EventCard({ event, view }) {
           secondary={`Teilnehmer: ${event.capacity}`}
           sx={{ flex: 1, marginRight: 2 }}
         />
+<Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
+  <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
+  <div
+    dangerouslySetInnerHTML={{ __html: event.description }}
+  />
+</Box>
 
-        <Box sx={{ textAlign: "left", flex: 1, paddingRight: 2 }}>
-          <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
-          <p style={{ margin: 0 }}>{event.description}</p>
-        </Box>
 
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
-          <Button size="small" startIcon={<EditIcon />}>
+          <Button size="small" startIcon={<EditIcon />} onClick={handleEditEvent}>
             Bearbeiten
           </Button>
           <Box>
@@ -149,7 +167,7 @@ function EventCard({ event, view }) {
       elevation={3}
     >
       <Box sx={{ position: "absolute", top: 8, left: 8 }}>
-        <StyledEditButton />
+        <StyledEditButton onClick={handleEditEvent} />
       </Box>
 
       <Box sx={{ position: "absolute", top: 8, right: 8 }}>
@@ -200,6 +218,7 @@ function EventCard({ event, view }) {
         />
       </Box>
 
+      <>
       <Box
         sx={{
           textAlign: "center",
@@ -207,33 +226,97 @@ function EventCard({ event, view }) {
           borderRadius: 2,
           backgroundColor: "#f5f5f5",
           width: "90%",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+
         }}
       >
         <Typography variant="h6" component="p" sx={{ marginBottom: 1 }}>
           {event.name}
         </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {event.description.split(".")[0]}.
-        </Typography>
+        <Box>
+  <div
+    dangerouslySetInnerHTML={{
+      __html: event.description.split(".")[0] + ".",
+    }}
+  />
+</Box>
 
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="textSecondary" noWrap>
           {new Date(event.date_start).toLocaleString("de-DE", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
-            minute: "2-digit",
-          })} Uhr -{" "}
+            minute: "2-digit"
+          })}{" "}
+          Uhr -{" "}
+
           {new Date(event.date_end).toLocaleString("de-DE", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-          })} Uhr
+          })}{" "}
+          Uhr
         </Typography>
-
+        <Button
+          size="small"
+          variant="outlined"
+          sx={{ marginTop: 1 }}
+          onClick={handleOpenDialog}
+        >
+          Mehr anzeigen
+        </Button>
       </Box>
+
+      {/* Dialog for full details */}
+      <Dialog open={isDialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>{event.name}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            Start:{" "}
+            {new Date(event.date_start).toLocaleString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            Uhr
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Ende:{" "}
+            {new Date(event.date_end).toLocaleString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}{" "}
+            Uhr
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Ort: {event.location}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Beschreibung:
+            <div
+  dangerouslySetInnerHTML={{
+    __html: event.description
+  }}
+/>
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} variant="outlined">
+            Schließen
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
     </Paper>
   );
 }
@@ -241,16 +324,7 @@ function EventCard({ event, view }) {
 function UserDashboard() {
   const [view, setView] = useState("grid");
   const router = useRouter();
-  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
-  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-
-  // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
-  useEffect(() => {
-    if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
-      const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
-      setBasePath(path);
-    }
-  }, [userInfo]);
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
 
   // Verwende den neuen Hook
   const { user, authError, isLoading, events, fetchError } = useFetchEvents();
@@ -269,6 +343,7 @@ function UserDashboard() {
   };
 
   const handleCreateEvent = () => {
+    const basePath = generateBasePath(userInfo, user); // Determine the base path
     router.push(`${basePath}/createEvent`); // Navigate to /user/createEvent
   };
 
