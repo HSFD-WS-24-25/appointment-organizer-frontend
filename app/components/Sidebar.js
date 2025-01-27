@@ -3,94 +3,104 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SidebarDesign from "@/app/components/styledComponents/SidebarDesign";
-import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext
+
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useFetchApiData } from "@/app/lib/useFetchApiData";
+
+// Funktion zur Generierung des Base Path
+export const generateBasePath = (userInfo, user) => {
+  return userInfo
+    ? `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`
+    : `/defaultInstanz/defaultOrganisation/${user?.sub}`;
+};
+
 
 function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isPinned, setIsPinned] = useState(false); // Zustand für das Anheften der Sidebar
+
+  const [roleId, setRoleId] = useState(null); // Nur role_id
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const router = useRouter();
-  const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-  const [role, setRole] = useState("");
 
-  // Rolle aus dem Benutzerkontext setzen
+  // Daten über Auth0 und die API laden
+  const { user, error: authError, isLoading } = useUser();
+  const path = "/api/users"; // Endpoint zum Abrufen der Benutzerdaten
+  const method = "GET";
+  const { data: users, error: fetchError } = useFetchApiData(user, path, method);
+
+  // Base Path generieren
+  const basePath = generateBasePath(userInfo, user);
+
+  // Rolle aus der Datenbank setzen
   useEffect(() => {
-    if (userInfo && userInfo.role) {
-      setRole(userInfo.role);
+    if (users && user) {
+      const currentUser = users.find((dbUser) => dbUser.sub === user.sub);
+      if (currentUser) {
+        setRoleId(currentUser.role_id);
+        setUserInfo(currentUser); // Benutzerinformationen setzen
+      }
     }
-  }, [userInfo]);
+  }, [users, user]);
 
-  if (!userInfo) {
-    return;
-  }
-
-  const basePath = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
 
   let mainMenuItems = [];
   let bottomMenuItems = [
-    { icon: "Settings", text: "Einstellungen", action: () => router.push(`${basePath}/settings`) }
+    {
+      icon: "Settings",
+      text: "Einstellungen",
+      action: () => router.push(`${basePath}/settings`),
+    },
   ];
 
-  let dashboard = { icon: "Dashboard", text: "Dashboard", action: () => router.push(basePath) }
 
-  switch (role) {
-    case "organisation-admin":
-      mainMenuItems = [
-        dashboard,
-        { icon: "Group", text: "Benutzerverwaltung", action: () => router.push(`${basePath}/userControl`) },
-        { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-        { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
-        { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-        { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-        { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
-      ];
-      break;
+  let dashboard = {
+    icon: "Dashboard",
+    text: "Dashboard",
+    action: () => router.push(basePath),
+  };
 
-    case "organisator":
-      mainMenuItems = [
-       dashboard,
-        { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-        { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
-        { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-        { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
-        { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-        { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
-        { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push(`${basePath}/meinEntwurf`) },
-      ];
-      break;
-
-      case "teilnehmer":
-        mainMenuItems = [
-          dashboard,
-          { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-          { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-        ];
-        break;
-        
-
-    default:
-      mainMenuItems = []; // Optional: Menüeinträge für unbekannte Rollen
+  if (roleId === 1) {
+    mainMenuItems = [
+      dashboard,
+      { icon: "Group", text: "Benutzerverwaltung", action: () => router.push(`${basePath}/userControl`) },
+      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
+      { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
+      { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
+      { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
+      { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
+    ];
+  } else if (roleId === 2) {
+    mainMenuItems = [
+      dashboard,
+      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
+      { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
+      { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
+      { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
+      { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
+      { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
+      { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push(`${basePath}/meinEntwurf`) },
+    ];
+  } else if (roleId === 4) {
+    mainMenuItems = [
+      dashboard,
+      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
+      { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
+    ];
   }
 
-  const togglePin = () => {
-    setIsPinned(!isPinned);
-  };
 
-  const handleMouseEnter = () => {
-    setIsExpanded(true);
-  };
+  // UI-Interaktion für die Sidebar
+  const togglePin = () => setIsPinned(!isPinned);
+
+  const handleMouseEnter = () => setIsExpanded(true);
 
   const handleMouseLeave = () => {
-    if (!isPinned)
-    setIsExpanded(false);
-    else {
-      setIsExpanded(true);
-    }
+    if (!isPinned) setIsExpanded(false);
   };
 
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
-  };
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   return (
     <SidebarDesign
@@ -100,8 +110,8 @@ function Sidebar() {
       drawerOpen={drawerOpen}
       toggleDrawer={toggleDrawer}
       mainMenuItems={mainMenuItems}
-      bottomMenuItems={bottomMenuItems} // Übergabe des Bottom-Menüs
-      role={role}
+      bottomMenuItems={bottomMenuItems}
+      role={roleId}
       isPinned={isPinned}
       togglePin={togglePin}
     />
