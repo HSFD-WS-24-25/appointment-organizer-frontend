@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SidebarDesign from "@/app/components/styledComponents/SidebarDesign";
+
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useFetchApiData } from "@/app/lib/useFetchApiData";
 
@@ -18,6 +19,7 @@ function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isPinned, setIsPinned] = useState(false); // Zustand für das Anheften der Sidebar
+
   const [roleId, setRoleId] = useState(null); // Nur role_id
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const router = useRouter();
@@ -42,6 +44,7 @@ function Sidebar() {
     }
   }, [users, user]);
 
+
   let mainMenuItems = [];
   let bottomMenuItems = [
     {
@@ -50,6 +53,7 @@ function Sidebar() {
       action: () => router.push(`${basePath}/settings`),
     },
   ];
+
 
   let dashboard = {
     icon: "Dashboard",
@@ -85,6 +89,7 @@ function Sidebar() {
       { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
     ];
   }
+
 
   // UI-Interaktion für die Sidebar
   const togglePin = () => setIsPinned(!isPinned);
