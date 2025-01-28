@@ -15,7 +15,8 @@ import {StyledTableContainer,
    StyledTableCell, 
    StyledTableHead } from "@/app/[locale]/components/styledComponents/StyledTable";
 import { useUserContext } from "@/app/[locale]/context/UserContext"; // Benutzerkontext importieren
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 const data = [
   { title: 'Closed for Server Maintenance', method: 'On Login', startDate: '12.11.2024', endDate: '-', status: 'Active' },
@@ -27,6 +28,7 @@ const data = [
 //test
 export default function AdminAnnouncements() {
 
+  const t = useTranslations('Announcements');
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
   const router = useRouter();
@@ -61,7 +63,7 @@ export default function AdminAnnouncements() {
     <StyledPaper>
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column',color: 'black' }}>
-        <DesignTitel > Ankündigungen </DesignTitel>
+        <DesignTitel > {t('title')} </DesignTitel>
 
         {/* Search and Table */}
         <Box sx={{ mb: 4 }}>
@@ -76,7 +78,7 @@ export default function AdminAnnouncements() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Suche"
+                  label={t('searchbar_placeholder')}
                   variant="outlined"
                   fullWidth
                   sx={{borderRadius: 1, '& .MuiOutlinedInput-root': {'& fieldset': { borderColor: '#aaa' }, '&:hover fieldset': { borderColor: '#888' } } }}
@@ -91,11 +93,11 @@ export default function AdminAnnouncements() {
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-              <StyledTableHeadCell>Titel</StyledTableHeadCell>
-                <StyledTableHeadCell>Methode</StyledTableHeadCell>
-                <StyledTableHeadCell>Start Datum</StyledTableHeadCell>
-                <StyledTableHeadCell>End Datum</StyledTableHeadCell>
-                <StyledTableHeadCell>Status</StyledTableHeadCell>
+              <StyledTableHeadCell>{t('table_column_title')}</StyledTableHeadCell>
+                <StyledTableHeadCell>{t('table_column_method')}</StyledTableHeadCell>
+                <StyledTableHeadCell>{t('table_column_start_date')}</StyledTableHeadCell>
+                <StyledTableHeadCell>{t('table_column_end_date')}</StyledTableHeadCell>
+                <StyledTableHeadCell>{t('table_column_status')}</StyledTableHeadCell>
               </StyledTableRow>
             </StyledTableHead>
             <StyledTableBody>
@@ -124,10 +126,10 @@ export default function AdminAnnouncements() {
           }}
         >
           <RedButton>
-            Ankündigung Deaktivieren
+            {t('button_disable_announcements')}
           </RedButton>
           <BlueButton onClick={newAnnouncementClick}>
-            Neue Ankündigung
+            {t('button_new_announcement')}
           </BlueButton>
 
         </Box>

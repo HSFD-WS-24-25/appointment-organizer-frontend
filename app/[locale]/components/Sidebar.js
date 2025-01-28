@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from '@/i18n/routing';
 import SidebarDesign from "@/app/[locale]/components/styledComponents/SidebarDesign";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useFetchApiData } from "@/app/[locale]/lib/useFetchApiData";
+import { useTranslations } from 'next-intl';
 
 // Funktion zur Generierung des Base Path
 export const generateBasePath = (userInfo, user) => {
@@ -15,6 +16,7 @@ export const generateBasePath = (userInfo, user) => {
 
 
 function Sidebar() {
+  const t = useTranslations('Sidebar');
   const [isExpanded, setIsExpanded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false); // Zustand für das mobile Menü
   const [isPinned, setIsPinned] = useState(false); // Zustand für das Anheften der Sidebar
@@ -46,43 +48,43 @@ function Sidebar() {
   let bottomMenuItems = [
     {
       icon: "Settings",
-      text: "Einstellungen",
+      text: t('text_settings'),
       action: () => router.push(`${basePath}/settings`),
     },
   ];
 
   let dashboard = {
     icon: "Dashboard",
-    text: "Dashboard",
+    text: t('text_dashboard'),
     action: () => router.push(basePath),
   };
 
   if (roleId === 1) {
     mainMenuItems = [
       dashboard,
-      { icon: "Group", text: "Benutzerverwaltung", action: () => router.push(`${basePath}/userControl`) },
-      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-      { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
-      { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-      { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-      { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
+      { icon: "Group", text: t('text_user_management'), action: () => router.push(`${basePath}/userControl`) },
+      { icon: "Event", text: t('text_appointment_management'), action: () => router.push(`${basePath}/termin`) },
+      { icon: "Notifications", text: t('text_notifications'), action: () => router.push(`${basePath}/notification`) },
+      { icon: "ReportProblem", text: t('text_announcements'), action: () => router.push(`${basePath}/announcements`) },
+      { icon: "Event", text: t('text_events'), action: () => router.push(`${basePath}/myevent`) },
+      { icon: "Event", text: t('text_my_participations'), action: () => router.push(`${basePath}/myParticipations`) },
     ];
   } else if (roleId === 2) {
     mainMenuItems = [
       dashboard,
-      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-      { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
-      { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-      { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
-      { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-      { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
-      { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push(`${basePath}/meinEntwurf`) },
+      { icon: "Event", text: t('text_appointment_management'), action: () => router.push(`${basePath}/termin`) },
+      { icon: "Notifications", text: t('text_notifications'), action: () => router.push(`${basePath}/notification`) },
+      { icon: "ReportProblem", text: t('text_announcements'), action: () => router.push(`${basePath}/announcements`) },
+      { icon: "Group", text: t('text_create_event'), action: () => router.push(`${basePath}/createEvent`) },
+      { icon: "Event", text: t('text_my_events'), action: () => router.push(`${basePath}/myevent`) },
+      { icon: "Event", text: t('text_my_participations'), action: () => router.push(`${basePath}/myParticipations`) },
+      { icon: "Bookmark", text: t('text_my_draft'), action: () => router.push(`${basePath}/meinEntwurf`) },
     ];
   } else if (roleId === 4) {
     mainMenuItems = [
       dashboard,
-      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-      { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
+      { icon: "Event", text: t('text_appointment_management'), action: () => router.push(`${basePath}/termin`) },
+      { icon: "Event", text: t('text_my_events'), action: () => router.push(`${basePath}/myevent`) },
     ];
   }
 

@@ -3,6 +3,10 @@ import {
   Checkbox, Paper, Button
 
 } from "@mui/material";
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
+
+const t = useTranslations('AnnouncementCreationForm');
 
 function AnnouncementCreationFrom() {
   return(
@@ -29,18 +33,18 @@ function AnnouncementCreationFrom() {
             color="black"
             gutterBottom
           >
-            Ankündigung Erstellen
+            {t('text_create_announcement')}
           </Typography>
 
           <TextField
-            label="Ankündigung Title"
+            label={t('textfield_announcement_title')}
             variant="outlined"
             size="small"
             fullWidth
           />
 
           <TextField
-            label="Ankündigung Body"
+            label={t('textfield_announcement_description')}
             variant="outlined"
             size="small"
             fullWidth
@@ -50,11 +54,11 @@ function AnnouncementCreationFrom() {
           />
 
           <Typography variant="h6" fontWeight="bold">
-            Methode
+            {t('text_method')}
           </Typography>
 
-          <FormControlLabel control={<Checkbox />} label="Bei Anmeldung" />
-          <FormControlLabel control={<Checkbox />} label="E-Mail" />
+          <FormControlLabel control={<Checkbox />} label={t('checkbox_option_when_registering')} />
+          <FormControlLabel control={<Checkbox />} label={t('checkbox_option_email')} />
 
           {/* Buttons */}
           <Box display="flex" justifyContent="end" mt={2} gap={2}>
@@ -64,7 +68,7 @@ function AnnouncementCreationFrom() {
               href="/admin/announcements"
               sx={{ width: { xs: "100%", sm: "auto" } }}
             >
-              Abbrechen
+              {t('button_cancel')}
             </Button>
             <Button
               variant="contained"
@@ -72,7 +76,7 @@ function AnnouncementCreationFrom() {
               href="/admin/announcements"
               sx={{ width: { xs: "100%", sm: "auto" } }}
             >
-              Speichern
+              {t('button_save')}
             </Button>
           </Box>
         </Box>

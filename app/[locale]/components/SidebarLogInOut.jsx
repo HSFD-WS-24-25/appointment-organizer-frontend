@@ -18,8 +18,9 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import React, { useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { generateBasePath } from "@/app/[locale]/components/Sidebar";
+import { useTranslations } from 'next-intl';
 
 
 export function SidebarLogInOut({ expanded }) {
@@ -124,18 +125,19 @@ SidebarLogInOut.propTypes = {
 };
 
 export function LogoutDialog({ open, onClose, onConfirm }) {
+    const t = useTranslations('SidebarLogInOut');
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Abmelden</DialogTitle>
+            <DialogTitle>{t('dialog_title')}</DialogTitle>
             <DialogContent>
-                <DialogContentText>Möchten Sie sich wirklich abmelden?</DialogContentText>
+                <DialogContentText>{t('dialog_description')}</DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="primary">
-                    Nein
+                    {t('button_no')}
                 </Button>
                 <Button onClick={onConfirm} color="primary" autoFocus>
-                    Ja
+                    {t('button_yes')}
                 </Button>
             </DialogActions>
         </Dialog>

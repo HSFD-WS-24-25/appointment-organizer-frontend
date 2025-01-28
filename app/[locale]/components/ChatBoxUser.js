@@ -6,8 +6,10 @@ import { Box, Typography, IconButton, Paper, TextField, Button } from "@mui/mate
 import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
 import CloseIcon from "@mui/icons-material/Close";
 import { useChat } from "./ChatContext";
+import { useTranslations } from 'next-intl';
 
 function ChatboxUser() {
+  const t = useTranslations('ChatBoxUser');
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const { messages, sendMessage } = useChat();
@@ -57,7 +59,7 @@ function ChatboxUser() {
           }}
         >
           <Box sx={{ backgroundColor: "#333", color: "#fff", padding: 2 }}>
-            <Typography variant="h6">User-Chat</Typography>
+            <Typography variant="h6">{t('title')}</Typography>
           </Box>
           <Box sx={{ flex: 1, padding: 2, backgroundColor: "#f9f9f9", overflowY: "auto" }}>
             {messages.map((msg, index) => (
@@ -86,7 +88,7 @@ function ChatboxUser() {
           <Box sx={{ display: "flex", padding: 2, backgroundColor: "#ddd" }}>
             <TextField
               fullWidth
-              placeholder="Nachricht eingeben..."
+              placeholder={t('textfield_placeholder')}
               variant="outlined"
               size="small"
               value={message}
@@ -102,7 +104,7 @@ function ChatboxUser() {
                 ":hover": { backgroundColor: "#555" },
               }}
             >
-              Senden
+              {t('button_send')}
             </Button>
           </Box>
         </Paper>

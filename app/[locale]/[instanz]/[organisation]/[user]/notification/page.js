@@ -10,6 +10,8 @@ import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper"
 import { BlueButton, RedButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useDarkMode } from "@/app/[locale]/components/styledComponents/DarkMode"; // Importiere den DarkMode-Status
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 const initialEmails = [
   { subject: 'System Update Notification', sender: 'admin@system.com', date: '2024-11-01', status: 'Unread', body: 'System update scheduled for 2024-11-02.' },
@@ -23,6 +25,7 @@ const initialEmails = [
 const folders = ['Inbox', 'Unread', 'Sent', 'Trash'];
 
 export default function NotificationAdmin() {
+  const t = useTranslations('Notification');
   const { isDarkMode } = useDarkMode(); // Zugriff auf den DarkMode-Status
   const [emails, setEmails] = useState(initialEmails);
   const [filteredEmails, setFilteredEmails] = useState(initialEmails);
@@ -93,11 +96,11 @@ export default function NotificationAdmin() {
   return (
     <StyledPaper>
       <Box sx={{ flex: 1, padding: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <DesignTitel>Benachrichtigungen</DesignTitel>
+        <DesignTitel>{t('title')}</DesignTitel>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
           <BlueButton onClick={handleComposeClick}>
-            Neue E-Mail verfassen
+            {t('button_write_new_email')}
           </BlueButton>
 
           <IconButton onClick={handleMenuClick}>
@@ -126,10 +129,10 @@ export default function NotificationAdmin() {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: tableHeaderBgColor }}>
-                <TableCell sx={{ color: tableHeaderTextColor }}>Betreff</TableCell>
-                <TableCell sx={{ color: tableHeaderTextColor }}>Absender</TableCell>
-                <TableCell sx={{ color: tableHeaderTextColor }}>Datum</TableCell>
-                <TableCell sx={{ color: tableHeaderTextColor }}>Status</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>{t('table_column_subject')}</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>{t('table_column_sender')}</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>{t('table_column_date')}</TableCell>
+                <TableCell sx={{ color: tableHeaderTextColor }}>{t('table_column_status')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -158,20 +161,20 @@ export default function NotificationAdmin() {
               {selectedEmail.subject}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Von:</strong> {selectedEmail.sender}
+              <strong>{t('email_sender')}</strong> {selectedEmail.sender}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Datum:</strong> {selectedEmail.date}
+              <strong>{t('date')}</strong> {selectedEmail.date}
             </Typography>
             <Typography variant="body2" sx={{ marginTop: 2 }}>
               {selectedEmail.body}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, marginTop: 3 }}>
               <BlueButton onClick={handleReplyClick}>
-                Antworten
+                {t('button_answer')}
               </BlueButton>
               <RedButton>
-                Löschen
+                {t('button_delete')}
               </RedButton>
             </Box>
           </Paper>
@@ -179,10 +182,10 @@ export default function NotificationAdmin() {
 
         {(composeOpen || replyOpen) && (
           <Paper elevation={3} sx={{ padding: 3, marginTop: 2, backgroundColor: paperBgColor, color: paperTextColor, borderRadius: 2 }}>
-            <Typography variant="h5" gutterBottom>{replyOpen ? 'Antworten' : 'Neue E-Mail'}</Typography>
+            <Typography variant="h5" gutterBottom>{replyOpen ? t('button_answer') : t('headline_new_email')}</Typography>
             <TextField
               fullWidth
-              label="Empfänger"
+              label={t('textfield_recipient')}
               variant="outlined"
               value={newEmail.recipient}
               onChange={(e) => setNewEmail({ ...newEmail, recipient: e.target.value })}
@@ -190,7 +193,7 @@ export default function NotificationAdmin() {
             />
             <TextField
               fullWidth
-              label="Betreff"
+              label={t('textfield_subject')}
               variant="outlined"
               value={newEmail.subject}
               onChange={(e) => setNewEmail({ ...newEmail, subject: e.target.value })}
@@ -200,7 +203,7 @@ export default function NotificationAdmin() {
               fullWidth
               multiline
               rows={4}
-              label="Nachricht"
+              label={t('textfield_message')}
               variant="outlined"
               value={newEmail.body}
               onChange={(e) => setNewEmail({ ...newEmail, body: e.target.value })}
@@ -208,10 +211,10 @@ export default function NotificationAdmin() {
             />
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
               <RedButton onClick={replyOpen ? handleReplyClose : handleComposeClose}>
-                Abbrechen
+                {t('button_cancel')}
               </RedButton>
               <BlueButton onClick={handleSendEmail}>
-                Senden
+                {t('button_send')}
               </BlueButton>
             </Box>
           </Paper>

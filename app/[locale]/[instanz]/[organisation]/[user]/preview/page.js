@@ -21,8 +21,12 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import { GreenButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
-function EventDetails() {
+export default function EventDetails() {
+    const t = useTranslations('Preview');
+
     return (
       <StyledPaper>
   
@@ -39,7 +43,7 @@ function EventDetails() {
                 justifyContent: 'center',
               }}
             >
-              <Typography variant="caption">Event Image Placeholder</Typography>
+              <Typography variant="caption">{t('text_event_image_placeholder')}</Typography>
               <IconButton
                 sx={{
                   position: 'absolute',
@@ -55,14 +59,14 @@ function EventDetails() {
             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <DesignTitel>
-                  Veranstaltungsname
+                  {t('title')}
                 </DesignTitel>
                 <IconButton>
                   <FavoriteBorderIcon color="error" />
                 </IconButton>
               </Box>
               <GreenButton>
-                Teilnehmen
+                {t('button_praticipate')}
               </GreenButton>
             </CardContent>
             <CardContent>
@@ -79,7 +83,7 @@ function EventDetails() {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Beschreibung
+                    {t('description')}
                   </Typography>
                   <Typography variant="body1">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
@@ -110,7 +114,7 @@ function EventDetails() {
                 </CardContent>
                 <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
                   <GreenButton>
-                    Bearbeiten
+                    {t('button_edit')}
                   </GreenButton>
                 </CardActions>
               </Card>
@@ -121,25 +125,25 @@ function EventDetails() {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Zeitplan:
+                    {t('text_time')}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
                     <CalendarTodayIcon fontSize="small" /> 10:00 - 18:00
                   </Typography>
                   <Typography variant="h6" gutterBottom>
-                    Ort:
+                    {t('text_location')}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
                     <LocationOnIcon fontSize="small" /> Musterstraße 123, 12345 Musterstadt
                   </Typography>
                   <Typography variant="h6" gutterBottom>
-                    Kontakt-Informationen:
+                    {t('text_contact_information')}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
                     <ContactMailIcon fontSize="small" /> info@beispiel.de
                   </Typography>
                   <Typography variant="h6" gutterBottom>
-                    Webseite:
+                    {t('text_website')}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
                     www.beispiel.de
@@ -149,7 +153,7 @@ function EventDetails() {
                     <InstagramIcon />
                   </Box>
                   <Typography variant="h6" gutterBottom>
-                    Bewertung:
+                    {t('text_rating')}
                   </Typography>
                   <Rating value={4} readOnly />
                 </CardContent>
@@ -171,7 +175,7 @@ function EventDetails() {
                       color: '#666',
                     }}
                   >
-                    Map Placeholder
+                    {t('text_map_placeholder')}
                   </Typography>
                 </Box>
               </Card>
@@ -180,9 +184,4 @@ function EventDetails() {
         </Box>
       </StyledPaper>
     );
-  }
-  
-  
-  
-
-export default EventDetails;
+}

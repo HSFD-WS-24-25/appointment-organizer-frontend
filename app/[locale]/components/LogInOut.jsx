@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useRouter } from "next/navigation";
+import { useRouter } from '@/i18n/routing';
 import { Box, Link, Typography } from '@mui/material';
 import { useFetchApiData } from "@/app/[locale]/lib/useFetchApiData";
 import Slider from 'react-slick';
@@ -10,6 +10,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Footer from '@/app/[locale]/components/Footer';
 import { BlueButton, RedButton, GreenButton } from '@/app/[locale]/components/styledComponents/StyledButton';
+import { useTranslations } from 'next-intl';
 
 // Funktion zur Generierung des Base Path
 export const generateBasePath = (userInfo, user) => {
@@ -19,6 +20,7 @@ export const generateBasePath = (userInfo, user) => {
 };
 
 const LogInOut = () => {
+  const t = useTranslations('HomePage');
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const router = useRouter();
 
@@ -100,7 +102,7 @@ const LogInOut = () => {
       >
         {!isLoading && !user ? (
           <Link href={`/api/auth/login?returnTo=${basePath}`}>
-  <GreenButton>Login</GreenButton>
+  <GreenButton>{t('button_login')}</GreenButton>
 </Link>
         ) : (
           <Box>
@@ -143,10 +145,10 @@ const LogInOut = () => {
             textAlign: 'center',
           }}
         >
-          Veranstaltungen planen und erstellen!
+          {t('title')}
         </Typography>
         <Box sx={{ paddingBottom: '1rem' }}>
-          Erstelle innerhalb von wenigen Sekunden deine eigene Veranstaltung und veröffentliche sie
+          {t('subtitle')}
         </Box>
         <Box
           sx={{
@@ -215,10 +217,10 @@ const LogInOut = () => {
               paddingBottom: '1rem',
             }}
           >
-            Alle wichtigen Informationen und Teilnehmer an einem Ort!
+            {t('second_title')}
           </Typography>
           <Box sx={{ paddingBottom: '1rem' }}>
-            Verliere niemals den Überblick einer Veranstaltung und rufe alle wichtigen Informationen auf.
+            {t('second_subtitle')}
           </Box>
         </Box>
         <Box
@@ -276,10 +278,10 @@ const LogInOut = () => {
               paddingBottom: '1rem',
             }}
           >
-            Verwalte Deine Veranstaltungen mit Leichtigkeit!
+            {t('third_title')}
           </Typography>
           <Box sx={{ paddingBottom: '1rem' }}>
-            Plane, bearbeite und organisiere all deine Events an einem einzigen Ort – effizient und einfach.
+            {t('third_subtitle')}
           </Box>
         </Box>
         <Box

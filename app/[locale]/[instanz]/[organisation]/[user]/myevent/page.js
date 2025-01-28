@@ -27,15 +27,17 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EventIcon from "@mui/icons-material/Event";
-import { useRouter } from "next/navigation";
+import { useRouter } from '@/i18n/routing';
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
 import { generateBasePath } from "@/app/[locale]/components/Sidebar";
+import { useTranslations } from 'next-intl';
 
 function EventCard({ event, view }) {
+  const t = useTranslations('MyEvent');
   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
@@ -101,8 +103,8 @@ function EventCard({ event, view }) {
         </ListItemAvatar>
 
         <ListItemText
-          primary={event.title || `Event ${event.id}`}
-          secondary={`Teilnehmer: ${event.capacity}`}
+          primary={event.title || `${t('text_event')} ${event.id}`}
+          secondary={`${t('text_participants')} ${event.capacity}`}
           sx={{ flex: 1, marginRight: 2 }}
         />
 
@@ -116,23 +118,23 @@ function EventCard({ event, view }) {
 
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
           <Button size="small" startIcon={<EditIcon />} onClick={handleEditEvent}>
-            Bearbeiten
+            {t('button_edit')}
           </Button>
           <Box>
             <Button onClick={handleOpen} size="small" color="error" startIcon={<DeleteIcon />}>
-              Löschen
+              {t('button_delete')}
             </Button>
             {/* Dialog */}
             <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Veranstaltung löschen</DialogTitle>
+              <DialogTitle>{t('dialog_title_delete_event')}</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Möchten Sie die Veranstaltung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                  {t('dialog_title_description')}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose} color="primary">
-                  Abbrechen
+                  {t('button_cancel')}
                 </Button>
                 <Button
                   onClick={handleDelete}
@@ -140,7 +142,7 @@ function EventCard({ event, view }) {
                   variant="contained"
                   autoFocus
                 >
-                  Löschen
+                  {t('button_delete')}
                 </Button>
               </DialogActions>
             </Dialog>
@@ -177,15 +179,15 @@ function EventCard({ event, view }) {
 
       <Box sx={{ position: "absolute", top: 8, right: 8 }}>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Veranstaltung löschen</DialogTitle>
+          <DialogTitle>{t('dialog_title_delete_event')}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Möchten Sie die Veranstaltung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+              {t('dialog_title_description')}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
-              Abbrechen
+              {t('button_cancel')}
             </Button>
             <Button
               onClick={handleDelete}
@@ -193,7 +195,7 @@ function EventCard({ event, view }) {
               variant="contained"
               autoFocus
             >
-              Löschen
+              {t('button_delete')}
             </Button>
           </DialogActions>
         </Dialog>
@@ -251,7 +253,7 @@ function EventCard({ event, view }) {
             hour: "2-digit",
             minute: "2-digit",
           })}{" "}
-          Uhr -{" "}
+          {t('dialog_text_time_two')}{" "}
           {new Date(event.date_end).toLocaleString("de-DE", {
             day: "2-digit",
             month: "2-digit",
@@ -259,7 +261,7 @@ function EventCard({ event, view }) {
             hour: "2-digit",
             minute: "2-digit",
           })}{" "}
-          Uhr
+          {t('dialog_text_time')}
         </Typography>
         <Button
           size="small"
@@ -267,7 +269,7 @@ function EventCard({ event, view }) {
           sx={{ marginTop: 1 }}
           onClick={handleOpenDialog}
         >
-          Mehr anzeigen
+          {t('button_show_more')}
         </Button>
       </Box>
 
@@ -276,7 +278,7 @@ function EventCard({ event, view }) {
         <DialogTitle>{event.name}</DialogTitle>
         <DialogContent>
           <Typography variant="body1" gutterBottom>
-            Start:{" "}
+            {t('dialog_text_start')}{" "}
             {new Date(event.date_start).toLocaleString("de-DE", {
               day: "2-digit",
               month: "2-digit",
@@ -284,10 +286,10 @@ function EventCard({ event, view }) {
               hour: "2-digit",
               minute: "2-digit",
             })}{" "}
-            Uhr
+            {t('dialog_text_time')}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Ende:{" "}
+            {t('dialog_text_end')}{" "}
             {new Date(event.date_end).toLocaleString("de-DE", {
               day: "2-digit",
               month: "2-digit",
@@ -295,13 +297,13 @@ function EventCard({ event, view }) {
               hour: "2-digit",
               minute: "2-digit",
             })}{" "}
-            Uhr
+            {t('dialog_text_time')}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Ort: {event.location}
+            {t('dialog_location')}{event.location}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Beschreibung:
+            {t('description')}
             <div
   dangerouslySetInnerHTML={{
     __html: event.description
@@ -311,7 +313,7 @@ function EventCard({ event, view }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} variant="outlined">
-            Schließen
+            {t('button_close')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -321,6 +323,7 @@ function EventCard({ event, view }) {
 }
 
 function UserDashboard() {
+  const t = useTranslations('MyEvent');
   const [view, setView] = useState("grid");
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
@@ -329,10 +332,10 @@ function UserDashboard() {
   const { user, authError, isLoading, events, fetchError } = useFetchEvents();
 
   // Handle loading and errors
-  if (isLoading) return <div>Loading...</div>;
-  if (authError) return <div>Error loading user data: {authError.message}</div>;
-  if (!user) return <div>Please log in</div>;
-  if (fetchError) return <div>Error fetching events data: {fetchError.message}</div>;
+  if (isLoading) return <div>{t('text_loading')}</div>;
+  if (authError) return <div>{t('text_error_loading_user_data')}{authError.message}</div>;
+  if (!user) return <div>{t('text_please_log_in')}</div>;
+  if (fetchError) return <div>{t('text_error_fetching_events_data')}{fetchError.message}</div>;
 
 
   const handleViewChange = (event, nextView) => {
@@ -363,8 +366,8 @@ function UserDashboard() {
             gap: { xs: 1, sm: 0 },
           }}
         >
-          <DesignTitel>Veranstaltungen:</DesignTitel>
-          <BlueButton onClick={handleCreateEvent}>Neue Veranstaltung</BlueButton>
+          <DesignTitel>{t('title')}</DesignTitel>
+          <BlueButton onClick={handleCreateEvent}>{t('button_new_event')}</BlueButton>
         </Box>
 
         {/* View Toggle & File Creation Link */}
@@ -384,11 +387,11 @@ function UserDashboard() {
             aria-label="View Toggle"
             size="small"
           >
-            <ToggleButton value="grid">Grid</ToggleButton>
-            <ToggleButton value="list">List</ToggleButton>
+            <ToggleButton value="grid">{t('button_grid')}</ToggleButton>
+            <ToggleButton value="list">{t('button_list')}</ToggleButton>
           </ToggleButtonGroup>
           <Link href="#" underline="hover">
-            .ics Datei erstellen
+            {t('button_ics_download')}
           </Link>
         </Box>
 

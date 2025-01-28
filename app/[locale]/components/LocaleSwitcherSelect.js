@@ -15,7 +15,7 @@ export default function LocaleSwitcherSelect({
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
   const params = useParams();
-  const t = useTranslations('UserSettings');
+  const t = useTranslations('Settings');
 
   function onSelectChange(event) {
     const nextLocale = event.target.value

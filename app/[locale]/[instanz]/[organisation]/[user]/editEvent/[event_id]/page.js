@@ -30,14 +30,15 @@ import customMarkerIcon from "@/app/[locale]/components/styledComponents/IconMar
 import { useUserContext } from "@/app/[locale]/context/UserContext";
 import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import UserDashboard from "../../invites/page"
 import QuillEditor from "@/app/[locale]/components/styledComponents/QuillEditor";
+import { useTranslations } from 'next-intl';
 
 
 dayjs.locale("de");
 const OpenStreetMap = ({ address, coordinates }) => {
-
+  const t = useTranslations('EditEvent');
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
@@ -77,7 +78,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
 
         L.marker([lat, lon], { icon: customIcon })
           .addTo(mapInstance.current)
-          .bindPopup("Gewählte Adresse")
+          .bindPopup(t('text_selected_adress'))
           .openPopup();
       } else if (address) {
         try {
@@ -93,11 +94,11 @@ const OpenStreetMap = ({ address, coordinates }) => {
 
             L.marker([lat, lon], { icon: customIcon })
               .addTo(mapInstance.current)
-              .bindPopup(`Adresse: ${address}`)
+              .bindPopup(`${t('text_adress')} ${address}`)
               .openPopup();
           }
         } catch (error) {
-          console.error("Fehler beim Geocoding:", error);
+          console.error(t('text_geocoding_error'), error);
         }
       }
 
@@ -124,6 +125,7 @@ const OpenStreetMap = ({ address, coordinates }) => {
 };
 
 const InvitationForm = () => {
+  const t = useTranslations('EditEvent');
   const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
   const { event, isLoading, fetchError } = useFetchEventById(event_id);
   const { userInfo } = useUserContext();
@@ -194,36 +196,36 @@ const InvitationForm = () => {
     const newErrors = {};
 
     if (!formData.title || formData.title.length < 10) {
-      newErrors.title = "Der Titel muss mindestens 10 Zeichen lang sein.";
+      newErrors.title = t('text_title_error');
     }
 
     // Adresse nur prüfen, wenn Typ nicht "Online" ist
     if (eventType !== "Online" && !formData.address) {
-      newErrors.address = "Die Adresse ist ein Pflichtfeld.";
+      newErrors.address = t('text_adress_error');
     }
 
     if (!formData.startDate || isNaN(new Date(formData.startDate).getTime())) {
-      newErrors.startDate = "Das Startdatum ist ein Pflichtfeld und muss gültig sein.";
+      newErrors.startDate = t('text_start_date_error');
     }
 
     if (!formData.endDate || isNaN(new Date(formData.endDate).getTime())) {
-      newErrors.endDate = "Das Enddatum ist ein Pflichtfeld und muss gültig sein.";
+      newErrors.endDate = t('text_end_date_error');
     }
 
     if (!formData.description || formData.description.length < 50) {
-      newErrors.description = "Die Beschreibung muss mindestens 50 Zeichen lang sein.";
+      newErrors.description = t('text_description_error');
     }
 
     if (!formData.capacity) {
-      newErrors.capacity = "Die Kapazität ist ein Pflichtfeld.";
+      newErrors.capacity = t('text_capacity_error');
     }
 
     if (!formData.maxGuests) {
-      newErrors.maxGuests = "Die maximalen Gäste sind ein Pflichtfeld.";
+      newErrors.maxGuests = t('text_max_guests_error');
     }
 
     if (!formData.reminderDays) {
-      newErrors.reminderDays = "Die Erinnerung in Tagen ist ein Pflichtfeld.";
+      newErrors.reminderDays = t('text_reminder_days_error');
     }
 
     setErrors(newErrors);
@@ -243,7 +245,7 @@ const InvitationForm = () => {
     if (validateForm()) {
       setPublishDialogOpen(true);
     } else {
-      alert("Bitte füllen Sie alle Pflichtfelder korrekt aus.");
+      alert(t('text_fill_all_mandatory_fields_alert'));
     }
   };
 
@@ -282,16 +284,16 @@ const InvitationForm = () => {
 
         if (result.success) {
           router.push(`${basePath}/myevent`);
-          console.log("Erstelltes Event:", result.data);
+          console.log(t('text_created_event'), result.data);
         } else {
-          alert(`Fehler beim Veröffentlichen: ${result.message}`);
+          alert(`${t('text_publishing_error')} ${result.message}`);
         }
       } catch (error) {
-        console.error("Fehler beim Veröffentlichen:", error.message);
-        alert("Ein unerwarteter Fehler ist aufgetreten.");
+        console.error(t('text_publishing_error'), error.message);
+        alert(t('text_unexpected_error'));
       }
     } else {
-      console.log("Aktion abgebrochen.");
+      console.log(t('text_action_cancelled'));
     }
     handleCloseDialog();
   };
@@ -346,7 +348,7 @@ const InvitationForm = () => {
                 color: "#333",
               }}
             >
-              Einladung
+              {t('preview_title')}
             </h1>
             <div style={{ display: "flex", gap: "10px" }}>
               <button
@@ -360,7 +362,7 @@ const InvitationForm = () => {
                   cursor: "pointer",
                 }}
               >
-                Teilnehmen
+                {t('preview_button_participate')}
               </button>
               <button
                 style={{
@@ -373,7 +375,7 @@ const InvitationForm = () => {
                   cursor: "pointer",
                 }}
               >
-                Nicht Teilnehmen
+                {t('preview_button_do_not_participate')}
               </button>
             </div>
           </div>
@@ -389,12 +391,12 @@ const InvitationForm = () => {
               color: "#333",
             }}
           >
-            {formData.title || "Titel nicht angegeben"}
+            {formData.title || t('preview_text_title_not_specified')}
           </p>
 
           {/* Typ */}
           <p>
-            <strong>Typ:</strong> {formData.eventType || "N/A"}
+            <strong>{t('preview_text_type')}</strong> {formData.eventType || t('preview_text_not_available')}
           </p>
 
           {/* Inhalt */}
@@ -407,7 +409,7 @@ const InvitationForm = () => {
             }}
           >
             <div>
-              <strong>Start:</strong>{" "}
+              <strong>{t('preview_text_start')}</strong>{" "}
               <div
                 style={{
                   display: "flex",
@@ -423,10 +425,10 @@ const InvitationForm = () => {
               >
                 <p>
 
-                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
                 </p>
               </div>
-              <strong>Adresse:</strong>
+              <strong>{t('preview_text_adress')}</strong>
               <div
                 style={{
                   display: "flex",
@@ -441,7 +443,7 @@ const InvitationForm = () => {
                 }}
               >
                 <p>
-                  {formData.address || "N/A"}
+                  {formData.address || t('preview_text_not_available')}
                 </p>
               </div>
               <div
@@ -479,14 +481,14 @@ const InvitationForm = () => {
                       borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
                     }}
                   >
-                    Keine Adresse eingegeben
+                    {t('preview_text_no_adress_entered')}
                   </div>
                 )}
               </div>
 
             </div>
             <div>
-              <strong>Ende:</strong>{" "}
+              <strong>{t('preview_text_end')}</strong>{" "}
               <div
                 style={{
                   display: "flex",
@@ -502,12 +504,12 @@ const InvitationForm = () => {
               >
                 <p>
 
-                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
                 </p>
               </div>
               <div>
 
-                <strong>Beschreibung:</strong>
+                <strong>{t('preview_text_description')}</strong>
                 <div
 style={{
   height: "300px",
@@ -527,7 +529,7 @@ style={{
 }}
 
                   dangerouslySetInnerHTML={{
-                    __html: formData.description || "Keine Beschreibung angegeben",
+                    __html: formData.description || t('preview_text_no_description_given'),
                   }}
                 />
               </div>
@@ -559,7 +561,7 @@ style={{
       const coordinates = await geocodeAddress(value);
 
       if (coordinates) {
-        console.log("Koordinaten erfolgreich geholt:", coordinates);
+        console.log(t('text_coordinates_successfully_retrieved'), coordinates);
         // Koordinaten im State speichern
         setFormData((prevData) => ({
           ...prevData,
@@ -628,7 +630,7 @@ style={{
 
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
-          Veranstaltung "{formData.title}" bearbeiten
+          {t('title_first_part')}{formData.title}{t('title_second_part')}
         </DesignTitel>
 
         <Box
@@ -645,7 +647,7 @@ style={{
                     fontSize: "1.2rem", // Größere Schriftgröße
                     top: "-10px",        // Beschriftung weiter nach oben
                   }}
-                >Veranstaltungstyp:</InputLabel>
+                >{t('dropdown_event_type')}</InputLabel>
                 <Select
                   labelId="event-type-label"
                   value={eventType}
@@ -656,8 +658,8 @@ style={{
                     height: "56px",
                   }}
                 >
-                  <MenuItem value="Präsenz">Präsenz</MenuItem>
-                  <MenuItem value="Online">Online</MenuItem>
+                  <MenuItem value="Präsenz">{t('dropdown_option_presence')}</MenuItem>
+                  <MenuItem value="Online">{t('dropdown_option_online')}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -675,7 +677,7 @@ style={{
           <Grid container spacing={2} style={{ marginTop: "20px" }}>
             <Grid item xs={12} sm={12} >
               <TextField
-                label="Titel"
+                label={t('textfield_event_title')}
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
@@ -700,7 +702,7 @@ style={{
                 <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <DateTimePicker
-                      label="Startdatum & Uhrzeit"
+                      label={t('textfield_start_date_and_time')}
                       value={formData.startDate}
                       onChange={(newValue) => handleDateChange("startDate", newValue)}
                       inputFormat="DD.MM.YYYY HH:mm"
@@ -723,7 +725,7 @@ style={{
                 <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <DateTimePicker
-                      label="Enddatum & Uhrzeit"
+                      label={t('textfield_end_date_and_time')}
                       value={formData.endDate}
                       onChange={(newValue) => handleDateChange("endDate", newValue)}
                       inputFormat="DD.MM.YYYY HH:mm"
@@ -745,7 +747,7 @@ style={{
 
               {/* Adresse */}
               <TextField
-                label="Adresse"
+                label={t('textfield_adress')}
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
@@ -781,7 +783,7 @@ style={{
                   />
                 ) : (
                   <Typography variant="body2" align="center">
-                    Keine Adresse eingegeben
+                    {t('text_no_adress_entered')}
                   </Typography>
                 )}
               </Box>
@@ -790,7 +792,7 @@ style={{
             {/* Beschreibung */}
             <Grid item xs={6} marginTop={"10px"}>
               <Typography variant="h6" gutterBottom>
-                Beschreibung
+                {t('textfield_description')}
               </Typography>
               <div
 
@@ -814,7 +816,7 @@ style={{
           <Grid container spacing={2} style={{ marginTop: "20px" }}>
             <Grid item xs={12} sm={4}>
               <TextField
-                label="Kapazität"
+                label={t('textfield_capacity')}
                 name="capacity"
                 value={formData.capacity}
                 onChange={handleInputChange}
@@ -827,7 +829,7 @@ style={{
 
             <Grid item xs={12} sm={4}>
               <TextField
-                label="Maximale Gäste"
+                label={t('textfield_maximum_guests')}
                 name="maxGuests"
                 value={formData.maxGuests}
                 onChange={(newValue) => handleInputChange(newValue)}
@@ -840,7 +842,7 @@ style={{
 
             <Grid item xs={12} sm={4}>
               <TextField
-                label="Erinnerung in Tagen"
+                label={t('textfield_remember_in_days')}
                 name="reminderDays"
                 value={formData.reminderDays}
                 onChange={handleInputChange}
@@ -862,17 +864,17 @@ style={{
               }}
               onClick={handleCancelButon}
             >
-              Abbrechen
+              {t('button_cancel')}
             </Button>
             <Button variant="contained" color="primary" onClick={() => handlePreview()}>
-              Vorschau
+              {t('button_preview')}
             </Button>
             <Button
               variant="contained"
               color="secondary"
               onClick={handleOpenInviteListDialog}
             >
-              Einladungsliste
+              {t('button_invitation_list')}
             </Button>
 
             <Button
@@ -883,7 +885,7 @@ style={{
               }}
               onClick={handleOpenPublishDialog}
             >
-              Speichern
+              {t('button_save')}
             </Button>
           </Box>
         </Box>
@@ -893,19 +895,19 @@ style={{
       <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
         <DialogContent>
           <Typography>
-            Möchten Sie die Änderungen speichern und veröffentlichen?
+            {t('dialog_title')}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
-            Abbrechen
+            {t('button_cancel')}
           </Button>
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleDialogAction("publish")}
           >
-            Ja
+            {t('button_yes')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -922,7 +924,7 @@ style={{
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={handleCloseInviteListDialog}>
-            Schließen
+            {t('button_close')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -20,10 +20,12 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import  StyledPaper  from "@/app/[locale]/components/styledComponents/StyledPaper";
 import { BlueButton, GreenButton, RedButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { useUserContext } from "@/app/[locale]/context/UserContext"; // Benutzerkontext importieren
+import { useTranslations } from 'next-intl';
 
 function UserDashboard() {
+  const t = useTranslations('Invites');
   const [searchText, setSearchText] = useState('');
   const [filterPreviousInvite, setFilterPreviousInvite] = useState(false);
   const [guests] = useState([
@@ -83,7 +85,7 @@ function UserDashboard() {
       {/* Main Content */}
       <Box>
         <DesignTitel variant="h4" gutterBottom>
-          Einladungsliste
+          {t('title')}
         </DesignTitel>
 
         {/* Search Bar */}
@@ -98,7 +100,7 @@ function UserDashboard() {
         >
           <TextField
             variant="outlined"
-            placeholder="Search"
+            placeholder={t('searchbar_placeholder')}
             size="small"
             sx={{ width: { xs: '100%', sm: '80%' }, marginRight: { sm: 2 } }}
             value={searchText}
@@ -127,7 +129,7 @@ function UserDashboard() {
                 color="primary"
               />
             }
-            label="Nur Gäste mit vorheriger Einladung anzeigen"
+            label={t('checkbox_text_show_guests_with_prior_invitation')}
           />
         </Box>
 
@@ -137,16 +139,16 @@ function UserDashboard() {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Gast-Informationen
+                  {t('table_column_guest_information')}
                 </TableCell>
                 <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Email
+                  {t('table_column_email')}
                 </TableCell>
                 <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Einladen
+                  {t('table_column_invite')}
                 </TableCell>
                 <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Vorherige Einladung
+                {t('table_column_prevoius_invitation')}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -183,13 +185,13 @@ function UserDashboard() {
           }}
         >
           <RedButton>
-            Abbrechen
+            {t('button_cancel')}
           </RedButton>
           <BlueButton>
-            Einladung Schicken
+          {t('button_send_invitation')}
           </BlueButton>
           <GreenButton onClick={handleBackToEventClick}>
-            Zurück zu Veranstaltungs
+            {t('button_back_to_event_creation')}
           </GreenButton>
         </Box>
       </Box>

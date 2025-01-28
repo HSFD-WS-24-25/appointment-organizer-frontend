@@ -1,7 +1,9 @@
 import React from "react";
 import { Box, Link, Typography } from "@mui/material";
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('Footer');
   return (
     <Box
       component="footer"
@@ -28,22 +30,22 @@ export default function Footer() {
         {/* TODO: Link to Info-Page */}
         <Typography variant="body2" sx={{ marginBottom: "0.5rem" }}>
           <Link href="#about" underline="hover" color="inherit" sx={{ marginRight: "1rem" }}>
-            Über uns
+            {t('link_about_us')}
           </Link>
           <Link href="#privacy" underline="hover" color="inherit" sx={{ marginRight: "1rem" }}>
-            Datenschutz
+            {t('link_privacy')}
           </Link>
           <Link href="#contact" underline="hover" color="inherit" sx={{ marginRight: "1rem" }}>
-            Kontakt
+            {t('link_contact')}
           </Link>
           <Link href="#imprint" underline="hover" color="inherit">
-            Impressum
+            {t('link_imprint')}
           </Link>
         </Typography>
 
         {/* Copyright */}
         <Typography variant="caption">
-          &copy; {new Date().getFullYear()} Appointment Organizer
+          &copy; {new Date().getFullYear()} {t('copyright_name')}
         </Typography>
       </Box>
     </Box>

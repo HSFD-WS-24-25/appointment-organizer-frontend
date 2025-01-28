@@ -19,8 +19,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import { BlueButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 function MeinEntwurf() {
+  const t = useTranslations('MyDraft');
   const [view, setView] = useState("list");
   const [date, setDate] = useState("");
 
@@ -64,7 +67,7 @@ function MeinEntwurf() {
       {/* Main Content */}
       <Box sx={{ flex: 1, padding: 3, display: "flex", flexDirection: "column" }}>
         <DesignTitel >
-          Meine Veranstaltungen
+          {t('title')}
         </DesignTitel>
 
         {/* Header */}
@@ -80,7 +83,7 @@ function MeinEntwurf() {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            label="Datum auswählen"
+            label={t('textfield_select_date')}
             InputLabelProps={{
               shrink: true,
             }}
@@ -102,7 +105,7 @@ function MeinEntwurf() {
               </ToggleButton>
             </ToggleButtonGroup>
             <BlueButton>
-              .ics Datei erstellen
+              {t('button_ics_download')}
             </BlueButton>
           </Box>
         </Box>

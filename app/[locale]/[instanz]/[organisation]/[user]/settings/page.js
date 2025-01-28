@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, Paper, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import { GreenButton, RedButton, ToggleButton} from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useUserContext } from "@/app/[locale]/context/UserContext"; // Benutzerkontext importieren
 import LocaleSwitcher from "@/app/[locale]/components/LocaleSwitcher";
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 
 function UserSettings() {
-  const t = useTranslations('UserSettings');
+  const t = useTranslations('Settings');
   const router = useRouter();
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext

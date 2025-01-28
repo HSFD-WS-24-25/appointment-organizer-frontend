@@ -17,10 +17,13 @@ import DesignTitel from "./DesignTitel";
 import jsPDF from "jspdf"; // Für PDF-Generierung
 import { saveAs } from "file-saver"; // Für .ics-Datei
 import exp from "constants";
+import { useTranslations } from 'next-intl';
 
 moment.locale("de"); // Setze die Lokalisierung auf Deutsch
 
 export const CustomToolbar = (props) => {
+  const t = useTranslations('StyledCalender');
+  
     const goToBack = () => {
       props.onNavigate("PREV");
     };
@@ -54,7 +57,7 @@ export const CustomToolbar = (props) => {
               cursor: "pointer", // Zeiger ändern
             }}
           >
-            Zurück
+            {t('button_back')}
           </button>
           <button
             onClick={goToToday}
@@ -66,7 +69,7 @@ export const CustomToolbar = (props) => {
               cursor: "pointer",
             }}
           >
-            Heute
+            {t('button_today')}
           </button>
           <button
             onClick={goToNext}
@@ -77,7 +80,7 @@ export const CustomToolbar = (props) => {
               cursor: "pointer",
             }}
           >
-            Weiter
+            {t('button_next')}
           </button>
         </div>
   
@@ -97,7 +100,7 @@ export const CustomToolbar = (props) => {
               cursor: "pointer",
             }}
           >
-            Monat
+            {t('button_month')}
           </button>
           <button
             onClick={() => handleViewChange("week")}
@@ -109,7 +112,7 @@ export const CustomToolbar = (props) => {
               cursor: "pointer",
             }}
           >
-            Woche
+            {t('button_week')}
           </button>
           <button
             onClick={() => handleViewChange("day")}
@@ -120,7 +123,7 @@ export const CustomToolbar = (props) => {
               cursor: "pointer",
             }}
           >
-            Tag
+            {t('button_day')}
           </button>
         </div>
       </div>

@@ -2,10 +2,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Box, Card, CardContent, Typography, TextField, Button } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 function AuthForm() {
+  const t = useTranslations('AuthForm');
   const [isRegister, setIsRegister] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +21,7 @@ function AuthForm() {
     } else if (username === 'user' && password === 'user') {
       router.push('/user');
     } else {
-      alert('Ungültige Anmeldedaten');
+      alert(t('alert_invalid_login_data'));
     }
   };
 
@@ -50,13 +52,13 @@ function AuthForm() {
       >
         <CardContent>
           <Typography variant="h5" align="center" gutterBottom>
-            {isRegister ? 'Registrieren' : 'Login'}
+            {isRegister ? t('text_register') : t('text_login')}
           </Typography>
 
           {isRegister ? (
             <>
               <TextField
-                label="Benutzername"
+                label={t('textfield_username')}
                 variant="outlined"
                 fullWidth
                 value={username}
@@ -64,7 +66,7 @@ function AuthForm() {
                 sx={{ marginBottom: 2, backgroundColor: '#ddd' }}
               />
               <TextField
-                label="Email"
+                label={t('textfield_email')}
                 variant="outlined"
                 fullWidth
                 value={email}
@@ -72,7 +74,7 @@ function AuthForm() {
                 sx={{ marginBottom: 2, backgroundColor: '#ddd' }}
               />
               <TextField
-                label="Telefonnummer"
+                label={t('textfield_phone_number')}
                 variant="outlined"
                 fullWidth
                 value={phone}
@@ -80,7 +82,7 @@ function AuthForm() {
                 sx={{ marginBottom: 2, backgroundColor: '#ddd' }}
               />
               <TextField
-                label="Passwort"
+                label={t('textfield_password')}
                 type="password"
                 variant="outlined"
                 fullWidth
@@ -100,13 +102,13 @@ function AuthForm() {
                   },
                 }}
               >
-                Registrieren
+                {t('button_register')}
               </Button>
             </>
           ) : (
             <>
               <TextField
-                label="Benutzername"
+                label={t('textfield_username')}
                 variant="outlined"
                 fullWidth
                 value={username}
@@ -114,7 +116,7 @@ function AuthForm() {
                 sx={{ marginBottom: 2, backgroundColor: '#ddd' }}
               />
               <TextField
-                label="Passwort"
+                label={t('textfield_password')}
                 type="password"
                 variant="outlined"
                 fullWidth
@@ -135,7 +137,7 @@ function AuthForm() {
                   },
                 }}
               >
-                Einloggen
+                {t('button_login')}
               </Button>
             </>
           )}
@@ -154,7 +156,7 @@ function AuthForm() {
           onClick={toggleForm}
         >
           <Typography variant="body1">
-            {isRegister ? 'Login' : 'Registrieren'}
+            {isRegister ? t('text_login') : t('text_register')}
           </Typography>
         </Box>
       </Card>

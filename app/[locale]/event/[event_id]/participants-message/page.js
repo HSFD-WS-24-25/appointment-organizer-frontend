@@ -9,6 +9,9 @@ import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper"
 import { BlueButton, GreenButton, RedButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import FilterListIcon from '@mui/icons-material/FilterList'; // Filter Icon importieren
+import { useUserContext } from "@/app/[locale]/context/UserContext"; // Benutzerkontext importieren
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 {/* Beispieldaten */ }
 const data = [
@@ -21,17 +24,35 @@ const data = [
 ];
 
 export default function ParticipantsMessage() {
+  const t = useTranslations('ParticipantsMessage');
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
 
   const [selected, setSelected] = useState([]);
 
+  const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
+    const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
+  
+     // Basislink dynamisch auf Basis von Benutzerinformationen erstellen
+     useEffect(() => {
+      if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
+        const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
+        setBasePath(path);
+      }
+    }, [userInfo]);
+  
+  {/* Handler für den "Nachricht schicken" Button */}
+  const handleSendBackToEvent = () => {
+    router.push(`${basePath}/preview`);
+  };
+
   {/* Handler für den "Nachricht schicken" Button */}
   const handleSendMessage = () => {
     if (selected.length == 0) {
-        alert("Es wurden keine Personen ausgewählt.");
+        alert(t('text_no_persons_were_selected'));
     } else {
-      alert("Die Nachricht wurde an die ausgewählte Personen gesendet.");
+      alert(t('text_message_sent_to_selected_persons'));
     }
   };
 
@@ -65,13 +86,13 @@ export default function ParticipantsMessage() {
     <StyledPaper>
       {/* Seite */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', color: 'black' }}>
-        <DesignTitel> Teilnehmerliste </DesignTitel>
+        <DesignTitel> {t('title')} </DesignTitel>
 
         <Box sx={{ mb: 4 }}>
           <Stack direction="row" justifyContent="space-between" spacing={2}>
             <TextField
               variant="outlined"
-              placeholder="Suche"
+              placeholder={t('search_placeholder')}
               size="small"
               sx={{
                 width: { xs: '100%', sm: '100%' },
@@ -108,7 +129,7 @@ export default function ParticipantsMessage() {
               sx={{ minWidth: "250px" }}
               onClick={handleSelectAll}
             >
-              {selected.length === filteredData.length ? 'Alle abwählen' : 'Alle auswählen'}
+              {selected.length === filteredData.length ? t('text_deselect_all') : t('text_select_all')}
             </BlueButton>
           </Stack>
         </Box>
@@ -118,9 +139,9 @@ export default function ParticipantsMessage() {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#D3D3D3' }}>
-                <TableCell>Vor- und Nachname</TableCell>
-                <TableCell>Kontaktdaten</TableCell>
-                <TableCell>Empfänger</TableCell>
+                <TableCell>{t('table_column_first_name_and_surname')}</TableCell>
+                <TableCell>{t('table_column_contact_details')}</TableCell>
+                <TableCell>{t('table_column_recipient')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -143,10 +164,10 @@ export default function ParticipantsMessage() {
 
         {/* Nachricht schreiben */}
         <Stack justifyContent="space-between" spacing={2} sx={{ textAlign: "left", fontSize: 30, mt: 3 }}>
-        <h1>Nachricht schreiben</h1>
+        <h1>{t('text_write_a_message')}</h1>
           <TextField
             id="outlined-multiline-flexible"
-            label="Nachricht schreiben"
+            label={t('textfield_write_a_message')}
             multiline
             rows={5}
             fullWidth
@@ -164,11 +185,11 @@ export default function ParticipantsMessage() {
             paddingBottom: 4,
           }}
         >
-          <RedButton href="/user/preview">
-            Zurück zur Veranstaltung
+          <RedButton onClick={handleSendBackToEvent}>
+            {t('button_back_to_the_event')}
           </RedButton>
           <GreenButton onClick={handleSendMessage}>
-            Nachricht schicken
+            {t('button_send_message')}
           </GreenButton>
         </Box>
       </Box>

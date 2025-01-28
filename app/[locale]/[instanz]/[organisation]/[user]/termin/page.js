@@ -17,10 +17,13 @@ import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel"
 import jsPDF from "jspdf"; // Für PDF-Generierung
 import { saveAs } from "file-saver"; // Für .ics-Datei
 import {CustomToolbar, formats, germanMessages} from "@/app/[locale]/components/styledComponents/StyledCalender"
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 moment.locale("de");
 
 function AdminTermin() {
+  const t = useTranslations('Appointment');
   const localizer = momentLocalizer(moment);
 
 <formats/>
@@ -122,7 +125,7 @@ function AdminTermin() {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(14);
-    doc.text("Veranstaltungskalender", 10, 10);
+    doc.text(t('title_pdf'), 10, 10);
 
     events.forEach((event, index) => {
       const start = moment(event.start).format("DD.MM.YYYY HH:mm");
@@ -134,7 +137,7 @@ function AdminTermin() {
       );
     });
 
-    doc.save("kalender.pdf");
+    doc.save(t('name_pdf'));
   };
 
   const handleDownloadICS = () => {
@@ -147,12 +150,12 @@ function AdminTermin() {
     icsContent += "END:VCALENDAR";
 
     const blob = new Blob([icsContent], { type: "text/calendar" });
-    saveAs(blob, "kalender.ics");
+    saveAs(blob, t('name_ics'));
   };
 
   return (
     <StyledPaper>
-      <DesignTitel>Terminmanagement</DesignTitel>
+      <DesignTitel>{t('title')}</DesignTitel>
 
       <Calendar
         localizer={localizer}
@@ -177,10 +180,10 @@ function AdminTermin() {
 
       <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
         <BlueButton variant="contained" onClick={handleDownloadPDF}>
-          PDF Download
+          {t('button_download_pdf')}
         </BlueButton>
         <GreenButton variant="contained" onClick={handleDownloadICS}>
-          .ics Download
+          {t('button_ics_download')}
         </GreenButton>
       </Box>
 
@@ -203,17 +206,17 @@ function AdminTermin() {
           }}
         >
           <Typography variant="h6" sx={{ marginBottom: 2, color:"grey"}}>
-            Neuen Termin anlegen
+            {t('dialog_title')}
           </Typography>
           <TextField
-            label="Titel"
+            label={t('dialog_title')}
             fullWidth
             value={newEvent.title}
             onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Beschreibung"
+            label={t('dialog_textfield_description')}
             fullWidth
             multiline
             rows={2}
@@ -224,7 +227,7 @@ function AdminTermin() {
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Beginn (Uhrzeit)"
+            label={t('dialog_textfield_start_time')}
             type="time"
             fullWidth
             value={newEvent.start ? moment(newEvent.start).format("HH:mm") : ""}
@@ -238,7 +241,7 @@ function AdminTermin() {
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Ende (Uhrzeit)"
+            label={t('dialog_textfield_end_time')}
             type="time"
             fullWidth
             value={newEvent.end ? moment(newEvent.end).format("HH:mm") : ""}
@@ -252,7 +255,7 @@ function AdminTermin() {
             sx={{ marginBottom: 2 }}
           />
           <Button variant="contained" color="primary" fullWidth onClick={handleAddNewEvent}>
-            Speichern
+            {t('dialog_button_save')}
           </Button>
         </Box>
       </Modal>
@@ -283,13 +286,13 @@ function AdminTermin() {
           </Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
             <RedButton variant="contained" onClick={handleDeleteEvent}>
-              Stornieren
+              {t('dialog_button_cancel')}
             </RedButton>
             <BlueButton
               variant="contained"
               onClick={() => setRescheduleModalOpen(true)}
             >
-              Verschieben
+              {t('dialog_button_move')}
             </BlueButton>
           </Box>
         </Box>
@@ -314,10 +317,10 @@ function AdminTermin() {
           }}
         >
           <Typography variant="h6" sx={{ marginBottom: 2 }}>
-            Termin verschieben
+            {t('dialog_move_title')}
           </Typography>
           <TextField
-            label="Neues Datum (Start)"
+            label={t('dialog_move_textfield_new_start_date')}
             type="date"
             fullWidth
             value={selectedEvent?.start ? moment(selectedEvent.start).format("YYYY-MM-DD") : ""}
@@ -332,7 +335,7 @@ function AdminTermin() {
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Neue Uhrzeit (Start)"
+            label={t('dialog_move_textfield_new_start_time')}
             type="time"
             fullWidth
             value={selectedEvent?.start ? moment(selectedEvent.start).format("HH:mm") : ""}
@@ -346,7 +349,7 @@ function AdminTermin() {
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Neues Datum (Ende)"
+            label={t('dialog_move_textfield_new_end_date')}
             type="date"
             fullWidth
             value={selectedEvent?.end ? moment(selectedEvent.end).format("YYYY-MM-DD") : ""}
@@ -361,7 +364,7 @@ function AdminTermin() {
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Neue Uhrzeit (Ende)"
+            label={t('dialog_move_textfield_new_end_time')}
             type="time"
             fullWidth
             value={selectedEvent?.end ? moment(selectedEvent.end).format("HH:mm") : ""}
@@ -382,7 +385,7 @@ function AdminTermin() {
               handleRescheduleEvent(selectedEvent.start, selectedEvent.end);
             }}
           >
-            Speichern
+            {t('dialog_move_button_save')}
           </Button>
         </Box>
       </Modal>

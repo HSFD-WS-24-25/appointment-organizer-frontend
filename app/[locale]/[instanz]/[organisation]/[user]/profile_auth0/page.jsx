@@ -5,10 +5,13 @@ import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import { Avatar, Box, Card, CardContent, Typography, Button } from '@mui/material';
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 //import ErrorMessage from '../../components/ErrorMessage';
 
 function Profile() {
+  const t = useTranslations('ProfileAuth0');
   const { user, isLoading } = useUser();
 
   if (isLoading) return null;
@@ -20,7 +23,7 @@ function Profile() {
         <StyledPaper>
         <Box
         >
-          <DesignTitel>Profil</DesignTitel>
+          <DesignTitel>{t('title')}</DesignTitel>
           <Card
             className="shadow-lg"
             sx={{
@@ -60,10 +63,10 @@ function Profile() {
               </Typography>
               <Box className="bg-gray-100 rounded-lg p-3 text-sm text-gray-700">
                 <Typography>
-                  <strong>User ID:</strong> {user.sub}
+                  <strong>{t('text_user_id')}</strong> {user.sub}
                 </Typography>
                 <Typography>
-                  <strong>Nickname:</strong> {user.nickname}
+                  <strong>{t('text_nickname')}</strong> {user.nickname}
                 </Typography>
               </Box>
               <Box className="mt-5 flex justify-center">

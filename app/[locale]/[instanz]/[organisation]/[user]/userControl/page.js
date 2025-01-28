@@ -23,9 +23,12 @@ import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper"
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useFetchApiData } from "@/app/[locale]/lib/useFetchApiData";
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 
 const UserControl = () => {
+  const t = useTranslations('UserControl');
   const [selectedUser, setSelectedUser] = useState(null); // Aktuell bearbeiteter Benutzer
   const [selectedIds, setSelectedIds] = useState([]); // Ausgewählte Benutzer für Löschung
   const [dialogOpen, setDialogOpen] = useState(false); // Dialog zum Hinzufügen von Benutzern
@@ -50,10 +53,10 @@ const UserControl = () => {
 
 
 
-  if (isLoading) return <div>Loading...</div>;
-  if (authError) return <div>Error loading user data: {authError.message}</div>;
-  if (!user) return <div>Please log in</div>;
-  if (fetchError) return <div>Error fetching user data: {fetchError.message}</div>;
+  if (isLoading) return <div>{t('text_loading')}</div>;
+  if (authError) return <div>{t('text_error_loading_user_data')}{authError.message}</div>;
+  if (!user) return <div>{t('text_please_log_in')}</div>;
+  if (fetchError) return <div>{t('text_error_fetching_user_data')}{fetchError.message}</div>;
 
 
   // Checkbox-Handling
@@ -73,7 +76,7 @@ const UserControl = () => {
       !newUser.role ||
       !newUser.organisation
     ) {
-      alert("Bitte füllen Sie alle Felder aus.");
+      alert(t('text_alert_please_fill_in_all_fields'));
       return;
     }
 
@@ -91,7 +94,7 @@ const UserControl = () => {
       setDialogOpen(false); // Schließe den Dialog
     } catch (error) {
       console.error("Fehler beim Hinzufügen des Benutzers:", error);
-      setErrorMessage("Fehler beim Hinzufügen des Benutzers.");
+      setErrorMessage(t('text_error_when_adding_user'));
     }
   };
 
@@ -121,7 +124,7 @@ const UserControl = () => {
       setSelectedUser(null); // Leere das `selectedUser`-Objekt
     } catch (error) {
       console.error("Fehler beim Speichern der Änderungen:", error);
-      setErrorMessage("Fehler beim Speichern der Änderungen.");
+      setErrorMessage(t('text_error_when_saving_the_changes'));
     }
   };
 
@@ -138,18 +141,18 @@ const UserControl = () => {
       setSelectedIds([]);
     } catch (error) {
       console.error("Fehler beim Löschen der Benutzer:", error);
-      setErrorMessage("Fehler beim Löschen der Benutzer.");
+      setErrorMessage(t('text_error_when_deleting_users'));
     }
   };
 
 
   const getRoleName = (roleId) => {
     switch (roleId) {
-      case 1: return "Instanzadmin";
-      case 2: return "Organisationsadmin";
-      case 3: return "Organisator";
-      case 4: return "Gast";
-      default: return "Keine Rolle";
+      case 1: return t('text_instance_admin');
+      case 2: return t('text_organisation_admin');
+      case 3: return t('text_organizer');
+      case 4: return t('text_guest');
+      default: return t('text_no_role');
     }
   };
 
@@ -157,7 +160,7 @@ const UserControl = () => {
     <StyledPaper>
       <Box sx={{ padding: 4 }}>
         <DesignTitel variant="h4" gutterBottom>
-          Benutzerverwaltung
+          {t('title')}
         </DesignTitel>
 
         {errorMessage && (
@@ -172,7 +175,7 @@ const UserControl = () => {
           onClick={() => setDialogOpen(true)}
           sx={{ marginBottom: 2 }}
         >
-          Benutzer hinzufügen
+          {t('button_add_user')}
         </Button>
 
         <Button
@@ -181,7 +184,7 @@ const UserControl = () => {
           disabled={selectedIds.length === 0}
           sx={{ marginLeft: 2, marginBottom: 2 }}
         >
-          Ausgewählte löschen
+          {t('button_delete_selected')}
         </Button>
         <TableContainer component={Paper}>
           <Table>
@@ -194,14 +197,14 @@ const UserControl = () => {
                     }
                   />
                 </TableCell>
-                <TableCell>ID</TableCell>
-                <TableCell>Benutzername</TableCell>
-                <TableCell>E-Mail</TableCell>
-                <TableCell>Vorname</TableCell>
-                <TableCell>Nachname</TableCell>
-                <TableCell>Telefonnummer</TableCell>
-                <TableCell>Adresse</TableCell>
-                <TableCell>Rolle</TableCell>
+                <TableCell>{t('table_column_id')}</TableCell>
+                <TableCell>{t('table_column_username')}</TableCell>
+                <TableCell>{t('table_column_email')}</TableCell>
+                <TableCell>{t('table_column_first_name')}</TableCell>
+                <TableCell>{t('table_column_surname')}</TableCell>
+                <TableCell>{t('table_column_phone_number')}</TableCell>
+                <TableCell>{t('table_column_adress')}</TableCell>
+                <TableCell>{t('table_column_role')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -227,7 +230,7 @@ const UserControl = () => {
                       size="small"
                       onClick={() => handleEditUser(user)}
                     >
-                      Bearbeiten
+                      {t('table_column_button_edit')}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -238,18 +241,18 @@ const UserControl = () => {
 
         {/* Dialog für Benutzer hinzufügen */}
         <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogTitle>Benutzer hinzufügen</DialogTitle>
+          <DialogTitle>{t('dialog_title')}</DialogTitle>
           <DialogContent>
             <TextField
               fullWidth
-              label="Benutzername"
+              label={t('dialog_textfield_username')}
               value={newUser.username}
               onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
               margin="normal"
             />
             <TextField
               fullWidth
-              label="Passwort"
+              label={t('dialog_textfield_password')}
               type="password"
               value={newUser.password}
               onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
@@ -257,14 +260,14 @@ const UserControl = () => {
             />
             <TextField
               fullWidth
-              label="E-Mail"
+              label={t('dialog_textfield_email')}
               value={newUser.email}
               onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
               margin="normal"
             />
             <TextField
               fullWidth
-              label="Name"
+              label={t('dialog_textfield_name')}
               value={newUser.name}
               onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
               margin="normal"
@@ -272,7 +275,7 @@ const UserControl = () => {
             <TextField
               fullWidth
               select
-              label="Rolle"
+              label={t('dialog_textfield_role')}
               value={newUser.role}
               onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
               margin="normal"
@@ -280,10 +283,10 @@ const UserControl = () => {
                 native: true,
               }}
             >
-              <option value="">Bitte wählen</option>
-              <option value="organisation-admin">Organisation-Admin</option>
-              <option value="organisator">Organisator</option>
-              <option value="teilnehmer">Teilnehmer</option>
+              <option value="">{t('dialog_textfield_role_option_please_select')}</option>
+              <option value="organisation-admin">{t('dialog_textfield_role_option_organization_admin')}</option>
+              <option value="organisator">{t('dialog_textfield_role_option_organizer')}</option>
+              <option value="teilnehmer">{t('dialog_textfield_role_option_participant')}</option>
             </TextField>
             <TextField
               fullWidth
@@ -295,21 +298,21 @@ const UserControl = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setDialogOpen(false)} color="secondary">
-              Abbrechen
+              {t('dialog_button_cancel')}
             </Button>
             <Button>
-              Hinzufügen
+              {t('dialog_button_add')}
             </Button>
           </DialogActions>
         </Dialog>
 
         {/* Dialog für Benutzer bearbeiten */}
         <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-          <DialogTitle>Benutzer bearbeiten</DialogTitle>
+          <DialogTitle>{t('dialog_edit_user_title')}</DialogTitle>
           <DialogContent>
             <TextField
               fullWidth
-              label="Benutzername"
+              label={t('dialog_edit_user_textfield_username')}
               value={selectedUser?.username || ""}
               onChange={(e) =>
                 setSelectedUser({ ...selectedUser, username: e.target.value })
@@ -318,7 +321,7 @@ const UserControl = () => {
             />
             <TextField
               fullWidth
-              label="E-Mail"
+              label={t('dialog_edit_user_textfield_email')}
               value={selectedUser?.email || ""}
               onChange={(e) =>
                 setSelectedUser({ ...selectedUser, email: e.target.value })
@@ -327,7 +330,7 @@ const UserControl = () => {
             />
             <TextField
               fullWidth
-              label="Vorname"
+              label={t('dialog_edit_user_textfield_first_name')}
               value={selectedUser?.first_name || ""}
               onChange={(e) =>
                 setSelectedUser({ ...selectedUser, first_name: e.target.value })
@@ -336,7 +339,7 @@ const UserControl = () => {
             />
             <TextField
               fullWidth
-              label="Nachname"
+              label={t('dialog_edit_user_textfield_surname')}
               value={selectedUser?.last_name || ""}
               onChange={(e) =>
                 setSelectedUser({ ...selectedUser, last_name: e.target.value })
@@ -345,7 +348,7 @@ const UserControl = () => {
             />
             <TextField
               fullWidth
-              label="Adresse"
+              label={t('dialog_edit_user_textfield_adress')}
               value={selectedUser?.address || ""}
               onChange={(e) =>
                 setSelectedUser({ ...selectedUser, address: e.target.value })
@@ -374,10 +377,10 @@ const UserControl = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setEditDialogOpen(false)} color="secondary">
-              Abbrechen
+              {t('dialog_edit_user_button_cancel')}
             </Button>
             <Button>
-              Speichern
+              {t('dialog_edit_user_button_save')}
             </Button>
           </DialogActions>
         </Dialog>

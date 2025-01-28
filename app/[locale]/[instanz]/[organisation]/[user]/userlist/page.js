@@ -14,6 +14,8 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 // Beispiel-Daten, später dann mit echten Nutzern über Backend
 const users = [
@@ -50,6 +52,7 @@ const users = [
 ];
 
 export default function UserTable() {
+  const t = useTranslations('Userlist');
   const [searchTerm, setSearchTerm] = useState("");
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -83,7 +86,7 @@ export default function UserTable() {
       >
         <TextField
           fullWidth
-          label="Search"
+          label={t('searchbar_placeholder')}
           variant="outlined"
           size="small"
           value={searchTerm}
@@ -113,16 +116,16 @@ export default function UserTable() {
               }}
             >
               <Typography variant="body1">
-                <strong>Benutzer:</strong> {user.name}
+                <strong>{t('text_user')}</strong> {user.name}
               </Typography>
               <Typography variant="body1">
-                <strong>Kontaktdaten:</strong> {user.contact}
+                <strong>{t('text_contact_details')}</strong> {user.contact}
               </Typography>
               <Typography variant="body1">
-                <strong>Veranstalter:</strong> {user.assignment}
+                <strong>{t('text_organizer')}</strong> {user.assignment}
               </Typography>
               <Typography variant="body1">
-                <strong>Zuletzt aktiv:</strong> {user.lastActive}
+                <strong>{t('text_last_active')}</strong> {user.lastActive}
               </Typography>
             </Box>
           ))
@@ -130,10 +133,10 @@ export default function UserTable() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Benutzer</TableCell>
-                <TableCell>Kontaktdaten</TableCell>
-                <TableCell>Veranstalter</TableCell>
-                <TableCell>Zuletzt aktiv</TableCell>
+                <TableCell>{t('table_column_user')}</TableCell>
+                <TableCell>{t('table_column_contact_details')}</TableCell>
+                <TableCell>{t('table_column_organizer')}</TableCell>
+                <TableCell>{t('table_column_last_active')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

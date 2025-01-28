@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useUserContext } from '@/app/[locale]/context/UserContext'; // Benutzerkontext
+import { useTranslations } from 'next-intl';
 
 const SimpleLogin = () => {
+  const t = useTranslations('SimpleLogin');
   const [loginState, setLoginState] = useState({ username: '', password: '' });
   const [loginError, setLoginError] = useState(false);
   const router = useRouter();
@@ -35,7 +37,7 @@ const SimpleLogin = () => {
         );
 
       if (user) {
-        alert(`Login erfolgreich! Willkommen, ${user.name}`);
+        alert(`${t('alert_login_successful_welcome')} ${user.name}`);
         setLoginError(false);
 
         // Benutzerinformationen im Kontext speichern
@@ -82,10 +84,10 @@ const SimpleLogin = () => {
         }}
       >
         <Typography variant="h6" sx={{ marginBottom: '1rem', textAlign: 'center' }}>
-          Login
+          {t('text_login')}
         </Typography>
         <TextField
-          label="Username"
+          label={t('textfield_username')}
           fullWidth
           margin="normal"
           value={loginState.username}
@@ -94,7 +96,7 @@ const SimpleLogin = () => {
           }
         />
         <TextField
-          label="Password"
+          label={t('textfield_password')}
           type="password"
           fullWidth
           margin="normal"
@@ -105,11 +107,11 @@ const SimpleLogin = () => {
         />
         {loginError && (
           <Typography variant="body2" color="error" sx={{ marginBottom: '1rem' }}>
-            Ungültige Zugangsdaten
+            {t('text_invalid_login_data')}
           </Typography>
         )}
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Login
+          {t('button_login')}
         </Button>
       </Box>
     </Box>
