@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as React from 'react';
 import Button from '@mui/material/Button';
+import EventDetails from "@/app/[instanz]/[organisation]/[user]/preview/page";
+
 
 export default function JoinPage() {
     const { invite_id } = useParams();
@@ -57,15 +59,12 @@ export default function JoinPage() {
 
     return (
         <div>
-            <h1>Invitation Details for id: {invite_id}</h1>
             {eventData ? (
                 <div>
-                    <pre>{JSON.stringify(eventData, null, 2)}</pre>
-                    <Button variant="outlined" onClick={() => handleSignUp("confirm")}>Confirm</Button>
-                    <Button variant="outlined" onClick={() => handleSignUp("decline")}>Decline</Button>
+                    <EventDetails event={eventData.event} inviteID={invite_id} onSignUp={handleSignUp} />
                 </div>
             ) : (
-                <p>Loading...</p>
+                <h1>Loading...</h1>
             )}
         </div>
     );
