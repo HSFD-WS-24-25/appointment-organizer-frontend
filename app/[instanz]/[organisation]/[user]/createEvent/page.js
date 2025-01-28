@@ -565,7 +565,7 @@ const InvitationForm = () => {
   const handleEventTypeChange = (e) => {
     setEventType(e.target.value);
     if (e.target.value === "Online") {
-      setFormData({ ...formData, address: "" });
+      setFormData({ ...formData, address: "Onlineveranstaltung" });
     }
   };
 
