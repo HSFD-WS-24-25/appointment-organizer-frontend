@@ -105,7 +105,6 @@ function EventCard({ event, view }) {
           secondary={`Teilnehmer: ${event.capacity}`}
           sx={{ flex: 1, marginRight: 2 }}
         />
-
 <Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
   <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
   <div
@@ -230,6 +229,7 @@ function EventCard({ event, view }) {
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
+
         }}
       >
         <Typography variant="h6" component="p" sx={{ marginBottom: 1 }}>
@@ -249,9 +249,10 @@ function EventCard({ event, view }) {
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
-            minute: "2-digit",
+            minute: "2-digit"
           })}{" "}
           Uhr -{" "}
+
           {new Date(event.date_end).toLocaleString("de-DE", {
             day: "2-digit",
             month: "2-digit",
