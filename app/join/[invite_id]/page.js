@@ -36,16 +36,14 @@ export default function JoinPage() {
         if (invite_id) {
             fetchEventData();
         }
-    }, [invite_id]);
+    }, [invite_id, backendUrl]); // Include backendUrl as a dependency
 
     const handleSignUp = async (action) => {
         try {
             const response = await fetch(`${backendUrl}/api/invite/${invite_id}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    action,
-                }),
+                body: JSON.stringify({ action }),
             });
             alert(`You have ${action}ed the invitation.`);
         } catch (err) {
@@ -57,15 +55,21 @@ export default function JoinPage() {
         return <h1>Error: {error}</h1>;
     }
 
-    return (
-        <div>
-            {eventData ? (
-                <div>
-                    <EventDetails event={eventData.event} inviteID={invite_id} onSignUp={handleSignUp} />
-                </div>
-            ) : (
-                <h1>Loading...</h1>
-            )}
-        </div>
-    );
+    if (!eventData) {
+        return <h1>Loading...</h1>; // Show loading until eventData is fetched
+    }
+
+    let content;
+    console.log(eventData);
+    if (eventData.check === "unused") {
+        content = (
+            <div>
+                <EventDetails event={eventData.event} inviteID={invite_id} onSignUp={handleSignUp} />
+            </div>
+        );
+    } else {
+        content = <h1>Invitation already used or invalid.</h1>;
+    }
+
+    return <div>{content}</div>;
 }
