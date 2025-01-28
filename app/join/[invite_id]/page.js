@@ -6,18 +6,14 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import EventDetails from "@/app/[instanz]/[organisation]/[user]/preview/page";
 
-
 export default function JoinPage() {
     const { invite_id } = useParams();
     const [eventData, setEventData] = useState(null);
     const [error, setError] = useState(null);
+    const [email, setEmail] = useState("");
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
     // Fetch event data from the backend.
-    // need to use our own route, because
-    // otherwise the request needs to be authenticated
-    // We will use an encrypted string (token) consisting of:
-    // event_id + user_id
-    // this token can only be decrypted by the backend
     useEffect(() => {
         const fetchEventData = async () => {
             try {
@@ -36,40 +32,75 @@ export default function JoinPage() {
         if (invite_id) {
             fetchEventData();
         }
-    }, [invite_id, backendUrl]); // Include backendUrl as a dependency
+    }, [invite_id, backendUrl]);
 
     const handleSignUp = async (action) => {
         try {
             const response = await fetch(`${backendUrl}/api/invite/${invite_id}`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action }),
             });
+
+            if (!response.ok) {
+                throw new Error("Failed to process your action.");
+            }
             alert(`You have ${action}ed the invitation.`);
         } catch (err) {
             console.error(err);
+            alert("An error occurred while processing your action.");
         }
-    }
+    };
+
+    const handleEmailSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`${backendUrl}/api/invite/${invite_id}/auth`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            alert("Email submitted successfully.");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to submit email.");
+        }
+    };
 
     if (error) {
         return <h1>Error: {error}</h1>;
     }
 
     if (!eventData) {
-        return <h1>Loading...</h1>; // Show loading until eventData is fetched
+        return <h1>Loading...</h1>;
     }
 
-    let content;
-    console.log(eventData);
-    if (eventData.check === "unused") {
-        content = (
-            <div>
-                <EventDetails event={eventData.event} inviteID={invite_id} onSignUp={handleSignUp} />
-            </div>
-        );
-    } else {
-        content = <h1>Invitation already used or invalid.</h1>;
-    }
-
-    return <div>{content}</div>;
+    return (
+        <div>
+            {eventData.check === "unused" ? (
+                <EventDetails event={eventData.event} inviteID={invite_id} onSignUp={handleSignUp}/>) : (
+                <div>
+                    <h1>Invitation already used or invalid.</h1>
+                    <form onSubmit={handleEmailSubmit}>
+                        <label>
+                            Email:
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </label>
+                        <Button type="submit" variant="contained" color="primary">
+                            Submit
+                        </Button>
+                    </form>
+                </div>
+            )}
+        </div>
+    );
 }
