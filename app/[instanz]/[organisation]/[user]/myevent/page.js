@@ -75,6 +75,7 @@ function EventCard({ event, view }) {
     handleClose();
   };
 
+
   const count = event.capacity || 0;
   let color = "default";
   if (count > 20) color = "green";
@@ -105,12 +106,12 @@ function EventCard({ event, view }) {
           secondary={`Teilnehmer: ${event.capacity}`}
           sx={{ flex: 1, marginRight: 2 }}
         />
-<Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
-  <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
-  <div
-    dangerouslySetInnerHTML={{ __html: event.description }}
-  />
-</Box>
+        <Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
+          <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
+          <div
+            dangerouslySetInnerHTML={{ __html: event.description }}
+          />
+        </Box>
 
 
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
@@ -219,76 +220,40 @@ function EventCard({ event, view }) {
       </Box>
 
       <>
-      <Box
-        sx={{
-          textAlign: "center",
-          padding: 2,
-          borderRadius: 2,
-          backgroundColor: "#f5f5f5",
-          width: "90%",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+        <Box
+          sx={{
+            textAlign: "center",
+            padding: 2,
+            borderRadius: 2,
+            backgroundColor: "#f5f5f5",
+            width: "90%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
 
-        }}
-      >
-        <Typography variant="h6" component="p" sx={{ marginBottom: 1 }}>
-          {event.name}
-        </Typography>
-        <Box>
-  <div
-    dangerouslySetInnerHTML={{
-      __html: event.description.split(".")[0] + ".",
-    }}
-  />
-</Box>
-
-        <Typography variant="body2" color="textSecondary" noWrap>
-          {new Date(event.date_start).toLocaleString("de-DE", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-          })}{" "}
-          Uhr -{" "}
-
-          {new Date(event.date_end).toLocaleString("de-DE", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}{" "}
-          Uhr
-        </Typography>
-        <Button
-          size="small"
-          variant="outlined"
-          sx={{ marginTop: 1 }}
-          onClick={handleOpenDialog}
+          }}
         >
-          Mehr anzeigen
-        </Button>
-      </Box>
+          <Typography variant="h6" component="p" sx={{ marginBottom: 1 }}>
+            {event.name}
+          </Typography>
+          <Box>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: event.description.split(".")[0] + ".",
+              }}
+            />
+          </Box>
 
-      {/* Dialog for full details */}
-      <Dialog open={isDialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>{event.name}</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            Start:{" "}
+          <Typography variant="body2" color="textSecondary" noWrap>
             {new Date(event.date_start).toLocaleString("de-DE", {
               day: "2-digit",
               month: "2-digit",
               year: "numeric",
               hour: "2-digit",
-              minute: "2-digit",
+              minute: "2-digit"
             })}{" "}
-            Uhr
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Ende:{" "}
+            Uhr -{" "}
+
             {new Date(event.date_end).toLocaleString("de-DE", {
               day: "2-digit",
               month: "2-digit",
@@ -298,30 +263,66 @@ function EventCard({ event, view }) {
             })}{" "}
             Uhr
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            Ort: {event.location}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Beschreibung:
-            <div
-  dangerouslySetInnerHTML={{
-    __html: event.description
-  }}
-/>
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} variant="outlined">
-            Schließen
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{ marginTop: 1 }}
+            onClick={handleOpenDialog}
+          >
+            Mehr anzeigen
           </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+        </Box>
+
+        {/* Dialog for full details */}
+        <Dialog open={isDialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+          <DialogTitle>{event.name}</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" gutterBottom>
+              Start:{" "}
+              {new Date(event.date_start).toLocaleString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              Uhr
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Ende:{" "}
+              {new Date(event.date_end).toLocaleString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              Uhr
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Ort: {event.location}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Beschreibung:
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: event.description
+                }}
+              />
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} variant="outlined">
+              Schließen
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </Paper>
   );
 }
 
-function UserDashboard() {
+function myEvent() {
   const [view, setView] = useState("grid");
   const router = useRouter();
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
@@ -388,9 +389,6 @@ function UserDashboard() {
             <ToggleButton value="grid">Grid</ToggleButton>
             <ToggleButton value="list">List</ToggleButton>
           </ToggleButtonGroup>
-          <Link href="#" underline="hover">
-            .ics Datei erstellen
-          </Link>
         </Box>
 
         {/* Events Display */}
@@ -402,20 +400,26 @@ function UserDashboard() {
               flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            {events?.map((event) => (
-              <Grid item key={event.id} xs={12} sm={6} md={4} lg={3}>
-                <EventCard event={event} view={view} />
-              </Grid>
-            ))}
+            {events
+              ?.slice()
+              .sort((a, b) => b.id - a.id) // Sortierung nach ID (höchste zuerst)
+              .map((event) => (
+                <Grid item key={event.id} xs={12} sm={6} md={4} lg={3}>
+                  <EventCard event={event} view={view} />
+                </Grid>
+              ))}
           </Grid>
         ) : (
           <List>
-            {events?.map((event) => (
-              <React.Fragment key={event.id}>
-                <EventCard event={event} view={view} />
-                <Divider />
-              </React.Fragment>
-            ))}
+            {events
+              ?.slice()
+              .sort((a, b) => b.id - a.id) // Sortierung nach ID (höchste zuerst)
+              .map((event) => (
+                <React.Fragment key={event.id}>
+                  <EventCard event={event} view={view} />
+                  <Divider />
+                </React.Fragment>
+              ))}
           </List>
         )}
       </Box>
@@ -423,4 +427,4 @@ function UserDashboard() {
   );
 }
 
-export default UserDashboard;
+export default myEvent;
