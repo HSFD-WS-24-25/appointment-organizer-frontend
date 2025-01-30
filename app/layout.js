@@ -1,9 +1,9 @@
 import "./globals.css";
 
-import { UserProvider } from '@auth0/nextjs-auth0/client';
-import { ChatProvider } from "@/app/components/ChatContext";
-import { DarkModeProvider } from "@/app/components/styledComponents/DarkMode"
-import {UserProviderr} from "@/app/context/UserContext"
+import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { DarkModeProvider } from "@/app/components/styledComponents/DarkMode";
+import { UserProviderr } from "@/app/context/UserContext";
+import ProtectedLayout from "@/app/components/ProtectedLayout";
 
 export const metadata = {
   title: "Veranstaltungsplaner",
@@ -13,17 +13,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <DarkModeProvider>
       <body>
-      <UserProvider>
-        <UserProviderr>
-          <ChatProvider>
-            {children}
-          </ChatProvider>
-        </UserProviderr>
+        <UserProvider>
+          <ProtectedLayout>
+            <DarkModeProvider>
+              <UserProviderr>{children}</UserProviderr>
+            </DarkModeProvider>
+          </ProtectedLayout>
         </UserProvider>
       </body>
-      </DarkModeProvider>
     </html>
   );
 }
