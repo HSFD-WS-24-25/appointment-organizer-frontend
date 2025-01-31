@@ -68,7 +68,7 @@
         "button_save": "Speichern"
     },
     "CreateEvent": {
-        "title": "Veranstaltung erstellung",
+        "title": "Veranstaltung erstellen",
         "dropdown_event_type": "Veranstaltungstyp:",
         "dropdown_option_presence": "Präsenz",
         "dropdown_option_online": "Online",

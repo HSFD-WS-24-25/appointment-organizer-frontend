@@ -171,7 +171,6 @@ const InvitationForm = () => {
     }
   };
 
-
   const validateForm = () => {
     const newErrors = {};
 
@@ -562,7 +561,6 @@ const InvitationForm = () => {
     }
   };
 
-
   const handleDateChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
@@ -570,7 +568,7 @@ const InvitationForm = () => {
   const handleEventTypeChange = (e) => {
     setEventType(e.target.value);
     if (e.target.value === "Online") {
-      setFormData({ ...formData, address: "" });
+      setFormData({ ...formData, address: "Onlineveranstaltung" });
     }
   };
 
@@ -585,7 +583,6 @@ const InvitationForm = () => {
     }
   };
 
-
   const handleClearForm = () => {
     setFormData({
       title: "",
@@ -597,13 +594,13 @@ const InvitationForm = () => {
       description: "",
       reminderDays: "",
     });
+
     window.location.reload();
     setEventType("Präsenz");
     setBackgroundImage(null);
   };
   return (
     <div
-
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -622,12 +619,10 @@ const InvitationForm = () => {
         }}
       >
 
-
         {/* Titel */}
         <DesignTitel style={{ textAlign: "center", marginBottom: "20px" }}>
           {t('title')}
         </DesignTitel>
-
         <Box
           sx={{
             marginTop: "70px"
@@ -904,7 +899,6 @@ const InvitationForm = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <Dialog
         open={inviteListDialogOpen}
         onClose={handleCloseInviteListDialog}
@@ -932,5 +926,4 @@ const InvitationForm = () => {
     </div>
   );
 };
-
 export default InvitationForm;

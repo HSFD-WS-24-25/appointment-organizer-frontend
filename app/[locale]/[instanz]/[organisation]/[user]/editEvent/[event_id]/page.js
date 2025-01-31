@@ -581,7 +581,7 @@ style={{
     setEventType(selectedType);
 
     if (selectedType === "Online") {
-      setFormData({ ...formData, address: "" }); // Adresse entfernen
+      setFormData({ ...formData, address: "Onlineveranstaltung" }); // Adresse entfernen
     }
   };
 
