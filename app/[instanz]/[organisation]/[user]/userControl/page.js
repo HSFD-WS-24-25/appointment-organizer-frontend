@@ -35,6 +35,7 @@ const UserControl = () => {
   const { deleteUser } = useDeleteUser();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { data: users, error: fetchError } = useFetchApiData(user, "/api/users", "GET");
+  const [error, setError] = useState(false);
 
   if (isLoading) return <div>Loading...</div>;
   if (authError) return <div>Error loading user data: {authError.message}</div>;
@@ -64,7 +65,7 @@ const UserControl = () => {
       role_id: selectedUser.role_id,
       organization_id: selectedUser.organization_id || null,
     };
-    
+
     const { success, message } = await putUser(selectedUser.id, payload);
     if (success) {
       setEditDialogOpen(false);
@@ -110,13 +111,6 @@ const UserControl = () => {
         <DesignTitel variant="h4" gutterBottom>
           Benutzerverwaltung
         </DesignTitel>
-
-        {errorMessage && (
-          <Typography color="error" gutterBottom>
-            {errorMessage}
-          </Typography>
-        )}
-
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -209,9 +203,20 @@ const UserControl = () => {
               fullWidth
               label="Telefonnummer"
               value={selectedUser?.telephone || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, telephone: e.target.value })}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (inputValue === "" || inputValue.startsWith("0") || inputValue.startsWith("+")) {
+                  setSelectedUser({ ...selectedUser, telephone: inputValue });
+                  setError(false);
+                } else {
+                  setError(true);
+                }
+              }}
+              error={error}
+              helperText={error ? "Die Telefonnummer muss mit 0 oder + beginnen!" : ""}
               margin="normal"
             />
+
             <TextField
               fullWidth
               select
