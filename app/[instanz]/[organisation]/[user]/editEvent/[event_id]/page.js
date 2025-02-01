@@ -31,7 +31,7 @@ import { useUserContext } from "@/app/context/UserContext";
 import { generateBasePath } from "@/app/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from 'next/navigation';
-import UserDashboard from "../../invites/page"
+import UserDashboard from "@/app/[instanz]/[organisation]/[user]/invites/page"
 import QuillEditor from "@/app/components/styledComponents/QuillEditor";
 
 
@@ -509,22 +509,22 @@ const InvitationForm = () => {
 
                 <strong>Beschreibung:</strong>
                 <div
-style={{
-  height: "300px",
-  maxHeight: "300px", // Maximale Höhe der Vorschau
-  maxWidth: "500px", // Maximale Breite festlegen
-  overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
-  overflowX: "hidden", // Keine Scrollbar für die Breite
-  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-  padding: "10px", // Innenabstand für den Text
-  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-  lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
-  margin: "0 auto", // Optional: Zentrierung des Elements horizontal
-  wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
-  overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
-  whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
-}}
+                  style={{
+                    height: "300px",
+                    maxHeight: "300px", // Maximale Höhe der Vorschau
+                    maxWidth: "500px", // Maximale Breite festlegen
+                    overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
+                    overflowX: "hidden", // Keine Scrollbar für die Breite
+                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                    padding: "10px", // Innenabstand für den Text
+                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+                    margin: "0 auto", // Optional: Zentrierung des Elements horizontal
+                    wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
+                    overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
+                    whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
+                  }}
 
                   dangerouslySetInnerHTML={{
                     __html: formData.description || "Keine Beschreibung angegeben",
@@ -681,13 +681,8 @@ style={{
                 onChange={handleInputChange}
                 error={!!errors.title}
                 helperText={errors.title}
-                multiline={false}
-                rows={1}
                 fullWidth
-                style={{
-                  height: "56px",
-                  backgroundColor: "white",
-                }}
+                style={{ backgroundColor: "white" }}
               />
             </Grid>
           </Grid>
@@ -705,6 +700,7 @@ style={{
                       onChange={(newValue) => handleDateChange("startDate", newValue)}
                       inputFormat="DD.MM.YYYY HH:mm"
                       ampm={false}
+                      minDateTime={dayjs()} // Setzt das aktuelle Datum als Mindestwert
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -719,6 +715,7 @@ style={{
                   </LocalizationProvider>
                 </Grid>
 
+
                 {/* Enddatum */}
                 <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
@@ -728,6 +725,7 @@ style={{
                       onChange={(newValue) => handleDateChange("endDate", newValue)}
                       inputFormat="DD.MM.YYYY HH:mm"
                       ampm={false}
+                      minDateTime={formData.startDate ? dayjs(formData.startDate).add(30, "minute") : dayjs()}
                       renderInput={(params) => (
                         <TextField
                           {...params}

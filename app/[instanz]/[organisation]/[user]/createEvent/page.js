@@ -226,15 +226,6 @@ const InvitationForm = () => {
     setPublishDialogOpen(false);
   };
 
-  const handleOpenInviteListDialog = () => {
-    setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
-    setInviteListDialogOpen(true);
-  };
-
-  const handleCloseInviteListDialog = () => {
-    setInviteListDialogOpen(false);
-  };
-
   const [open, setOpen] = useState(false);
   const handlePreview = () => {
     setOpen(true); // Öffnet das Dialogfeld
@@ -670,13 +661,8 @@ const InvitationForm = () => {
                 onChange={handleInputChange}
                 error={!!errors.title}
                 helperText={errors.title}
-                multiline={false}
-                rows={1}
                 fullWidth
-                style={{
-                  height: "56px",
-                  backgroundColor: "white",
-                }}
+                style={{ backgroundColor: "white" }}
               />
             </Grid>
           </Grid>
@@ -692,8 +678,11 @@ const InvitationForm = () => {
                       label="Startdatum & Uhrzeit"
                       value={formData.startDate}
                       onChange={(newValue) => handleDateChange("startDate", newValue)}
+                      error={!!errors.startDate}
+                      helperText={errors.startDate}
                       inputFormat="DD.MM.YYYY HH:mm"
                       ampm={false}
+                      minDateTime={dayjs()} // Setzt das aktuelle Datum als Mindestwert
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -708,6 +697,7 @@ const InvitationForm = () => {
                   </LocalizationProvider>
                 </Grid>
 
+
                 {/* Enddatum */}
                 <Grid item xs={6} marginTop={"10px"}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
@@ -715,8 +705,11 @@ const InvitationForm = () => {
                       label="Enddatum & Uhrzeit"
                       value={formData.endDate}
                       onChange={(newValue) => handleDateChange("endDate", newValue)}
+                      error={!!errors.endDate}
+                      helperText={errors.endDate}
                       inputFormat="DD.MM.YYYY HH:mm"
                       ampm={false}
+                      minDateTime={formData.startDate ? dayjs(formData.startDate).add(30, "minute") : dayjs()}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -730,6 +723,7 @@ const InvitationForm = () => {
                     />
                   </LocalizationProvider>
                 </Grid>
+
               </Grid>
 
               {/* Adresse */}
@@ -784,6 +778,8 @@ const InvitationForm = () => {
               >
                 <QuillCreator
                   value={formData.description}
+                  error={!!errors.description}
+                  helperText={errors.description}
                   onChange={(value) => {
                     setFormData((prevData) => ({
                       ...prevData,
@@ -856,13 +852,6 @@ const InvitationForm = () => {
             </Button>
             <Button
               variant="contained"
-              color="secondary"
-              onClick={handleOpenInviteListDialog}
-            >
-              Einladungsliste
-            </Button>
-            <Button
-              variant="contained"
               sx={{
                 backgroundColor: "green",
                 "&:hover": { backgroundColor: "darkgreen" },
@@ -879,6 +868,10 @@ const InvitationForm = () => {
       <Dialog open={publishDialogOpen} onClose={handleClosePublishDialog}>
         <DialogTitle>Veranstaltung veröffentlichen</DialogTitle>
         <DialogContent>
+        <Typography sx={{ fontWeight: "bold", color: "red" }}>
+  Bitte denken Sie daran, die Einladungsliste im Bearbeitungsmodus zu erstellen, um die gewünschten Gäste einzuladen!
+</Typography>
+
           <Typography>
             Möchten Sie die Veranstaltung veröffentlichen?
           </Typography>
@@ -896,22 +889,6 @@ const InvitationForm = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={inviteListDialogOpen}
-        onClose={handleCloseInviteListDialog}
-        fullWidth
-        maxWidth="lg"
-      >
-        <DialogContent>
-          {dialogContent} {/* Dynamischer Inhalt */}
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleCloseInviteListDialog}>
-            Schließen
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogContent>
           <Preview formData={formData} backgroundImage={backgroundImage} />
