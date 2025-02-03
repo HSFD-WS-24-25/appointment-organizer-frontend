@@ -51,13 +51,9 @@ function EventCard({ event, view }) {
     setIsDialogOpen(false);
   };
   
-  const translate = () => {
+  const handleOpenTranslateDialog = () => {
     const text = event.description;
     console.log(text+"Übersetzen");
-    handleOpenTranslateDialog();
-  };
-
-  const handleOpenTranslateDialog = () => {
     setIsTranslateOpen(true);
   };
 
@@ -327,7 +323,7 @@ function EventCard({ event, view }) {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={translate} variant="outlined">
+          <Button onClick={handleOpenTranslateDialog} variant="outlined">
             Übersetzen
           </Button>
           <Button onClick={handleCloseDialog} variant="outlined">
