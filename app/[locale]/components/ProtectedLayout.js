@@ -2,13 +2,13 @@
 
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from '@/i18n/routing';
 
 const ProtectedLayout = ({ children }) => {
   const { user, isLoading } = useUser();
   const router = useRouter();
   const pathname = usePathname(); // Aktuelle Route abrufen
-  const publicRoutes = ["/de", "/en"]; // Liste der öffentlichen Seiten
+  const publicRoutes = ["/"]; // Liste der öffentlichen Seiten
   const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
