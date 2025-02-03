@@ -33,95 +33,10 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
 import QuillEditor from "@/app/components/styledComponents/QuillEditor";
+import OpenStreetMap from "@/app/components/OpenStreetMap";
 
 
 dayjs.locale("de");
-const OpenStreetMap = ({ address, coordinates }) => {
-
-  const mapRef = useRef(null);
-  const mapInstance = useRef(null);
-
-  useEffect(() => {
-    // Initialisiere die Karte nur einmal
-    if (!mapInstance.current) {
-      const map = L.map(mapRef.current, {
-        center: [51.505, -0.09], // Standardkoordinaten
-        zoom: 18, // Erhöhter Zoom-Level
-        dragging: false, // Ziehen deaktivieren
-        scrollWheelZoom: false, // Zoomen mit Scrollrad deaktivieren
-        doubleClickZoom: false, // Doppelklick-Zoomen deaktivieren
-        keyboard: false, // Tastatursteuerung deaktivieren
-        zoomControl: false, // Zoom-Steuerung ausblenden
-      });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 22,
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
-
-      mapInstance.current = map; // Speichere die Karteninstanz
-    }
-
-    const customIcon = L.icon({
-      iconUrl: customMarkerIcon, // Benutzerdefiniertes Icon
-      iconSize: [64, 64],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-    });
-
-    const updateMap = async () => {
-      if (coordinates) {
-        const [lat, lon] = coordinates;
-        mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
-
-        L.marker([lat, lon], { icon: customIcon })
-          .addTo(mapInstance.current)
-          .bindPopup("Gewählte Adresse")
-          .openPopup();
-      } else if (address) {
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-              address
-            )}`
-          );
-          const data = await response.json();
-          if (data.length > 0) {
-            const { lat, lon } = data[0];
-            mapInstance.current.setView([lat, lon], 18); // Erhöhter Zoom-Level
-
-            L.marker([lat, lon], { icon: customIcon })
-              .addTo(mapInstance.current)
-              .bindPopup(`Adresse: ${address}`)
-              .openPopup();
-          }
-        } catch (error) {
-          console.error("Fehler beim Geocoding:", error);
-        }
-      }
-
-      // Kartenlayout aktualisieren
-      mapInstance.current.whenReady(() => {
-        mapInstance.current.invalidateSize();
-      });
-    };
-
-    updateMap();
-
-    return () => {
-      if (mapInstance.current) {
-        mapInstance.current.eachLayer((layer) => {
-          if (layer instanceof L.Marker) {
-            mapInstance.current.removeLayer(layer); // Entferne alte Marker
-          }
-        });
-      }
-    };
-  }, [address, coordinates]);
-
-  return <div ref={mapRef} style={{ height: "250px", width: "100%" }} />;
-};
 
 const InvitationForm = () => {
   const { event_id } = useParams(); // Extrahiere die event_id aus den Parametern
