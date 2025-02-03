@@ -1,5 +1,5 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useFetchApiData } from "@/app/lib/useFetchApiData";
+import { useFetchApiData } from "@/app/[locale]/lib/useFetchApiData";
 
 export const useFetchEvents = () => {
   const { user, error: authError, isLoading } = useUser();
