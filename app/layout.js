@@ -1,9 +1,9 @@
-import "./globals.css";
+import "./[locale]/globals.css";
 
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import { DarkModeProvider } from "@/app/components/styledComponents/DarkMode";
-import { UserProviderr } from "@/app/context/UserContext";
-import ProtectedLayout from "@/app/components/ProtectedLayout";
+import { DarkModeProvider } from "@/app/[locale]/components/styledComponents/DarkMode";
+import { UserProviderr } from "@/app/[locale]/context/UserContext";
+import ProtectedLayout from "@/app/[locale]/components/ProtectedLayout";
 
 export const metadata = {
   title: "Veranstaltungsplaner",
