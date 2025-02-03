@@ -33,10 +33,11 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from 'next/navigation';
 import QuillEditor from "@/app/components/styledComponents/QuillEditor";
 import OpenStreetMap from "@/app/components/OpenStreetMap";
+import { on } from "events";
 
 
-const Preview = ({ formData = {}, backgroundImage, inviteID}) => {
-  console.log(formData);
+const Preview = ({ formData = {}, backgroundImage, inviteID, onSignUp}) => {
+  console.log(inviteID);
     useEffect(() => {
       setTimeout(() => {
         const mapElements = document.querySelectorAll(".leaflet-container");
@@ -88,8 +89,8 @@ const Preview = ({ formData = {}, backgroundImage, inviteID}) => {
             >
               Einladung
             </h1>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
+            <div style={{ display: "flex", gap: "10px" , visibility: inviteID ? "visible" : "hidden"}}>
+              <button onClick={() => onSignUp("confirm")}
                 style={{
                   padding: "8px 12px",
                   fontSize: "0.9em",
@@ -102,7 +103,7 @@ const Preview = ({ formData = {}, backgroundImage, inviteID}) => {
               >
                 Teilnehmen
               </button>
-              <button
+              <button onClick={() => onSignUp("decline")}
                 style={{
                   padding: "8px 12px",
                   fontSize: "0.9em",
