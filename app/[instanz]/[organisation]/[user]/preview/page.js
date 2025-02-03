@@ -37,7 +37,6 @@ import { on } from "events";
 
 
 const Preview = ({ formData = {}, backgroundImage, inviteID, onSignUp}) => {
-  console.log(inviteID);
     useEffect(() => {
       setTimeout(() => {
         const mapElements = document.querySelectorAll(".leaflet-container");
