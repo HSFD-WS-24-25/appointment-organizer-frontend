@@ -1,188 +1,281 @@
 "use client";
-
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
-  Typography,
+  Button,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
-  IconButton,
-  Rating,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import ContactMailIcon from "@mui/icons-material/ContactMail";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import { GreenButton } from "@/app/components/styledComponents/StyledButton";
+import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import "dayjs/locale/de";
+import { useFetchEventById } from "@/app/hooks/useFetchEventById";
+import { usePutEvent } from "@/app/hooks/usePutEvent";
+import { useParams } from "next/navigation";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import customMarkerIcon from "@/app/components/styledComponents/IconMarker.png";
+import { useUserContext } from "@/app/context/UserContext";
+import { generateBasePath } from "@/app/components/Sidebar";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useRouter } from 'next/navigation';
+import QuillEditor from "@/app/components/styledComponents/QuillEditor";
+import OpenStreetMap from "@/app/components/OpenStreetMap";
 
-function EventDetails() {
+
+const Preview = ({ formData = {}, backgroundImage, inviteID}) => {
+  console.log(formData);
+    useEffect(() => {
+      setTimeout(() => {
+        const mapElements = document.querySelectorAll(".leaflet-container");
+        mapElements.forEach((element) => {
+          const mapInstance = element._leaflet_map;
+          if (mapInstance) {
+            mapInstance.invalidateSize(); // Aktualisiere die Größe der Karte
+          }
+        });
+      }, 100); // Timeout, um sicherzustellen, dass DOM vollständig geladen ist
+    }, []);
+
     return (
-      <StyledPaper>
-  
-        {/* Main Content */}
-        <Box>
-          {/* Event Header Section */}
-          <Card sx={{ marginBottom: 4, position: 'relative' }}>
-            <Box
-              sx={{
-                position: 'relative',
-                height: 300,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+      <div
+        style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "16px",
+          color: "#333",
+          margin: "0",
+          padding: "50px",
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1080px",
+            margin: "auto",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h1
+              style={{
+                fontSize: "2.5em",
+                fontWeight: "bold",
+                color: "#333",
               }}
             >
-              <Typography variant="caption">Event Image Placeholder</Typography>
-              <IconButton
-                sx={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  backgroundColor: '#fff',
-                  '&:hover': { backgroundColor: '#eee' },
+              Einladung
+            </h1>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "green",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
                 }}
               >
-                <CameraAltIcon />
-              </IconButton>
-            </Box>
-            <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <DesignTitel>
-                  Veranstaltungsname
-                </DesignTitel>
-                <IconButton>
-                  <FavoriteBorderIcon color="error" />
-                </IconButton>
-              </Box>
-              <GreenButton>
                 Teilnehmen
-              </GreenButton>
-            </CardContent>
-            <CardContent>
-              <Typography variant="subtitle1" gutterBottom>
-                Datum: 24. Dezember 2024
-              </Typography>
-            </CardContent>
-          </Card>
-  
-          {/* Main Content */}
-          <Grid container spacing={4}>
-            {/* Description Section */}
-            <Grid item xs={8}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Beschreibung
-                  </Typography>
-                  <Typography variant="body1">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula dui vitae justo
-                    elementum, nec vehicula velit fermentum.
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <GreenButton>
-                    Bearbeiten
-                  </GreenButton>
-                </CardActions>
-              </Card>
-            </Grid>
-  
-            {/* Event Info Section */}
-            <Grid item xs={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Zeitplan:
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    <CalendarTodayIcon fontSize="small" /> 10:00 - 18:00
-                  </Typography>
-                  <Typography variant="h6" gutterBottom>
-                    Ort:
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    <LocationOnIcon fontSize="small" /> Musterstraße 123, 12345 Musterstadt
-                  </Typography>
-                  <Typography variant="h6" gutterBottom>
-                    Kontakt-Informationen:
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    <ContactMailIcon fontSize="small" /> info@beispiel.de
-                  </Typography>
-                  <Typography variant="h6" gutterBottom>
-                    Webseite:
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    www.beispiel.de
-                  </Typography>
-                  <Box sx={{ marginY: 2 }}>
-                    <FacebookIcon sx={{ marginRight: 1 }} />
-                    <InstagramIcon />
-                  </Box>
-                  <Typography variant="h6" gutterBottom>
-                    Bewertung:
-                  </Typography>
-                  <Rating value={4} readOnly />
-                </CardContent>
-                <Box
-                  sx={{
-                    height: 200,
-                    backgroundColor: '#e0e0e0',
-                    marginTop: 2,
-                    position: 'relative',
-                  }}
-                >
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      color: '#666',
+              </button>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Nicht Teilnehmen
+              </button>
+            </div>
+          </div>
+
+          {/* Titel */}
+          <p
+            style={{
+              fontSize: "24px",
+              fontFamily: "Arial, sans-serif",
+              fontWeight: "bold",
+              fontStyle: "normal",
+              textDecoration: "underline",
+              color: "#333",
+            }}
+          >
+            {formData.title || formData.name || "Titel nicht angegeben"}
+          </p>
+
+          {/* Typ */}
+          <p>
+            <strong>Typ:</strong> {formData.eventType || "N/A"}
+          </p>
+
+          {/* Inhalt */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <div>
+              <strong>Start:</strong>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+
+                  {formData.startDate ? dayjs(formData.startDate).format("DD.MM.YYYY HH:mm") : dayjs(formData.date_start).format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+              </div>
+              <strong>Adresse:</strong>
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+                  {formData.address || formData.location|| "N/A"}
+                </p>
+              </div>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid #ccc",
+                  marginTop: "10px",
+                  overflow: "hidden",
+                  fontSize: "16px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                {formData.coordinates || formData.address || formData.location ? (
+                  <OpenStreetMap
+                    address={formData.address || formData.location}
+                    coordinates={formData.coordinates}
+                    mapOptions={{
+                      dragging: false, // Deaktiviert das Ziehen der Karte
+                      scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
+                      doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
+                      keyboard: false, // Deaktiviert Tastaturinteraktion
+                      zoomControl: false, // Entfernt die Zoom-Steuerung
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
                     }}
                   >
-                    Map Placeholder
-                  </Typography>
-                </Box>
-              </Card>
-            </Grid>
-          </Grid>
-        </Box>
-      </StyledPaper>
-    );
-  }
-  
-  
-  
+                    Keine Adresse eingegeben
+                  </div>
+                )}
+              </div>
 
-export default EventDetails;
+            </div>
+            <div>
+              <strong>Ende:</strong>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
+                  alignItems: "center",
+                  maxHeight: "160px",
+                  height: "50px",
+                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+                  fontSize: "18px", // Optional: Schriftgröße anpassen
+                }}
+              >
+                <p>
+
+                  {formData.endDate ? dayjs(formData.endDate).format("DD.MM.YYYY HH:mm") : dayjs(formData.date_end).format("DD.MM.YYYY HH:mm") || "N/A"}
+                </p>
+              </div>
+              <div>
+
+                <strong>Beschreibung:</strong>
+                <div
+style={{
+  height: "300px",
+  maxHeight: "300px", // Maximale Höhe der Vorschau
+  maxWidth: "500px", // Maximale Breite festlegen
+  overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
+  overflowX: "hidden", // Keine Scrollbar für die Breite
+  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
+  padding: "10px", // Innenabstand für den Text
+  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
+  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
+  lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
+  margin: "0 auto", // Optional: Zentrierung des Elements horizontal
+  wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
+  overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
+  whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
+}}
+
+                  dangerouslySetInnerHTML={{
+                    __html: formData.description || "Keine Beschreibung angegeben",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  module.exports = Preview;
