@@ -41,6 +41,10 @@ const LogInOut = () => {
     }
   }, [user, userInfo, isLoading]);
 
+  const handleLoginClick = () => {
+    router.push(`/api/auth/login?returnTo=${basePath}`);
+  };
+
 
   const carousel1 = [
     {
@@ -101,9 +105,7 @@ const LogInOut = () => {
         }}
       >
         {!isLoading && !user ? (
-          <Link href={`/api/auth/login?returnTo=${basePath}`}>
-  <GreenButton>{t('button_login')}</GreenButton>
-</Link>
+  <GreenButton onClick={handleLoginClick}>{t('button_login')}</GreenButton>
         ) : (
           <Box>
             <Box
