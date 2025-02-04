@@ -74,10 +74,6 @@ const QuillCreate = ({ value, onChange }) => {
         .ql-font-courier {
           font-family: "Courier New", monospace;
         }
-        /* Hintergrundfarbe des Editors */
-        .quill-editor {
-          background-color: #fff;
-        }
         .ql-font-comic-sans {
           font-family: "Comic Sans MS", cursive, sans-serif;
         }

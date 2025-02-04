@@ -14,7 +14,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.mode === "dark" 
     ? theme.palette.text.primary // Textfarbe für Dark Mode
     : theme.palette.text.secondary, // Textfarbe für Light Mode
-  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)", // Dezenter Schatten
+  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.5)", // Dezenter Schatten
   borderRadius: "12px", // Abgerundete Ecken
   transition: "transform 0.3s ease, box-shadow 0.3s ease", // Glatter Übergang
 

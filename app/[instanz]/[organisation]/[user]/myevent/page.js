@@ -35,7 +35,6 @@ import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
 import { generateBasePath } from "@/app/components/Sidebar";
 import UserDashboard from "@/app/[instanz]/[organisation]/[user]/invites/page"
-import { createEvents } from 'ics';
 
 function EventCard({ event, view }) {
   const { deleteEvent } = useDeleteEvent(); // Importiere den Hook
@@ -101,87 +100,146 @@ function EventCard({ event, view }) {
   if (view === "list") {
     return (
       <ListItem
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: { xs: "column", sm: "row" }, // Vertikal auf mobilen Geräten
+        padding: 2,
+        marginBottom: 2,
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+      }}
+    >
+      {/* Avatar */}
+      <ListItemAvatar>
+        <Avatar>
+          <EventIcon />
+        </Avatar>
+      </ListItemAvatar>
+    
+      {/* Event Titel und Teilnehmer */}
+      <ListItemText
+        primary={event.title || `Event ${event.id}`}
+        secondary={`Teilnehmer: ${event.capacity}`}
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 2,
-          marginBottom: 2,
-          border: "1px solid #ddd",
-          borderRadius: "8px",
+          flex: 1,
+          marginRight: 2,
+          textAlign: { xs: "center", sm: "left" },
+          wordBreak: "break-word", // Lange Wörter umbrechen
+          overflowWrap: "break-word", // Zusätzliche Absicherung für lange Wörter
+        }}
+      />
+    
+      {/* Beschreibung */}
+      <Box
+        sx={{
+          textAlign: "left",
+          flex: 9,
+          paddingRight: 2,
+          fontSize: { xs: "0.9rem", sm: "1rem" },
+          wordBreak: "break-word", // Lange Wörter umbrechen
+          overflowWrap: "break-word", // Zusätzliche Absicherung
+          lineHeight: "1.4",
         }}
       >
-        <ListItemAvatar>
-          <Avatar>
-            <EventIcon />
-          </Avatar>
-        </ListItemAvatar>
-
-        <ListItemText
-          primary={event.title || `Event ${event.id}`}
-          secondary={`Teilnehmer: ${event.capacity}`}
-          sx={{ flex: 1, marginRight: 2 }}
+        <p style={{ margin: 0, fontWeight: "bold", fontSize: { xs: "1rem", sm: "1.2rem" } }}>
+          {event.name}
+        </p>
+        <div
+          style={{
+            fontSize: { xs: "0.85rem", sm: "1rem" },
+            lineHeight: "1.4",
+            wordBreak: "break-word", // Lange Wörter umbrechen
+            overflowWrap: "break-word", // Zusätzliche Absicherung
+          }}
+          dangerouslySetInnerHTML={{ __html: event.description }}
         />
-        <Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
-          <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
-          <div
-            dangerouslySetInnerHTML={{ __html: event.description }}
-          />
-        </Box>
-
-
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
-          <Button size="small" startIcon={<EditIcon />} onClick={handleEditEvent}>
-            Bearbeiten
-          </Button>
-          <Box>
-            <Button onClick={handleOpen} size="small" color="error" startIcon={<DeleteIcon />}>
+      </Box>
+    
+      {/* Buttons */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "row", sm: "column" },
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1,
+          flexWrap: "wrap",
+        }}
+      >
+        <Button
+          size="small"
+          startIcon={<EditIcon />}
+          onClick={handleEditEvent}
+          sx={{
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+          }}
+        >
+          Bearbeiten
+        </Button>
+        <Button
+          size="small"
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={handleOpen}
+          sx={{
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+          }}
+        >
+          Löschen
+        </Button>
+        <Button
+          size="small"
+          onClick={handleOpenInviteListDialog}
+          sx={{
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+          }}
+        >
+          Gäste hinzufügen
+        </Button>
+    
+        {/* Dialog für Gäste hinzufügen */}
+        <Dialog
+          open={inviteListDialogOpen}
+          onClose={handleCloseInviteListDialog}
+          fullWidth
+          maxWidth="lg"
+        >
+          <DialogContent>{dialogContent}</DialogContent>
+          <DialogActions>
+            <Button variant="outlined" onClick={handleCloseInviteListDialog}>
+              Schließen
+            </Button>
+          </DialogActions>
+        </Dialog>
+    
+        {/* Dialog für Löschen */}
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Veranstaltung löschen</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Möchten Sie die Veranstaltung wirklich löschen? Diese Aktion kann nicht rückgängig
+              gemacht werden.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Abbrechen
+            </Button>
+            <Button
+              onClick={handleDelete}
+              color="error"
+              variant="contained"
+              autoFocus
+            >
               Löschen
             </Button>
-            <Button size="small" onClick={handleOpenInviteListDialog}>
-              Gäste hinzufügen
-            </Button>
-            {/* Dialog */}
-            <Dialog
-              open={inviteListDialogOpen}
-              onClose={handleCloseInviteListDialog}
-              fullWidth
-              maxWidth="lg"
-            >
-              <DialogContent>
-                {dialogContent} {/* Dynamischer Inhalt */}
-              </DialogContent>
-              <DialogActions>
-                <Button variant="outlined" onClick={handleCloseInviteListDialog}>
-                  Schließen
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Veranstaltung löschen</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Möchten Sie die Veranstaltung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                  Abbrechen
-                </Button>
-                <Button
-                  onClick={handleDelete}
-                  color="error"
-                  variant="contained"
-                  autoFocus
-                >
-                  Löschen
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Box>
-        </Box>
-      </ListItem>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </ListItem>
+    
     );
   }
 
@@ -267,7 +325,7 @@ function EventCard({ event, view }) {
             textAlign: "center",
             padding: 2,
             borderRadius: 2,
-            backgroundColor: "#f5f5f5",
+            //backgroundColor: "#f5f5f5",
             width: "90%",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -384,16 +442,35 @@ function EventCard({ event, view }) {
 function myEvent() {
   const [view, setView] = useState("grid");
   const router = useRouter();
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const [inviteListDialogOpen, setInviteListDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
 
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+
+  const handleCloseInviteListDialog = () => {
+    setInviteListDialogOpen(false);
+  };
+
+
+  const handleOpenInviteListDialog = () => {
+    setDialogContent(<UserDashboard />); // Lade UserDashboard in den Dialog
+    setInviteListDialogOpen(true);
+  };
+
+
+  // Verwende den neuen Hook
   const { user, authError, isLoading, events, fetchError } = useFetchEvents();
 
+  // Handle loading and errors
   if (isLoading) return <div>Loading...</div>;
   if (authError) return <div>Error loading user data: {authError.message}</div>;
   if (!user) return <div>Please log in</div>;
   if (fetchError) return <div>Error fetching events data: {fetchError.message}</div>;
+
 
   const handleViewChange = (event, nextView) => {
     if (nextView !== null) {
@@ -402,73 +479,38 @@ function myEvent() {
   };
 
   const handleCreateEvent = () => {
-    const basePath = generateBasePath(userInfo, user);
-    router.push(`${basePath}/createEvent`);
-  };
-
-  const generateIcsFileForAllEvents = (events) => {
-    const icsEvents = events.map((event) => {
-      const { title, description, date_start, date_end, location } = event;
-
-      const startDate = new Date(date_start);
-      const endDate = new Date(date_end);
-
-      return {
-        start: [
-          startDate.getFullYear(),
-          startDate.getMonth() + 1,
-          startDate.getDate(),
-          startDate.getHours(),
-          startDate.getMinutes(),
-        ],
-        end: [
-          endDate.getFullYear(),
-          endDate.getMonth() + 1,
-          endDate.getDate(),
-          endDate.getHours(),
-          endDate.getMinutes(),
-        ],
-        title: title || `Event ${event.id}`,
-        description: description,
-        location: location,
-      };
-    });
-
-    createEvents(icsEvents, (error, value) => {
-      if (error) {
-        console.error('Error generating .ics file:', error);
-        return;
-      }
-
-      const blob = new Blob([value], { type: 'text/calendar' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'all_events.ics';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    });
+    const basePath = generateBasePath(userInfo, user); // Determine the base path
+    router.push(`${basePath}/createEvent`); // Navigate to /user/createEvent
   };
 
   return (
     <StyledPaper>
+      {/* Main Content */}
       <Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "space-between",
-            alignItems: { xs: "flex-start", sm: "center" },
-            marginBottom: 2,
-            gap: { xs: 1, sm: 0 },
-          }}
-        >
-          <DesignTitel>Veranstaltungen:</DesignTitel>
-          <BlueButton onClick={handleCreateEvent}>Neue Veranstaltung</BlueButton>
-        </Box>
 
+
+        {/* Header */}
+        <Box
+  sx={{
+    display: "flex",
+    flexDirection: { xs: "column", sm: "row" }, // Spaltenlayout für Mobil, Reihenlayout für größere Geräte
+    justifyContent: "space-between",
+    alignItems: { xs: "flex-start", sm: "center" },
+    marginBottom: 2,
+    gap: { xs: 2, sm: 0 }, // Abstand zwischen Titel und Button in Mobilansicht
+  }}
+>
+  <DesignTitel>Veranstaltungen:</DesignTitel>
+  <BlueButton
+    onClick={handleCreateEvent}
+    sx={{
+      alignSelf: { xs: "center", sm: "flex-end" }, // Zentrierung des Buttons in der Mobilansicht
+    }}
+  >
+    Neue Veranstaltung
+  </BlueButton>
+</Box>
+        {/* View Toggle & File Creation Link */}
         <Box
           sx={{
             display: "flex",
@@ -488,17 +530,17 @@ function myEvent() {
             <ToggleButton value="grid">Grid</ToggleButton>
             <ToggleButton value="list">List</ToggleButton>
           </ToggleButtonGroup>
-          <Button
-            onClick={() => generateIcsFileForAllEvents(events)}
-            variant="outlined"
-            sx={{ textTransform: 'none' }}
-          >
-            .ics Datei erstellen
-          </Button>
         </Box>
 
+        {/* Events Display */}
         {view === "grid" ? (
-          <Grid container spacing={2}>
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              flexDirection: { xs: "column", sm: "row" },
+            }}
+          >
             {events
               ?.slice()
               .sort((a, b) => b.id - a.id) // Sortierung nach ID (höchste zuerst)
@@ -522,6 +564,7 @@ function myEvent() {
           </List>
         )}
       </Box>
+
     </StyledPaper>
   );
 }

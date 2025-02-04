@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from "next/navigation";
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Link, Typography, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { useFetchApiData } from "@/app/lib/useFetchApiData";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -19,6 +19,38 @@ export const generateBasePath = (userInfo, user) => {
 };
 
 const LogInOut = () => {
+
+  const [announcements, setAnnouncements] = useState([]);
+  const [showPopup, setShowPopup] = useState(true); // Standardmäßig sichtbar
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await fetch("/aapi/create-announcments", {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error("Fehler beim Abrufen der Daten");
+        }
+
+        const data = await response.json();
+        setAnnouncements(data); // Daten in den State setzen
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Ankündigungen:", error);
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
+
+  const lognAnnouncements = useMemo(() => {
+    return announcements.filter(
+      (ann) => ann.status === "Active" && ann.target === "Loginseite"
+    );
+  }, [announcements]);
+
+
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const router = useRouter();
 
@@ -31,8 +63,8 @@ const LogInOut = () => {
   // Base Path generieren
   const basePath = generateBasePath(userInfo, user);
 
-   // Weiterleitung zu basePath bei Login
-   useEffect(() => {
+  // Weiterleitung zu basePath bei Login
+  useEffect(() => {
     if (!isLoading && user && window.location.pathname === '/') {
       const basePath = generateBasePath(userInfo, user);
       router.push(basePath);
@@ -100,8 +132,8 @@ const LogInOut = () => {
       >
         {!isLoading && !user ? (
           <Link href={`/api/auth/login?returnTo=${basePath}`}>
-  <GreenButton>Login</GreenButton>
-</Link>
+            <GreenButton>Login</GreenButton>
+          </Link>
         ) : (
           <Box>
             <Box
@@ -123,25 +155,69 @@ const LogInOut = () => {
           </Box>
         )}
       </Box>
-
+      {/* Pop-up */}
+      {showPopup && lognAnnouncements.length > 0 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 20, // Abstand von oben
+            left: '50%',
+            transform: 'translateX(-50%)', // Zentrierung
+            backgroundColor: 'white',
+            boxShadow: 3,
+            borderRadius: 2,
+            padding: 2,
+            zIndex: 10, // Sicherstellen, dass es im Vordergrund bleibt
+            maxWidth: '90%',
+          }}
+        >
+          <Typography variant="h6" sx={{ textAlign: 'center', mb: 2 }}>
+            Aktive Ankündigungen
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Titel</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Typ</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Startdatum</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Enddatum</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {lognAnnouncements.map((ann) => (
+                  <TableRow key={ann.id}>
+                    <TableCell>{ann.title}</TableCell>
+                    <TableCell>{ann.type}</TableCell>
+                    <TableCell>{new Date(ann.startDate).toLocaleString()}</TableCell>
+                    <TableCell>{new Date(ann.endDate).toLocaleString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Box sx={{ textAlign: 'right', mt: 2 }}>
+            <button
+              onClick={() => setShowPopup(false)}
+              style={{
+                backgroundColor: '#f50057',
+                color: 'white',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              X
+            </button>
+          </Box>
+        </Box>
+      )}
       {/* Erster Abschnitt */}
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: 'calc(100vh - 150px)',
-          padding: '1rem',
-          flexDirection: 'column',
-        }}
+
       >
         <Typography
-          sx={{
-            fontWeight: 'bold',
-            fontSize: { xs: '1.5rem', sm: '2rem' },
-            paddingBottom: '1rem',
-            textAlign: 'center',
-          }}
         >
           Veranstaltungen planen und erstellen!
         </Typography>
@@ -149,40 +225,16 @@ const LogInOut = () => {
           Erstelle innerhalb von wenigen Sekunden deine eigene Veranstaltung und veröffentliche sie
         </Box>
         <Box
-          sx={{
-            width: '100%',
-            maxWidth: '800px',
-            height: { xs: '50vh', sm: '60vh' },
-            maxHeight: '500px',
-            backgroundColor: '#fff',
-            borderRadius: '10px',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-            overflow: 'hidden',
-            userSelect: 'none',
-          }}
         >
           <Slider {...settings}>
             {carousel1.map((image, index) => (
               <Box
                 key={index}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  padding: '1rem',
-                }}
               >
                 <img
                   src={image.src}
                   alt={image.caption}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '0',
-                    marginBottom: '0.5rem',
-                  }}
+
                 />
               </Box>
             ))}
@@ -192,14 +244,6 @@ const LogInOut = () => {
 
       {/* Zweiter Abschnitt */}
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          minHeight: 'calc(100vh - 150px)',
-          flexDirection: { xs: 'column', sm: 'row' },
-          padding: '1rem',
-        }}
       >
         <Box
           sx={{
@@ -209,11 +253,6 @@ const LogInOut = () => {
           }}
         >
           <Typography
-            sx={{
-              fontWeight: 'bold',
-              fontSize: { xs: '1.5rem', sm: '2rem' },
-              paddingBottom: '1rem',
-            }}
           >
             Alle wichtigen Informationen und Teilnehmer an einem Ort!
           </Typography>
@@ -222,16 +261,6 @@ const LogInOut = () => {
           </Box>
         </Box>
         <Box
-          sx={{
-            width: '100%',
-            maxWidth: '800px',
-            height: { xs: '50vh', sm: '60vh' },
-            maxHeight: '500px',
-            backgroundColor: '#fff',
-            borderRadius: '10px',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-            overflow: 'hidden',
-          }}
         >
           <Slider {...settings}>
             {carousel2.map((image, index) => (
@@ -253,28 +282,11 @@ const LogInOut = () => {
 
       {/* Dritter Abschnitt */}
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          minHeight: 'calc(100vh - 150px)',
-          flexDirection: { xs: 'column', sm: 'row-reverse' },
-          padding: '1rem',
-        }}
       >
         <Box
-          sx={{
-            flex: 1,
-            paddingLeft: { xs: 0, sm: '2rem' },
-            textAlign: { xs: 'center', sm: 'left' },
-          }}
+
         >
           <Typography
-            sx={{
-              fontWeight: 'bold',
-              fontSize: { xs: '1.5rem', sm: '2rem' },
-              paddingBottom: '1rem',
-            }}
           >
             Verwalte Deine Veranstaltungen mit Leichtigkeit!
           </Typography>
@@ -283,16 +295,6 @@ const LogInOut = () => {
           </Box>
         </Box>
         <Box
-          sx={{
-            width: '100%',
-            maxWidth: '800px',
-            height: { xs: '50vh', sm: '60vh' },
-            maxHeight: '500px',
-            backgroundColor: '#fff',
-            borderRadius: '10px',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-            overflow: 'hidden',
-          }}
         >
           <Slider {...settings}>
             {carousel3.map((image, index) => (

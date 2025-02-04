@@ -77,12 +77,7 @@ export function SidebarLogInOut({ expanded }) {
                               />
                             )}
                         </ListItemButton>
-                        <ListItemButton onClick={handleSettingClick} 
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '100%', 
-                          }}>
+                        <ListItemButton onClick={handleSettingClick} >
                             <ListItemIcon>
                                 <SettingsIcon style={{ color: "#ccc" }} />
                             </ListItemIcon>
@@ -91,9 +86,6 @@ export function SidebarLogInOut({ expanded }) {
                         </ListItemButton>
                         <ListItemButton onClick={handleLogoutClick}
                            sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '100%', 
                           }}>
                             <ListItemIcon>
                                 <ExitToAppIcon style={{ color: "#ccc" }} />

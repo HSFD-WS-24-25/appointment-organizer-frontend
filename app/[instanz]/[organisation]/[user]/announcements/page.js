@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useEffect , useState, useMemo } from "react";
 import {
   Paper,
   TextField,
@@ -22,6 +22,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useMediaQuery
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -38,32 +39,83 @@ const initialData = [
 ];
 
 export default function AdminAnnouncements() {
-  const [announcements, setAnnouncements] = useState(initialData);
+  const [announcements, setAnnouncements] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [newAnnouncement, setNewAnnouncement] = useState({
     title: "",
     type: "",
-    startDate: dayjs(),
-    endDate: dayjs(),
-    target: "Loginseite",
-  });
+    startDate: dayjs(), // Gültiges `dayjs`-Objekt
+    endDate: dayjs().add(1, "hour"), // Gültiges `dayjs`-Objekt
+    target: "",
+  }); 
   const [confirmationOpen, setConfirmationOpen] = useState(false); // State für den Dialog
+  const isMobile = useMediaQuery("(max-width: 600px)"); // Erkennt mobile Ansicht
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await fetch("/aapi/create-announcments", {
+          method: "GET",
+        });
+    
+        if (!response.ok) {
+          throw new Error("Fehler beim Abrufen der Daten");
+        }
+    
+        const data = await response.json();
+        setAnnouncements(data);
+      } catch (error) {
+        console.error("Fehler:", error);
+      }
+    };
+  
+    fetchAnnouncements();
+  }, []);
+  
 
   const handleDeactivateClick = () => {
     setConfirmationOpen(true); // Öffnet den Bestätigungsdialog
   };
 
-  const handleConfirmDeactivate = () => {
-    setAnnouncements((prev) =>
-      prev.map((ann, index) =>
-        selectedAnnouncements.includes(index) ? { ...ann, status: "Inactive" } : ann
-      )
-    );
-    setSelectedAnnouncements([]); // Auswahl zurücksetzen
-    setConfirmationOpen(false); // Schließt den Dialog
+  const handleConfirmDeactivate = async () => {
+    try {
+      // Für jede ausgewählte Ankündigung eine PUT-Anfrage senden
+      await Promise.all(
+        selectedAnnouncements.map(async (index) => {
+          const announcement = announcements[index];
+          const response = await fetch(`/aapi/create-announcments?id=${announcement.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: "Inactive" }), // Neuer Status
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Fehler beim Aktualisieren der Ankündigung mit ID ${announcement.id}`);
+          }
+  
+          const data = await response.json();
+          console.log(`Status aktualisiert:`, data);
+        })
+      );
+  
+      // Lokalen Zustand aktualisieren
+      setAnnouncements((prev) =>
+        prev.map((ann, index) =>
+          selectedAnnouncements.includes(index) ? { ...ann, status: "Inactive" } : ann
+        )
+      );
+  
+      setSelectedAnnouncements([]); // Auswahl zurücksetzen
+      setConfirmationOpen(false); // Dialog schließen
+    } catch (error) {
+      console.error("Fehler beim Aktualisieren des Status:", error);
+    }
   };
+  
 
   const handleCancelDeactivate = () => {
     setConfirmationOpen(false); // Schließt den Dialog ohne Aktion
@@ -89,16 +141,53 @@ export default function AdminAnnouncements() {
     setSelectedAnnouncements([]);
   };
 
-  const handleCreateAnnouncement = () => {
-    if (!newAnnouncement.title.trim() || !newAnnouncement.type || !newAnnouncement.startDate || !newAnnouncement.endDate) {
+  const handleCreateAnnouncement = async () => {
+    if (!newAnnouncement.title || !newAnnouncement.type || !newAnnouncement.target) {
       alert("Bitte alle Felder ausfüllen!");
       return;
     }
-
-    setAnnouncements([...announcements, { ...newAnnouncement, status: "Active" }]);
-    setOpenDialog(false);
-    setNewAnnouncement({ title: "", type: "", startDate: dayjs(), endDate: dayjs(), target: "Loginseite" });
+  
+    if (!dayjs(newAnnouncement.startDate).isValid() || !dayjs(newAnnouncement.endDate).isValid()) {
+      alert("Bitte gültige Datumswerte eingeben!");
+      return;
+    }
+  
+    try {
+      const response = await fetch("/aapi/create-announcments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newAnnouncement,
+          startDate: newAnnouncement.startDate.toISOString(),
+          endDate: newAnnouncement.endDate.toISOString(),
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Fehler beim Hinzufügen der Ankündigung");
+      }
+  
+      const data = await response.json();
+      console.log("Ankündigung hinzugefügt:", data);
+  
+      // Dialog schließen und Zustand zurücksetzen
+      setNewAnnouncement({
+        title: "",
+        type: "",
+        startDate: dayjs(),
+        endDate: dayjs().add(1, "hour"),
+        target: "",
+      });
+      setOpenDialog(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Fehler:", error);
+    }
   };
+  
+  
 
   return (
     <StyledPaper>
@@ -117,46 +206,53 @@ export default function AdminAnnouncements() {
           </Stack>
         </Box>
         <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 3 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}> {/* Leicht graue Schrift für Titel */}
-                </TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Titel</TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Typ</TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Startdatum</TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Enddatum</TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Status</TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Ziel</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredData.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedAnnouncements.includes(index)}
-                      onChange={() => handleCheckboxChange(index)}
-                    />
-                  </TableCell>
-                  <TableCell>{row.title}</TableCell>
-                  <TableCell>{row.type}</TableCell>
-                  <TableCell>{dayjs(row.startDate).format("DD.MM.YYYY HH:mm")}</TableCell>
-                  <TableCell>{dayjs(row.endDate).format("DD.MM.YYYY HH:mm")}</TableCell>
-                  <TableCell
-                    sx={{
-                      color: row.status === "Inactive" ? "gray" : "green", // Grau für Inactive, Grün für Active
-                      fontWeight: "bold", // Status fett hervorheben
-                    }}
-                  >
-                    {row.status}
-                  </TableCell>
-                  <TableCell>{row.target}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}></TableCell>
+        <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Titel</TableCell>
+        {!isMobile && (
+          <>
+            <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Typ</TableCell>
+            <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Startdatum</TableCell>
+            <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Enddatum</TableCell>
+            <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Ziel</TableCell>
+          </>
+        )}
+        <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>Status</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {filteredData.map((row, index) => (
+        <TableRow key={index}>
+          <TableCell>
+            <Checkbox
+              checked={selectedAnnouncements.includes(index)}
+              onChange={() => handleCheckboxChange(index)}
+            />
+          </TableCell>
+          <TableCell>{row.title}</TableCell>
+          {!isMobile && (
+            <>
+              <TableCell>{row.type}</TableCell>
+              <TableCell>{dayjs(row.startDate).format("DD.MM.YYYY HH:mm")}</TableCell>
+              <TableCell>{dayjs(row.endDate).format("DD.MM.YYYY HH:mm")}</TableCell>
+              <TableCell>{row.target}</TableCell>
+            </>
+          )}
+          <TableCell
+            sx={{
+              color: row.status === "Inactive" ? "gray" : "green",
+              fontWeight: "bold",
+            }}
+          >
+            {row.status}
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>
 
         <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 3 }}>
           <RedButton onClick={handleDeactivateClick}>Ankündigung Deaktivieren</RedButton>
@@ -169,15 +265,13 @@ export default function AdminAnnouncements() {
           </DialogTitle>
           <DialogContent sx={{ padding: "20px" }}>
             <Stack spacing={3}>
-              {/* Titel */}
-              <TextField
-                label="Titel"
-                fullWidth
-                variant="outlined"
-                value={newAnnouncement.title}
-                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
-                sx={{ backgroundColor: "#f8f9fa", borderRadius: "5px" }}
-              />
+          {/* Titel */}
+    <TextField
+      label="Titel"
+      value={newAnnouncement.title}
+      onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
+      fullWidth
+    />
 
               {/* Typ */}
               <FormControl fullWidth>
@@ -196,22 +290,30 @@ export default function AdminAnnouncements() {
               {/* Startdatum & Enddatum */}
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                 <Stack direction="row" spacing={2}>
-                  <DateTimePicker
-                    label="Startdatum & Uhrzeit"
-                    value={newAnnouncement.startDate}
-                    onChange={(newValue) => setNewAnnouncement({ ...newAnnouncement, startDate: newValue })}
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth sx={{ backgroundColor: "#f8f9fa", borderRadius: "5px" }} />
-                    )}
-                  />
-                  <DateTimePicker
-                    label="Enddatum & Uhrzeit"
-                    value={newAnnouncement.endDate}
-                    onChange={(newValue) => setNewAnnouncement({ ...newAnnouncement, endDate: newValue })}
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth sx={{ backgroundColor: "#f8f9fa", borderRadius: "5px" }} />
-                    )}
-                  />
+                <DateTimePicker
+  label="Startdatum & Uhrzeit"
+  value={newAnnouncement.startDate}
+  onChange={(newValue) => {
+    if (newValue && dayjs(newValue).isValid()) {
+      setNewAnnouncement({ ...newAnnouncement, startDate: dayjs(newValue) });
+    } else {
+      console.error("Ungültiges Datum:", newValue);
+    }
+  }}
+  renderInput={(params) => <TextField {...params} fullWidth />}
+/>
+<DateTimePicker
+  label="Enddatum & Uhrzeit"
+  value={newAnnouncement.endDate}
+  onChange={(newValue) => {
+    if (newValue && dayjs(newValue).isValid()) {
+      setNewAnnouncement({ ...newAnnouncement, endDate: dayjs(newValue) });
+    } else {
+      console.error("Ungültiges Datum:", newValue);
+    }
+  }}
+  renderInput={(params) => <TextField {...params} fullWidth />}
+/>
                 </Stack>
               </LocalizationProvider>
 

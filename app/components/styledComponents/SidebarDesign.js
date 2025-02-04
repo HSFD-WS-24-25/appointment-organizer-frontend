@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import {
   Box,
@@ -8,10 +8,11 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  useMediaQuery,
+  Divider
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import PushPinIcon from "@mui/icons-material/PushPin";
-import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
+import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 import {
   Dashboard,
   Group,
@@ -27,6 +28,7 @@ import { SidebarItem, SidebarItemMobile } from "../SidebarItem";
 import { SidebarLogInOut } from "../SidebarLogInOut";
 import PropTypes from "prop-types";
 
+// 🔹 Icon-Farben auf Grau setzen (#ccc)
 const icons = {
   Dashboard: <Dashboard style={{ color: "#ccc" }} />,
   Group: <Group style={{ color: "#ccc" }} />,
@@ -43,103 +45,152 @@ function SidebarDesign({
   isExpanded,
   onEnter,
   onLeave,
-  drawerOpen,
-  toggleDrawer,
   mainMenuItems,
   bottomMenuItems,
   role,
   isPinned,
   togglePin,
 }) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width:900px)"); // Mobile Ansicht ab 900px
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
-      {/* Desktop Sidebar */}
-      <Box
-        onMouseEnter={onEnter}
-        onMouseLeave={onLeave}
-        sx={{
-          width: isExpanded ? 250 : 80,
-          backgroundColor: "#333",
-          color: "#ccc",
-          paddingTop: 2,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          transition: "width 0.3s ease",
-          "& .MuiListItemIcon-root": {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minWidth: 40,
-          },
-        }}
-      >
-        {/* Pin Icon Box */}
-        <Box
+    <Box sx={{ display: "flex" }}>
+      {/* Mobile Burger-Menü */}
+      {isMobile && (
+        <IconButton
+          onClick={toggleDrawer}
           sx={{
-            display: 'flex',
-            marginLeft: '10px', // Verschiebe das Icon 20 Pixel vom linken Rand, wenn die Sidebar erweitert ist
-            alignItems: 'center',
-            padding: 0.2,
-            borderBottom: '1px solid #444',
+            color: "black",
+            position: "fixed",
+            top: 10,
+            left: 10,
+            zIndex: 1300,
           }}
         >
-          <IconButton onClick={togglePin}>
-            <ChromeReaderModeIcon style={{ color: isPinned ? 'orange' : '#ccc'}} />
-          </IconButton>
-        </Box>
+          <MenuIcon />
+        </IconButton>
+      )}
 
-        {/* Hauptmenü */}
-        <List sx={{ flexGrow: 1 }}>
-          {mainMenuItems.map((item, index) => (
-            <SidebarItem
-              key={index}
-              item={{ ...item, icon: icons[item.icon] }}
-              expanded={isExpanded}
-            />
-          ))}
-        </List>
-      
-        {/* Gemeinsames Menü */}
-        <SidebarLogInOut expanded={isExpanded} />
-      </Box>
-
-      {/* Mobile Hamburger Menu */}
-      <Box
-        sx={{
-          display: { xs: "flex", sm: "none" },
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 1300,
-          width: "100%",
-          padding: 1,
-        }}
-      >
-        {!drawerOpen && (
-          <IconButton onClick={toggleDrawer} sx={{ color: "#black", marginLeft: 1 }}>
-            <MenuIcon />
-          </IconButton>
-        )}
-        <Drawer
-          anchor="left"
-          open={drawerOpen}
-          onClose={toggleDrawer}
-          PaperProps={{
-            sx: { width: 250, backgroundColor: "#333", color: "#ccc" },
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Box
+          onMouseEnter={onEnter}
+          onMouseLeave={onLeave}
+          sx={{
+            width: isExpanded ? 250 : 80,
+            backgroundColor: "#333",
+            color: "#ccc",
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            transition: "width 0.3s ease",
+            padding: "10px 0",
+            borderRadius: "0 10px 10px 0", // 🔹 Abgerundete rechte Ecken
           }}
         >
-          <List>
+          {/* Pin Icon */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: isExpanded ? "space-between" : "center",
+              alignItems: "center",
+              padding: "10px",
+              borderBottom: "1px solid #444",
+            }}
+          >
+            <IconButton onClick={togglePin}>
+              <ChromeReaderModeIcon style={{ color: isPinned ? "orange" : "#ccc" }} />
+            </IconButton>
+          </Box>
+
+          {/* Hauptmenü */}
+          <List sx={{ flexGrow: 1, paddingY: "10px" }}>
             {mainMenuItems.map((item, index) => (
-              <SidebarItemMobile
+              <SidebarItem
                 key={index}
                 item={{ ...item, icon: icons[item.icon] }}
+                expanded={isExpanded}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "12px 20px",
+                  borderRadius: "0 10px 10px 0", // 🔹 Abgerundete rechte Ecken für Menüeinträge
+                  "& .MuiListItemIcon-root": {
+                    minWidth: "50px", // 🔹 Einheitliche Abstände
+                  },
+                  "& .MuiListItemText-root": {
+                    marginLeft: "15px", // 🔹 Mehr Platz für bessere Lesbarkeit
+                  },
+                  "&:hover": {
+                    backgroundColor: "#444", // 🔹 Leichter Hover-Effekt
+                  },
+                }}
               />
             ))}
           </List>
-        </Drawer>
-      </Box>
 
+          {/* Trennlinie & Logout-Bereich */}
+          <Box sx={{ marginTop: "auto" }}>
+            <Divider sx={{ backgroundColor: "#444", marginX: "10px" }} />
+            <Box sx={{ paddingY: "10px" }}>
+              <SidebarLogInOut expanded={isExpanded} />
+            </Box>
+          </Box>
+        </Box>
+      )}
+
+      {/* Mobile Drawer Sidebar */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={toggleDrawer}
+        PaperProps={{
+          sx: {
+            width: 250,
+            backgroundColor: "#333",
+            color: "#ccc",
+            borderRadius: "0 10px 10px 0", // 🔹 Mobile Sidebar ebenfalls abgerundet
+          },
+        }}
+      >
+        <List sx={{ paddingY: "10px" }}>
+          {mainMenuItems.map((item, index) => (
+            <SidebarItemMobile
+              key={index}
+              item={{ ...item, icon: icons[item.icon] }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                padding: "12px 16px",
+                borderRadius: "0 10px 10px 0", // 🔹 Abgerundete rechte Ecken für mobile Ansicht
+                "& .MuiListItemIcon-root": {
+                  minWidth: "50px",
+                },
+                "& .MuiListItemText-root": {
+                  marginLeft: "15px",
+                },
+                "&:hover": {
+                  backgroundColor: "#444",
+                },
+              }}
+            />
+          ))}
+        </List>
+
+        {/* Trennlinie & Logout-Bereich */}
+        <Box sx={{ marginTop: "auto" }}>
+          <Divider sx={{ backgroundColor: "#444", marginX: "10px" }} />
+          <Box sx={{ paddingY: "10px" }}>
+            <SidebarLogInOut expanded={true} />
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   );
 }
@@ -148,8 +199,6 @@ SidebarDesign.propTypes = {
   isExpanded: PropTypes.bool.isRequired,
   onEnter: PropTypes.func.isRequired,
   onLeave: PropTypes.func.isRequired,
-  drawerOpen: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
   mainMenuItems: PropTypes.array.isRequired,
   bottomMenuItems: PropTypes.array.isRequired,
   role: PropTypes.string.isRequired,

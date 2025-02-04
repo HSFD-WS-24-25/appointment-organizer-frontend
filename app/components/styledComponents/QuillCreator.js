@@ -71,10 +71,6 @@ const QuillCreator = ({ value, onChange }) => {
         .quill-editor .ql-container.ql-snow {
           border: none !important;
         }
-        /* Hintergrundfarbe des Editors */
-        .quill-editor {
-          background-color: #fff;
-        }
         /* Schriftarten-Styles */
         .ql-font-arial {
           font-family: Arial, sans-serif;

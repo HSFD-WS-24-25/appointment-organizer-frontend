@@ -298,231 +298,202 @@ const InvitationForm = () => {
     }, []);
 
     return (
-      <div
+     <div
+  style={{
+    fontFamily: "Arial, sans-serif",
+    fontSize: "16px",
+    color: "#333",
+    margin: "0",
+    padding: "20px",
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1080px",
+      margin: "auto",
+      backgroundColor: "rgba(255, 255, 255, 0.7)",
+      padding: "20px",
+      borderRadius: "10px",
+    }}
+  >
+    <style>
+      {`
+        @media (max-width: 768px) {
+          .mobile-flex {
+            display: flex;
+            flex-direction: column; /* Vertikale Anordnung für mobile Ansicht */
+          }
+          .mobile-map {
+            order: 1; /* Karte zuerst */
+          }
+          .mobile-description {
+            order: 2; /* Beschreibung danach */
+            margin-top: 20px; /* Abstand oberhalb der Beschreibung */
+          }
+        }
+      `}
+    </style>
+
+    <div
+      className="mobile-flex"
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px",
+      }}
+    >
+      <h1
         style={{
-          fontFamily: "Arial, sans-serif",
-          fontSize: "16px",
+          fontSize: "2.5em",
+          fontWeight: "bold",
           color: "#333",
-          margin: "0",
-          padding: "50px",
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       >
-        <div
+        Einladung
+      </h1>
+      <div className="mobile-gap" style={{ display: "flex", gap: "10px" }}>
+        <button
+          className="mobile-full-width"
           style={{
-            maxWidth: "1080px",
-            margin: "auto",
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-            padding: "20px",
-            borderRadius: "10px",
+            padding: "8px 12px",
+            fontSize: "0.9em",
+            borderRadius: "5px",
+            backgroundColor: "green",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <h1
+          Teilnehmen
+        </button>
+        <button
+          className="mobile-full-width"
+          style={{
+            padding: "8px 12px",
+            fontSize: "0.9em",
+            borderRadius: "5px",
+            backgroundColor: "red",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Nicht Teilnehmen
+        </button>
+      </div>
+    </div>
+
+    {/* Titel */}
+    <p
+      style={{
+        fontSize: "24px",
+        fontFamily: "Arial, sans-serif",
+        fontWeight: "bold",
+        fontStyle: "normal",
+        textDecoration: "underline",
+        color: "#333",
+      }}
+    >
+      {formData.title || "Titel nicht angegeben"}
+    </p>
+
+    {/* Typ */}
+    <p>
+      <strong>Typ:</strong> {formData.eventType || "N/A"}
+    </p>
+
+    {/* Inhalt */}
+    <div
+      className="mobile-flex"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "20px",
+        marginTop: "20px",
+      }}
+    >
+      <div className="mobile-map">
+        <p>
+          <strong>Start:</strong>{" "}
+          {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+        </p>
+        <p>
+          <strong>Adresse:</strong> {formData.address || "N/A"}
+        </p>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "200px",
+            border: "1px solid #ccc",
+            marginTop: "10px",
+            overflow: "hidden",
+          }}
+        >
+          {formData.coordinates || formData.address ? (
+            <OpenStreetMap
+              address={formData.address}
+              coordinates={formData.coordinates}
+              mapOptions={{
+                dragging: false,
+                scrollWheelZoom: false,
+                doubleClickZoom: false,
+                keyboard: false,
+                zoomControl: false,
+              }}
+            />
+          ) : (
+            <div
               style={{
-                fontSize: "2.5em",
-                fontWeight: "bold",
-                color: "#333",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
               }}
             >
-              Einladung
-            </h1>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "0.9em",
-                  borderRadius: "5px",
-                  backgroundColor: "green",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Teilnehmen
-              </button>
-              <button
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "0.9em",
-                  borderRadius: "5px",
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Nicht Teilnehmen
-              </button>
+              Keine Adresse eingegeben
             </div>
-          </div>
-
-          {/* Titel */}
-          <p
-            style={{
-              fontSize: "24px",
-              fontFamily: "Arial, sans-serif",
-              fontWeight: "bold",
-              fontStyle: "normal",
-              textDecoration: "underline",
-              color: "#333",
-            }}
-          >
-            {formData.title || "Titel nicht angegeben"}
-          </p>
-
-          {/* Typ */}
-          <p>
-            <strong>Typ:</strong> {formData.eventType || "N/A"}
-          </p>
-
-          {/* Inhalt */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginTop: "20px",
-            }}
-          >
-            <div>
-              <strong>Start:</strong>{" "}
-              <div
-                style={{
-                  display: "flex",
-                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                  alignItems: "center",
-                  maxHeight: "160px",
-                  height: "50px",
-                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                  fontSize: "18px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                <p>
-
-                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-                </p>
-              </div>
-              <strong>Adresse:</strong>
-              <div
-                style={{
-                  display: "flex",
-                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                  alignItems: "center",
-                  maxHeight: "160px",
-                  height: "50px",
-                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                  fontSize: "18px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                <p>
-                  {formData.address || "N/A"}
-                </p>
-              </div>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "200px",
-                  border: "1px solid #ccc",
-                  marginTop: "10px",
-                  overflow: "hidden",
-                  fontSize: "16px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                {formData.coordinates || formData.address ? (
-                  <OpenStreetMap
-                    address={formData.address}
-                    coordinates={formData.coordinates}
-                    mapOptions={{
-                      dragging: false, // Deaktiviert das Ziehen der Karte
-                      scrollWheelZoom: false, // Deaktiviert das Zoomen mit dem Scrollrad
-                      doubleClickZoom: false, // Deaktiviert das Doppelklick-Zoomen
-                      keyboard: false, // Deaktiviert Tastaturinteraktion
-                      zoomControl: false, // Entfernt die Zoom-Steuerung
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    }}
-                  >
-                    Keine Adresse eingegeben
-                  </div>
-                )}
-              </div>
-
-            </div>
-            <div>
-              <strong>Ende:</strong>{" "}
-              <div
-                style={{
-                  display: "flex",
-                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                  alignItems: "center",
-                  maxHeight: "160px",
-                  height: "50px",
-                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                  fontSize: "18px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                <p>
-
-                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
-                </p>
-              </div>
-              <div>
-
-                <strong>Beschreibung:</strong>
-                <div
-                  style={{
-                    height: "300px",
-                    maxHeight: "300px", // Maximale Höhe der Vorschau
-                    maxWidth: "500px", // Maximale Breite festlegen
-                    overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
-                    overflowX: "hidden", // Keine Scrollbar für die Breite
-                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                    padding: "10px", // Innenabstand für den Text
-                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
-                    margin: "0 auto", // Optional: Zentrierung des Elements horizontal
-                    wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
-                    overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
-                    whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
-                  }}
-
-                  dangerouslySetInnerHTML={{
-                    __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
+
+      <div className="mobile-description">
+        <p>
+          <strong>Ende:</strong>{" "}
+          {formData.endDate?.format("DD.MM.YYYY HH:mm") || "N/A"}
+        </p>
+        <strong>Beschreibung:</strong>
+        <div
+  style={{
+    fontSize: "16px",
+    fontFamily: "Arial, sans-serif",
+    fontWeight: "normal",
+    fontStyle: "normal",
+    textDecoration: "none",
+    color: "#333",
+    wordBreak: "break-word",
+    whiteSpace: "pre-wrap",
+    overflowWrap: "break-word",
+    maxWidth: "100%",
+    margin: "0 auto",
+    maxHeight: "300px", // Höhe festlegen
+    overflowY: "auto", // Vertikales Scrollen aktivieren
+    border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
+    padding: "10px", // Optional: Innenabstand
+    backgroundColor: "#f9f9f9", // Optional: Hintergrundfarbe
+  }}
+  dangerouslySetInnerHTML={{
+    __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
+  }}
+/>
+      </div>
+    </div>
+  </div>
+</div>
     );
   };
 
@@ -612,7 +583,7 @@ const InvitationForm = () => {
         style={{
           padding: "20px",
           borderRadius: "10px",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
+      //    backgroundColor: "rgba(255, 255, 255, 0.8)",
         }}
       >
 
@@ -641,7 +612,7 @@ const InvitationForm = () => {
                   onChange={handleEventTypeChange}
                   fullWidth
                   style={{
-                    backgroundColor: "white",
+                  //  backgroundColor: "white",
                     height: "56px",
                   }}
                 >
@@ -675,7 +646,7 @@ const InvitationForm = () => {
                 fullWidth
                 style={{
                   height: "56px",
-                  backgroundColor: "white",
+                 // backgroundColor: "white",
                 }}
               />
             </Grid>
@@ -699,7 +670,7 @@ const InvitationForm = () => {
                           {...params}
                           fullWidth
                           style={{
-                            backgroundColor: "white",
+                          //  backgroundColor: "white",
                             height: "56px",
                           }}
                         />
@@ -722,7 +693,7 @@ const InvitationForm = () => {
                           {...params}
                           fullWidth
                           style={{
-                            backgroundColor: "white",
+                        //    backgroundColor: "white",
                             height: "56px",
                           }}
                         />
@@ -744,7 +715,7 @@ const InvitationForm = () => {
                 fullWidth
                 disabled={eventType === "Online"}
                 style={{
-                  backgroundColor: "white",
+               //   backgroundColor: "white",
                   marginTop: "10px", // Optionaler Abstand
                 }}
               />
@@ -752,7 +723,7 @@ const InvitationForm = () => {
               {/* Karte */}
               <Box
                 style={{
-                  backgroundColor: "white",
+              //    backgroundColor: "white",
                   // padding: "10px",
                   border: "1px solid #ccc",
                   height: "250px", // Höhe der Karte anpassen
@@ -807,7 +778,7 @@ const InvitationForm = () => {
                 error={!!errors.capacity}
                 helperText={errors.capacity}
                 fullWidth
-                style={{ backgroundColor: "white" }}
+             //   style={{ backgroundColor: "white" }}
               />
             </Grid>
 
@@ -821,7 +792,7 @@ const InvitationForm = () => {
                 error={!!errors.maxGuests}
                 helperText={errors.maxGuests}
                 fullWidth
-                style={{ backgroundColor: "white" }}
+             //   style={{ backgroundColor: "white" }}
               />
             </Grid>
 
@@ -834,44 +805,59 @@ const InvitationForm = () => {
                 error={!!errors.reminderDays}
                 helperText={errors.reminderDays}
                 fullWidth
-                style={{ backgroundColor: "white" }}
+           //     style={{ backgroundColor: "white" }}
               />
             </Grid>
           </Grid>
 
           {/* Buttons */}
-          <Box display="flex" justifyContent="space-between" marginTop="20px">
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "red",
-                "&:hover": { backgroundColor: "darkred" },
-              }}
-              onClick={handleClearForm}
-            >
-              Formular leeren
-            </Button>
-            <Button variant="contained" color="primary" onClick={() => handlePreview()}>
-              Vorschau
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleOpenInviteListDialog}
-            >
-              Einladungsliste
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "green",
-                "&:hover": { backgroundColor: "darkgreen" },
-              }}
-              onClick={handleOpenPublishDialog}
-            >
-              Weiter
-            </Button>
-          </Box>
+          <Box
+  display="flex"
+  justifyContent="space-between"
+  marginTop="20px"
+  flexDirection={{ xs: "column", sm: "row" }} // Mobil: untereinander, ab "sm" nebeneinander
+  gap={2} // Abstand zwischen Buttons
+>
+  <Button
+    variant="contained"
+    sx={{
+      backgroundColor: "red",
+      "&:hover": { backgroundColor: "darkred" },
+      width: { xs: "100%", sm: "auto" }, // Mobil: volle Breite, sonst Auto
+    }}
+    onClick={handleClearForm}
+  >
+    Formular leeren
+  </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
+    onClick={handlePreview}
+  >
+    Vorschau
+  </Button>
+  <Button
+    variant="contained"
+    color="secondary"
+    sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
+    onClick={handleOpenInviteListDialog}
+  >
+    Einladungsliste
+  </Button>
+  <Button
+    variant="contained"
+    sx={{
+      backgroundColor: "green",
+      "&:hover": { backgroundColor: "darkgreen" },
+      width: { xs: "100%", sm: "auto" }, // Mobil: volle Breite
+    }}
+    onClick={handleOpenPublishDialog}
+  >
+    Weiter
+  </Button>
+</Box>
+
         </Box>
       </StyledPaper>
 

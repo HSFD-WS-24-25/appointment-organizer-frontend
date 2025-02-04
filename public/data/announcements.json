@@ -1,0 +1,101 @@
+[
+  {
+    "id": 1,
+    "title": "Wartungsarbeiten",
+    "type": "Maintenance",
+    "startDate": "2024-11-12T10:00:00",
+    "endDate": "2024-11-12T14:00:00",
+    "status": "Inactive",
+    "target": "Loginseite"
+  },
+  {
+    "id": 2,
+    "title": "Neue Ankündigung",
+    "type": "Update",
+    "startDate": "2025-02-04T00:21:50.503Z",
+    "endDate": "2025-02-04T01:21:50.504Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 3,
+    "title": "Neue Ankündigung",
+    "type": "Update",
+    "startDate": "2025-02-04T10:15:26.530Z",
+    "endDate": "2025-02-04T11:15:26.530Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 4,
+    "title": "Neue Ankündigung",
+    "type": "Update",
+    "startDate": "2025-02-04T10:16:50.592Z",
+    "endDate": "2025-02-04T11:16:50.592Z",
+    "target": "Loginseite",
+    "status": "Inactive"
+  },
+  {
+    "id": 5,
+    "title": "asdasd",
+    "type": "Hotfix",
+    "startDate": "2025-02-04T10:23:21.997Z",
+    "endDate": "2025-02-04T11:23:21.997Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 6,
+    "title": "asdasd",
+    "type": "Update",
+    "startDate": "2025-02-04T10:24:56.109Z",
+    "endDate": "2025-02-04T11:24:56.109Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 7,
+    "title": "asdasd",
+    "type": "Update",
+    "startDate": "2025-02-04T10:25:34.302Z",
+    "endDate": "2025-02-04T11:25:34.302Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 8,
+    "title": "celalaingo",
+    "type": "Maintenance",
+    "startDate": "2025-02-04T10:26:30.196Z",
+    "endDate": "2025-02-04T11:26:30.196Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 9,
+    "title": "KirKirKirKir",
+    "type": "Maintenance",
+    "startDate": "2025-02-04T10:29:44.354Z",
+    "endDate": "2025-02-04T11:29:44.354Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 10,
+    "title": "Testankündigung",
+    "type": "Update",
+    "startDate": "2025-02-04T10:29:53.827Z",
+    "endDate": "2025-02-04T11:29:53.827Z",
+    "target": "Dashboard",
+    "status": "Inactive"
+  },
+  {
+    "id": 11,
+    "title": "Testankündigugn",
+    "type": "Update",
+    "startDate": "2025-02-04T21:02:54.458Z",
+    "endDate": "2025-02-04T22:02:54.458Z",
+    "target": "Loginseite",
+    "status": "Inactive"
+  }
+]

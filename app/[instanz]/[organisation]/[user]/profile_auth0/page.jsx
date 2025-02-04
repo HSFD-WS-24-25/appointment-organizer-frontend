@@ -27,7 +27,7 @@ function Profile() {
               maxWidth: 500,
               padding: 3,
               borderRadius: 4,
-              backgroundColor: '#fff',
+             // backgroundColor: '#fff',
             }}
           >
             <Box className="flex justify-center mb-4">
@@ -58,7 +58,7 @@ function Profile() {
               >
                 {user.email}
               </Typography>
-              <Box className="bg-gray-100 rounded-lg p-3 text-sm text-gray-700">
+              <Box className=" rounded-lg p-3 text-sm ">
                 <Typography>
                   <strong>User ID:</strong> {user.sub}
                 </Typography>

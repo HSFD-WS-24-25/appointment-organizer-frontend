@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
+  useMediaQuery
 } from "@mui/material";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
@@ -36,6 +37,7 @@ const UserControl = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { data: users, error: fetchError } = useFetchApiData(user, "/api/users", "GET");
   const [error, setError] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 600px)"); // Prüft, ob das Gerät mobil ist
 
   if (isLoading) return <div>Loading...</div>;
   if (authError) return <div>Error loading user data: {authError.message}</div>;
@@ -107,43 +109,44 @@ const UserControl = () => {
 
   return (
     <StyledPaper>
-      <Box sx={{ padding: 4 }}>
-        <DesignTitel variant="h4" gutterBottom>
-          Benutzerverwaltung
-        </DesignTitel>
+    <Box sx={{ padding: 4 }}>
+      <DesignTitel gutterBottom>
+        Benutzerverwaltung
+      </DesignTitel>
+      <StyledPaper>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Benutzername</TableCell>
-                <TableCell>E-Mail</TableCell>
+                {!isMobile && <TableCell>ID</TableCell>}
+                {!isMobile && <TableCell>Benutzername</TableCell>}
+                {!isMobile && <TableCell>E-Mail</TableCell>}
+                {!isMobile && <TableCell>Adresse</TableCell>}
+                {!isMobile && <TableCell>Telefonnummer</TableCell>}
                 <TableCell>Vorname</TableCell>
                 <TableCell>Nachname</TableCell>
-                <TableCell>Telefonnummer</TableCell>
-                <TableCell>Adresse</TableCell>
-                <TableCell>Rolle</TableCell>
+                {!isMobile && <TableCell>Rolle</TableCell>}
                 <TableCell>Aktionen</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  {!isMobile && <TableCell>{user.id}</TableCell>}
+                  {!isMobile && <TableCell>{user.username}</TableCell>}
+                  {!isMobile && <TableCell>{user.email}</TableCell>}
+                  {!isMobile && <TableCell>{user.address}</TableCell>}
+                  {!isMobile && <TableCell>{user.telephone}</TableCell>}
                   <TableCell>{user.first_name}</TableCell>
                   <TableCell>{user.last_name}</TableCell>
-                  <TableCell>{user.telephone}</TableCell>
-                  <TableCell>{user.address}</TableCell>
-                  <TableCell>{getRoleName(user.role_id)}</TableCell>
+                  {!isMobile && <TableCell>{getRoleName(user.role_id)}</TableCell>}
                   <TableCell>
                     <Button
                       variant="outlined"
                       size="small"
                       onClick={() => handleEditUser(user)}
                     >
-                      Bearbeiten
+                      {isMobile ? "Bearb." : "Bearbeiten"}
                     </Button>
                     <Button
                       variant="outlined"
@@ -152,7 +155,7 @@ const UserControl = () => {
                       onClick={() => handleDeleteUser(user)}
                       sx={{ ml: 1 }}
                     >
-                      Löschen
+                      {isMobile ? "Entf." : "Löschen"}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -160,102 +163,63 @@ const UserControl = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        {/* Dialog für Benutzer bearbeiten */}
-        <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-          <DialogTitle>Benutzer bearbeiten</DialogTitle>
-          <DialogContent>
-            <TextField
-              fullWidth
-              label="Benutzername"
-              value={selectedUser?.username || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="E-Mail"
-              value={selectedUser?.email || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Vorname"
-              value={selectedUser?.first_name || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, first_name: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Nachname"
-              value={selectedUser?.last_name || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, last_name: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Adresse"
-              value={selectedUser?.address || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, address: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Telefonnummer"
-              value={selectedUser?.telephone || ""}
-              onChange={(e) => {
-                const inputValue = e.target.value;
-                if (inputValue === "" || inputValue.startsWith("0") || inputValue.startsWith("+")) {
-                  setSelectedUser({ ...selectedUser, telephone: inputValue });
-                  setError(false);
-                } else {
-                  setError(true);
-                }
-              }}
-              error={error}
-              helperText={error ? "Die Telefonnummer muss mit 0 oder + beginnen!" : ""}
-              margin="normal"
-            />
+      </StyledPaper>
 
-            <TextField
-              fullWidth
-              select
-              value={selectedUser?.role_id || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, role_id: parseInt(e.target.value) })}
-              margin="normal"
-              SelectProps={{ native: true }}
-            >
-              {[1, 2, 3, 4].map((roleId) => (
-                <option key={roleId} value={roleId}>
-                  {getRoleName(roleId)}
-                </option>
-              ))}
-            </TextField>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setEditDialogOpen(false)} color="secondary">
-              Abbrechen
-            </Button>
-            <Button onClick={handleConfirmSave} color="primary">
-              Speichern
-            </Button>
-          </DialogActions>
-        </Dialog>
-        {/* Bestätigungsdialog für Speichern */}
-        <Dialog open={confirmSaveDialogOpen} onClose={() => setConfirmSaveDialogOpen(false)}>
-          <DialogTitle>Änderungen übernehmen?</DialogTitle>
-          <DialogContent>
-            <Typography>Möchten Sie die Änderungen wirklich speichern?</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setConfirmSaveDialogOpen(false)} color="secondary">
-              Nein
-            </Button>
-            <Button onClick={handleSaveChanges} color="primary">
-              Ja
-            </Button>
-          </DialogActions>
-        </Dialog>
+      {/* Dialoge für Benutzer bearbeiten und Bestätigung */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle>Benutzer bearbeiten</DialogTitle>
+        <DialogContent>
+          <TextField fullWidth label="Benutzername" value={selectedUser?.username || ""} onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value })} margin="normal" />
+          <TextField fullWidth label="E-Mail" value={selectedUser?.email || ""} onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })} margin="normal" />
+          <TextField fullWidth label="Vorname" value={selectedUser?.first_name || ""} onChange={(e) => setSelectedUser({ ...selectedUser, first_name: e.target.value })} margin="normal" />
+          <TextField fullWidth label="Nachname" value={selectedUser?.last_name || ""} onChange={(e) => setSelectedUser({ ...selectedUser, last_name: e.target.value })} margin="normal" />
+          <TextField fullWidth label="Adresse" value={selectedUser?.address || ""} onChange={(e) => setSelectedUser({ ...selectedUser, address: e.target.value })} margin="normal" />
+          <TextField
+            fullWidth
+            label="Telefonnummer"
+            value={selectedUser?.telephone || ""}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (inputValue === "" || inputValue.startsWith("0") || inputValue.startsWith("+")) {
+                setSelectedUser({ ...selectedUser, telephone: inputValue });
+                setError(false);
+              } else {
+                setError(true);
+              }
+            }}
+            error={error}
+            helperText={error ? "Die Telefonnummer muss mit 0 oder + beginnen!" : ""}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            select
+            value={selectedUser?.role_id || ""}
+            onChange={(e) => setSelectedUser({ ...selectedUser, role_id: parseInt(e.target.value) })}
+            margin="normal"
+            SelectProps={{ native: true }}
+          >
+            {[1, 2, 3, 4].map((roleId) => (
+              <option key={roleId} value={roleId}>
+                {getRoleName(roleId)}
+              </option>
+            ))}
+          </TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)} color="secondary">Abbrechen</Button>
+          <Button onClick={handleConfirmSave} color="primary">Speichern</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={confirmSaveDialogOpen} onClose={() => setConfirmSaveDialogOpen(false)}>
+        <DialogTitle>Änderungen übernehmen?</DialogTitle>
+        <DialogContent><Typography>Möchten Sie die Änderungen wirklich speichern?</Typography></DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmSaveDialogOpen(false)} color="secondary">Nein</Button>
+          <Button onClick={handleSaveChanges} color="primary">Ja</Button>
+        </DialogActions>
+      </Dialog>
 
         {/* Dialog für Benutzer löschen */}
         <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
@@ -272,9 +236,8 @@ const UserControl = () => {
             </Button>
           </DialogActions>
         </Dialog>
-
-      </Box>
-    </StyledPaper>
+    </Box>
+  </StyledPaper>
   );
 };
 
