@@ -61,32 +61,38 @@ function Sidebar() {
     action: () => router.push(basePath),
   };
 
+  let event = {
+    icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`)
+  };
+
+  let userControl= {
+    icon: "Group", text: "Benutzerverwaltung", action: () => router.push(`${basePath}/userControl`)
+  };
+
+  let announcements= {
+    icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`)
+  };
+
   if (roleId === 1) {
     mainMenuItems = [
       dashboard,
-      { icon: "Group", text: "Benutzerverwaltung", action: () => router.push(`${basePath}/userControl`) },
-      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-      { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
-      { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-      { icon: "Event", text: "Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-      { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
+      userControl,
+      announcements
     ];
   } else if (roleId === 2) {
     mainMenuItems = [
       dashboard,
-      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-      { icon: "Notifications", text: "Benachrichtigungen", action: () => router.push(`${basePath}/notification`) },
-      { icon: "ReportProblem", text: "Ankündigungen", action: () => router.push(`${basePath}/announcements`) },
-      { icon: "Group", text: "Veranstaltung erstellen", action: () => router.push(`${basePath}/createEvent`) },
-      { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
-      { icon: "Event", text: "Meine Teilnahmen", action: () => router.push(`${basePath}/myParticipations`) },
-      { icon: "Bookmark", text: "Mein Entwurf", action: () => router.push(`${basePath}/meinEntwurf`) },
+      userControl,
+      event
     ];
-  } else if (roleId === 4) {
+  } else if (roleId === 3) {
     mainMenuItems = [
       dashboard,
-      { icon: "Event", text: "Terminmanagement", action: () => router.push(`${basePath}/termin`) },
-      { icon: "Event", text: "Meine Veranstaltungen", action: () => router.push(`${basePath}/myevent`) },
+      event
+    ];
+  }else if (roleId === 4) {
+    mainMenuItems = [
+      dashboard
     ];
   }
 
