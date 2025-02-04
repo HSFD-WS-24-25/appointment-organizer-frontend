@@ -1,5 +1,5 @@
 "use client";
-
+import Papa from 'papaparse';
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -15,9 +15,10 @@ import {
   InputAdornment,
   FormControlLabel,
   Checkbox,
+  Button,
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import  StyledPaper  from "@/app/components/styledComponents/StyledPaper";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import { BlueButton, GreenButton, RedButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import { useRouter } from 'next/navigation';
@@ -26,7 +27,7 @@ import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext i
 function UserDashboard() {
   const [searchText, setSearchText] = useState('');
   const [filterPreviousInvite, setFilterPreviousInvite] = useState(false);
-  const [guests] = useState([
+  const [guests, setGuests] = useState([
     { name: "Max Mustermann", email: "max.mustermann@beispiel.de", invited: true, known: true },
     { name: "Alice Müller", email: "alice.mueller@example.com", invited: false, known: true },
     { name: "Tom Gast", email: "tom.gast@fakedomain.com", invited: false, known: false },
@@ -37,6 +38,9 @@ function UserDashboard() {
     { name: "Lena Becker", email: "lena.becker@samplemail.de", invited: false, known: false },
   ]);
   const [filteredData, setFilteredData] = useState(guests); // useState für gefilterte Daten
+  const [newGuest, setNewGuest] = useState({ name: '', email: '', invited: false, known: false });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showFields, setShowFields] = useState(false);
 
   const router = useRouter();
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
@@ -78,15 +82,55 @@ function UserDashboard() {
     router.push(`${basePath}/createEvent`);
   };
 
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleFileUpload = () => {
+    if (selectedFile) {
+      Papa.parse(selectedFile, {
+        header: true,
+        complete: (results) => {
+          const newGuests = results.data.map((row) => ({
+            name: row.name,
+            email: row.email,
+            invited: row.invited === 'true',
+            known: row.known === 'true',
+          }));
+          setGuests((prevGuests) => [...prevGuests, ...newGuests]);
+          setFilteredData((prevGuests) => [...prevGuests, ...newGuests]); // Update filtered data as well
+        },
+      });
+    }
+  };
+  const handleAddGuestClick = () => {
+    setShowFields(true); // Show input fields
+  };
+  const handleAddGuest = (e) => {
+    e.preventDefault(); // Prevent form submission from reloading the page
+  
+    // Validate input fields
+    if (!newGuest.name || !newGuest.email) {
+      return; // Do nothing if fields are empty
+    }
+  
+    // Add the new guest to the list
+    setGuests((prevGuests) => [...prevGuests, newGuest]);
+    setFilteredData((prevGuests) => [...prevGuests, newGuest]);
+  
+    // Reset input fields and hide the form
+    setNewGuest({ name: '', email: '', invited: false, known: false });
+    setShowFields(false);
+  };
   return (
     <StyledPaper>
       {/* Main Content */}
       <Box>
         <DesignTitel variant="h4" gutterBottom>
-          Einladungsliste
+          Gästeliste
         </DesignTitel>
 
-        {/* Search Bar */}
+        {/* Existing Search Bar, Filter, and Table */}
         <Box
           sx={{
             display: 'flex',
@@ -131,46 +175,87 @@ function UserDashboard() {
           />
         </Box>
 
-        {/* Table for guests */}
-        <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Gast-Informationen
+        {/* CSV Import */}
+        <Box sx={{ marginBottom: 3, display: 'flex', alignItems: 'right' }}>
+          <input type="file" accept=".csv" onChange={handleFileChange} />
+          <BlueButton
+            onClick={handleFileUpload}
+            sx={{ marginLeft: 'auto', padding: '4px 8px', fontSize: '0.875rem' }} // Adjust padding and font size for a smaller button
+          >
+            Import CSV
+          </BlueButton>
+        </Box>
+
+        {/* Add New Guest Section */}
+      {showFields ? (
+        <Box
+          component="form"
+          onSubmit={handleAddGuest}
+          sx={{ marginBottom: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, marginBottom: 2 }}>
+            <TextField
+              label="Name"
+              value={newGuest.name}
+              onChange={(e) => setNewGuest({ ...newGuest, name: e.target.value })}
+              required
+            />
+            <TextField
+              label="Email"
+              value={newGuest.email}
+              onChange={(e) => setNewGuest({ ...newGuest, email: e.target.value })}
+              required
+            />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <GreenButton type="submit" variant="contained">
+              Gast hinzufügen
+            </GreenButton>
+            <RedButton onClick={() => setShowFields(false)}>Abbrechen</RedButton>
+          </Box>
+        </Box>
+      ) : (
+        <BlueButton onClick={handleAddGuestClick} sx={{ marginBottom: 3 }}>
+          Neue Gäste hinzufügen
+        </BlueButton>
+      )}
+        
+      {/* Guest Table */}
+      <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
+                Gast-Informationen
+              </TableCell>
+              <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
+                Email
+              </TableCell>
+              <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
+                Einladen
+              </TableCell>
+              <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
+                Vorherige Einladung
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.map((guest, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ border: '1px solid #ddd' }}>{guest.name}</TableCell>
+                <TableCell sx={{ border: '1px solid #ddd' }}>{guest.email}</TableCell>
+                <TableCell sx={{ border: '1px solid #ddd' }}>
+                  <input type="checkbox" />
                 </TableCell>
-                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Email
-                </TableCell>
-                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Einladen
-                </TableCell>
-                <TableCell sx={{ border: '1px solid #ddd', fontWeight: 'bold' }}>
-                  Vorherige Einladung
+                <TableCell sx={{ border: '1px solid #ddd' }}>
+                  <input type="checkbox" checked={guest.invited} readOnly />
                 </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredData.map((guest, index) => (
-                <TableRow key={index}>
-                  <TableCell sx={{ border: '1px solid #ddd' }}>
-                    {guest.name}
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid #ddd' }}>
-                    {guest.email}
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid #ddd' }}>
-                    <input type="checkbox" />
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid #ddd' }}>
-                    <input type="checkbox" checked={guest.invited} readOnly />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+  
         {/* Action Buttons */}
         <Box
           sx={{
@@ -198,13 +283,4 @@ function UserDashboard() {
 }
 
 export default UserDashboard;
-
-
-
-
-
-
-
-
-
 
