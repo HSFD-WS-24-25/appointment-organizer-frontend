@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from 'next/navigation';
 import { Box, Link, Typography } from '@mui/material';
 import { useFetchApiData } from "@/app/[locale]/lib/useFetchApiData";
 import Slider from 'react-slick';
@@ -10,13 +10,15 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Footer from '@/app/[locale]/components/Footer';
 import { BlueButton, RedButton, GreenButton } from '@/app/[locale]/components/styledComponents/StyledButton';
+import { useLocale } from 'next-intl';
 import { useTranslations } from 'next-intl';
 
 // Funktion zur Generierung des Base Path
 export const generateBasePath = (userInfo, user) => {
+  const locale = useLocale();
   return userInfo
-    ? `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`
-    : `/defaultInstanz/defaultOrganisation/${user?.sub}`;
+    ? `/${locale}/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`
+    : `/${locale}/defaultInstanz/defaultOrganisation/${user?.sub}`;
 };
 
 const LogInOut = () => {

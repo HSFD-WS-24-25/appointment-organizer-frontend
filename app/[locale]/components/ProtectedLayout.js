@@ -8,7 +8,7 @@ const ProtectedLayout = ({ children }) => {
   const { user, isLoading } = useUser();
   const router = useRouter();
   const pathname = usePathname(); // Aktuelle Route abrufen
-  const publicRoutes = ["/"]; // Liste der öffentlichen Seiten
+  const publicRoutes = ["/", "/api/auth/login"]; // Liste der öffentlichen Seiten
   const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
