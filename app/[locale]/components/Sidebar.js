@@ -62,32 +62,38 @@ function Sidebar() {
     action: () => router.push(basePath),
   };
 
+  let event = {
+    icon: "Event", text: t('text_events'), action: () => router.push(`${basePath}/myevent`)
+  };
+
+  let userControl= {
+    icon: "Group", text: t('text_user_management'), action: () => router.push(`${basePath}/userControl`)
+  };
+
+  let announcements= {
+    icon: "ReportProblem", text: t('text_announcements'), action: () => router.push(`${basePath}/announcements`)
+  };
+
   if (roleId === 1) {
     mainMenuItems = [
       dashboard,
-      { icon: "Group", text: t('text_user_management'), action: () => router.push(`${basePath}/userControl`) },
-      { icon: "Event", text: t('text_appointment_management'), action: () => router.push(`${basePath}/termin`) },
-      { icon: "Notifications", text: t('text_notifications'), action: () => router.push(`${basePath}/notification`) },
-      { icon: "ReportProblem", text: t('text_announcements'), action: () => router.push(`${basePath}/announcements`) },
-      { icon: "Event", text: t('text_events'), action: () => router.push(`${basePath}/myevent`) },
-      { icon: "Event", text: t('text_my_participations'), action: () => router.push(`${basePath}/myParticipations`) },
+      userControl,
+      announcements
     ];
   } else if (roleId === 2) {
     mainMenuItems = [
       dashboard,
-      { icon: "Event", text: t('text_appointment_management'), action: () => router.push(`${basePath}/termin`) },
-      { icon: "Notifications", text: t('text_notifications'), action: () => router.push(`${basePath}/notification`) },
-      { icon: "ReportProblem", text: t('text_announcements'), action: () => router.push(`${basePath}/announcements`) },
-      { icon: "Group", text: t('text_create_event'), action: () => router.push(`${basePath}/createEvent`) },
-      { icon: "Event", text: t('text_my_events'), action: () => router.push(`${basePath}/myevent`) },
-      { icon: "Event", text: t('text_my_participations'), action: () => router.push(`${basePath}/myParticipations`) },
-      { icon: "Bookmark", text: t('text_my_draft'), action: () => router.push(`${basePath}/meinEntwurf`) },
+      userControl,
+      event
     ];
-  } else if (roleId === 4) {
+  } else if (roleId === 3) {
     mainMenuItems = [
       dashboard,
-      { icon: "Event", text: t('text_appointment_management'), action: () => router.push(`${basePath}/termin`) },
-      { icon: "Event", text: t('text_my_events'), action: () => router.push(`${basePath}/myevent`) },
+      event
+    ];
+  }else if (roleId === 4) {
+    mainMenuItems = [
+      dashboard
     ];
   }
 
