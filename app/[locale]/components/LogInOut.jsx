@@ -34,15 +34,20 @@ const LogInOut = () => {
 
   // Base Path generieren
   const basePath = generateBasePath(userInfo, user);
+  const locale = useLocale();
 
-   // Weiterleitung zu basePath bei Login
-   useEffect(() => {
-    if (!isLoading && user && window.location.pathname === '/') {
-      const basePath = generateBasePath(userInfo, user);
-      router.push(basePath);
+  useEffect(() => {
+    if (!isLoading && user) {
+      // Aktuelle Route abrufen
+      const currentPath = window.location.pathname;
+  
+      // Weiterleitung nur, wenn der Nutzer auf der alten Startseite ist
+      if (currentPath === '/' || currentPath === `/${locale}`) {
+        router.push(basePath);
+      }
     }
-  }, [user, userInfo, isLoading]);
-
+  }, [user, userInfo, isLoading, locale]);
+  
   const handleLoginClick = () => {
     router.push(`/api/auth/login?returnTo=${basePath}`);
   };
