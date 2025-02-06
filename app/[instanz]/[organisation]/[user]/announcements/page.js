@@ -29,8 +29,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import "dayjs/locale/de";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper"
-import { BlueButton, RedButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
+import { BlueButton, RedButton, GreenButton, OrangeButton } from "@/app/components/styledComponents/StyledButton";
 
 const initialData = [
   { title: "Wartungsarbeiten", type: "Maintenance", startDate: "12.11.2024 10:00", endDate: "12.11.2024 14:00", status: "Active", target: "Loginseite" },
@@ -335,12 +335,12 @@ export default function AdminAnnouncements() {
 
           {/* Buttons */}
           <DialogActions sx={{ padding: "20px", justifyContent: "center" }}>
-            <Button onClick={() => setOpenDialog(false)} variant="outlined" color="secondary" sx={{ borderRadius: "8px" }}>
+            <RedButton onClick={() => setOpenDialog(false)} variant="outlined" color="secondary" sx={{ borderRadius: "8px" }}>
               Abbrechen
-            </Button>
-            <Button onClick={handleCreateAnnouncement} variant="contained" color="primary" sx={{ borderRadius: "8px" }}>
+            </RedButton>
+            <GreenButton onClick={handleCreateAnnouncement} variant="contained" color="primary" sx={{ borderRadius: "8px" }}>
               Erstellen
-            </Button>
+            </GreenButton>
           </DialogActions>
         </Dialog>
 
@@ -350,12 +350,12 @@ export default function AdminAnnouncements() {
             Möchten Sie die ausgewählten Ankündigungen wirklich deaktivieren?
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCancelDeactivate} color="secondary">
+            <RedButton onClick={handleCancelDeactivate} color="secondary">
               Abbrechen
-            </Button>
-            <Button onClick={handleConfirmDeactivate} color="primary">
+            </RedButton>
+            <GreenButton onClick={handleConfirmDeactivate} color="primary">
               Ja, deaktivieren
-            </Button>
+            </GreenButton>
           </DialogActions>
         </Dialog>
       </Box>

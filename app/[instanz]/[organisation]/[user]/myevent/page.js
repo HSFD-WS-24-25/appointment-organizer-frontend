@@ -29,7 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EventIcon from "@mui/icons-material/Event";
 import { useRouter } from "next/navigation";
 import StyledPaper from "@/app/components/styledComponents/StyledPaper";
-import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/components/styledComponents/StyledButton";
+import { BlueButton, StyledDeleteButton, StyledEditButton,RedButton ,GreenButton,OrangeButton} from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
@@ -168,7 +168,7 @@ function EventCard({ event, view }) {
           flexWrap: "wrap",
         }}
       >
-        <Button
+        <BlueButton
           size="small"
           startIcon={<EditIcon />}
           onClick={handleEditEvent}
@@ -177,8 +177,8 @@ function EventCard({ event, view }) {
           }}
         >
           Bearbeiten
-        </Button>
-        <Button
+        </BlueButton>
+        <RedButton
           size="small"
           color="error"
           startIcon={<DeleteIcon />}
@@ -188,7 +188,7 @@ function EventCard({ event, view }) {
           }}
         >
           Löschen
-        </Button>
+        </RedButton>
         <Button
           size="small"
           onClick={handleOpenInviteListDialog}
@@ -208,9 +208,9 @@ function EventCard({ event, view }) {
         >
           <DialogContent>{dialogContent}</DialogContent>
           <DialogActions>
-            <Button variant="outlined" onClick={handleCloseInviteListDialog}>
+            <RedButton variant="outlined" onClick={handleCloseInviteListDialog}>
               Schließen
-            </Button>
+            </RedButton>
           </DialogActions>
         </Dialog>
     
@@ -224,17 +224,17 @@ function EventCard({ event, view }) {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <BlueButton onClick={handleClose} color="primary">
               Abbrechen
-            </Button>
-            <Button
+            </BlueButton>
+            <RedButton
               onClick={handleDelete}
               color="error"
               variant="contained"
               autoFocus
             >
               Löschen
-            </Button>
+            </RedButton>
           </DialogActions>
         </Dialog>
       </Box>
@@ -276,17 +276,17 @@ function EventCard({ event, view }) {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <BlueButton onClick={handleClose} color="primary">
               Abbrechen
-            </Button>
-            <Button
+            </BlueButton>
+            <RedButton
               onClick={handleDelete}
               color="error"
               variant="contained"
               autoFocus
             >
               Löschen
-            </Button>
+            </RedButton>
           </DialogActions>
         </Dialog>
       </Box>
@@ -413,9 +413,9 @@ function EventCard({ event, view }) {
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} variant="outlined">
+            <RedButton onClick={handleCloseDialog} variant="outlined">
               Schließen
-            </Button>
+            </RedButton>
           </DialogActions>
         </Dialog>
 
@@ -429,9 +429,9 @@ function EventCard({ event, view }) {
             {dialogContent} {/* Dynamischer Inhalt */}
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" onClick={handleCloseInviteListDialog}>
+            <RedButton variant="outlined" onClick={handleCloseInviteListDialog}>
               Schließen
-            </Button>
+            </RedButton>
           </DialogActions>
         </Dialog>
       </>

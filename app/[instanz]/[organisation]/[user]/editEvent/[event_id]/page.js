@@ -33,6 +33,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from 'next/navigation';
 import UserDashboard from "../../invites/page"
 import QuillEditor from "@/app/components/styledComponents/QuillEditor";
+import { BlueButton, RedButton, GreenButton, OrangeButton } from "@/app/components/styledComponents/StyledButton";
 
 
 dayjs.locale("de");
@@ -368,7 +369,7 @@ const InvitationForm = () => {
         Einladung
       </h1>
       <div className="mobile-gap" style={{ display: "flex", gap: "10px" }}>
-        <button
+        <GreenButton
           className="mobile-full-width"
           style={{
             padding: "8px 12px",
@@ -381,8 +382,8 @@ const InvitationForm = () => {
           }}
         >
           Teilnehmen
-        </button>
-        <button
+        </GreenButton>
+        <RedButton
           className="mobile-full-width"
           style={{
             padding: "8px 12px",
@@ -395,7 +396,7 @@ const InvitationForm = () => {
           }}
         >
           Nicht Teilnehmen
-        </button>
+        </RedButton>
       </div>
     </div>
 
@@ -831,7 +832,7 @@ const InvitationForm = () => {
   flexDirection={{ xs: "column", sm: "row" }} // Mobil: untereinander, ab "sm" nebeneinander
   gap={2} // Abstand zwischen Buttons
 >
-  <Button
+  <RedButton
     variant="contained"
     sx={{
       backgroundColor: "red",
@@ -841,24 +842,24 @@ const InvitationForm = () => {
     onClick={handleCancelButon}
   >
     Abbrechen
-  </Button>
-  <Button
+  </RedButton>
+  <BlueButton
     variant="contained"
     color="primary"
     sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
     onClick={handlePreview}
   >
     Vorschau
-  </Button>
-  <Button
+  </BlueButton>
+  <OrangeButton
     variant="contained"
     color="secondary"
     sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
     onClick={handleOpenInviteListDialog}
   >
     Einladungsliste
-  </Button>
-  <Button
+  </OrangeButton>
+  <GreenButton
     variant="contained"
     sx={{
       backgroundColor: "green",
@@ -868,7 +869,7 @@ const InvitationForm = () => {
     onClick={handleOpenPublishDialog}
   >
     Speichern
-  </Button>
+  </GreenButton>
 </Box>
 
         </Box>
@@ -882,16 +883,16 @@ const InvitationForm = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
+          <RedButton variant="outlined" onClick={() => handleDialogAction("cancel")}>
             Abbrechen
-          </Button>
-          <Button
+          </RedButton>
+          <GreenButton
             variant="contained"
             color="primary"
             onClick={() => handleDialogAction("publish")}
           >
             Ja
-          </Button>
+          </GreenButton>
         </DialogActions>
       </Dialog>
 
@@ -906,18 +907,18 @@ const InvitationForm = () => {
           {dialogContent} {/* Dynamischer Inhalt */}
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleCloseInviteListDialog}>
+          <RedButton variant="outlined" onClick={handleCloseInviteListDialog}>
             Schließen
-          </Button>
+          </RedButton>
         </DialogActions>
       </Dialog>
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogContent>
           <Preview formData={formData} backgroundImage={backgroundImage} />
-          <Button variant="outlined" onClick={handleClose}>
+          <RedButton variant="outlined" onClick={handleClose}>
             Schließen
-          </Button>
+          </RedButton>
         </DialogContent>
       </Dialog>
 
