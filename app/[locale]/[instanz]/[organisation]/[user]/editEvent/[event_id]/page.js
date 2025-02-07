@@ -437,9 +437,6 @@ const InvitationForm = () => {
                 {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
               </p>
               <p>
-                {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
-              </p>
-              <p>
                 <strong>{t('preview_text_adress')}</strong>
               </p>
               <div

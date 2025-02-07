@@ -303,28 +303,28 @@ const InvitationForm = () => {
 
     return (
       <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        fontSize: "16px",
-        color: "#333",
-        margin: "0",
-        padding: "20px",
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div
         style={{
-          maxWidth: "1080px",
-          margin: "auto",
-          backgroundColor: "rgba(255, 255, 255, 0.7)",
+          fontFamily: "Arial, sans-serif",
+          fontSize: "16px",
+          color: "#333",
+          margin: "0",
           padding: "20px",
-          borderRadius: "10px",
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <style>
-          {`
+        <div
+          style={{
+            maxWidth: "1080px",
+            margin: "auto",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <style>
+            {`
             @media (max-width: 768px) {
               .mobile-flex {
                 display: flex;
@@ -339,53 +339,53 @@ const InvitationForm = () => {
               }
             }
           `}
-        </style>
-    
-        <div
-          className="mobile-flex"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <h1
+          </style>
+
+          <div
+            className="mobile-flex"
             style={{
-              fontSize: "2.5em",
-              fontWeight: "bold",
-              color: "#333",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
             }}
           >
+            <h1
+              style={{
+                fontSize: "2.5em",
+                fontWeight: "bold",
+                color: "#333",
+              }}
+            >
               {t('preview_title')}
             </h1>
             <div style={{ display: "flex", gap: "10px" }}>
-            <GreenButton
-          className="mobile-full-width"
-          style={{
-            padding: "8px 12px",
-            fontSize: "0.9em",
-            borderRadius: "5px",
-            backgroundColor: "green",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+              <GreenButton
+                className="mobile-full-width"
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "green",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
                 {t('preview_button_participate')}
               </GreenButton>
               <RedButton
-          className="mobile-full-width"
-          style={{
-            padding: "8px 12px",
-            fontSize: "0.9em",
-            borderRadius: "5px",
-            backgroundColor: "red",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+                className="mobile-full-width"
+                style={{
+                  padding: "8px 12px",
+                  fontSize: "0.9em",
+                  borderRadius: "5px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
                 {t('preview_button_do_not_participate')}
               </RedButton>
             </div>
@@ -412,36 +412,33 @@ const InvitationForm = () => {
 
           {/* Inhalt */}
           <div
-      className="mobile-flex"
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "20px",
-        marginTop: "20px",
-      }}
-    >
+            className="mobile-flex"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
             <div className="mobile-map">
               <p>
-                 <strong>{t('preview_text_start')}</strong>{" "}
-                 {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
+                <strong>{t('preview_text_start')}</strong>{" "}
+                {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
               </p>
-             <p>
-             {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
-             </p>
-             <p>
-              <strong>{t('preview_text_adress')}</strong>
-                </p>
-                <div
-          style={{
-            border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
-            position: "relative",
-            width: "100%",
-            height: "200px",
-            border: "1px solid #ccc",
-            marginTop: "10px",
-            overflow: "hidden",
-          }}
-        >
+              <p>
+                <strong>{t('preview_text_adress')}</strong>
+              </p>
+              <div
+                style={{
+                  border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
+                  position: "relative",
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid #ccc",
+                  marginTop: "10px",
+                  overflow: "hidden",
+                }}
+              >
                 {formData.coordinates || formData.address ? (
                   <OpenStreetMap
                     address={formData.address}
@@ -455,13 +452,13 @@ const InvitationForm = () => {
                     }}
                   />
                 ) : (
-             <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-              }}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                    }}
                   >
                     {t('preview_text_no_adress_entered')}
                   </div>
@@ -473,32 +470,32 @@ const InvitationForm = () => {
                 <strong>{t('preview_text_end')}</strong>{" "}
                 {formData.endDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
               </p>
-              
+
               <div>
                 <strong>{t('preview_text_description')}</strong>
                 <div
-                 style={{
-                  fontSize: "16px",
-                  fontFamily: "Arial, sans-serif",
-                  fontWeight: "normal",
-                  fontStyle: "normal",
-                  textDecoration: "none",
-                  color: "#333",
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-wrap",
-                  overflowWrap: "break-word",
-                  maxWidth: "100%",
-                  margin: "0 auto",
-                  maxHeight: "300px", // Höhe festlegen
-                  overflowY: "auto", // Vertikales Scrollen aktivieren
-                  border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
-                  padding: "10px", // Optional: Innenabstand
-                  backgroundColor: "white", // Optional: Hintergrundfarbe
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
-                }}
-              />
+                  style={{
+                    fontSize: "16px",
+                    fontFamily: "Arial, sans-serif",
+                    fontWeight: "normal",
+                    fontStyle: "normal",
+                    textDecoration: "none",
+                    color: "#333",
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
+                    overflowWrap: "break-word",
+                    maxWidth: "100%",
+                    margin: "0 auto",
+                    maxHeight: "300px", // Höhe festlegen
+                    overflowY: "auto", // Vertikales Scrollen aktivieren
+                    border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
+                    padding: "10px", // Optional: Innenabstand
+                    backgroundColor: "white", // Optional: Hintergrundfarbe
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -813,11 +810,11 @@ const InvitationForm = () => {
           </Grid>
 
           {/* Buttons */}
-          <Box   display="flex"
-  justifyContent="space-between"
-  marginTop="20px"
-  flexDirection={{ xs: "column", sm: "row" }} 
-  gap={2} >
+          <Box display="flex"
+            justifyContent="space-between"
+            marginTop="20px"
+            flexDirection={{ xs: "column", sm: "row" }}
+            gap={2} >
             <RedButton
               variant="contained"
               sx={{
@@ -828,21 +825,21 @@ const InvitationForm = () => {
               {t('button_clear_form')}
             </RedButton>
 
-              <BlueButton
-    variant="contained"
-    color="primary"
-    sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
-    onClick={handlePreview}
-  >
+            <BlueButton
+              variant="contained"
+              color="primary"
+              sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
+              onClick={handlePreview}
+            >
               {t('button_preview')}
             </BlueButton>
             <GreenButton
-    variant="contained"
-    sx={{
-      width: { xs: "100%", sm: "auto" }, // Mobil: volle Breite
-    }}
-    onClick={handleOpenPublishDialog}
-  >
+              variant="contained"
+              sx={{
+                width: { xs: "100%", sm: "auto" }, // Mobil: volle Breite
+              }}
+              onClick={handleOpenPublishDialog}
+            >
               {t('button_continue')}
             </GreenButton>
           </Box>
