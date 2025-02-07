@@ -12,6 +12,24 @@
         "third_subtitle": "Plane, bearbeite und organisiere alle deine Events an einem einzigen Ort – effizient und einfach.",
         "button_login": "Einloggen"
     },
+    "Dashboard": {
+        "title": "Dashboard",
+        "title_pdf": "Veranstaltungskalender",
+        "name_pdf": "veranstaltungen.pdf",
+        "name_ics": "kalender.ics",
+        "text_active_announcements": "Aktive Ankündigungen",
+        "table_column_title": "Titel",
+        "table_column_type": "Typ",
+        "table_column_start_date": "Startdatum",
+        "table_column_end_date": "Enddatum",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics",
+        "text_start": "Start:",
+        "text_location": "Ort:",
+        "text_end": "Ende:",
+        "text_description": "Beschreibung:",
+        "button_close": "Schließen"
+    },
     "Sidebar": {
         "text_settings": "Einstellungen",
         "text_dashboard": "Dashboard",
@@ -356,6 +374,7 @@
         "dialog_save_user_description": "Möchten Sie die Änderungen wirklich speichern?",
         "dialog_save_user_button_no": "Nein",
         "dialog_save_user_button_yes": "Ja",
+        "table_column_button_phone_delete": "Löschen",
         "dialog_delete_user_title": "Benutzer löschen",
         "dialog_delete_user_description": "Möchten Sie wirklich den Benutzer löschen?",
         "dialog_delete_user_button_no": "Nein",

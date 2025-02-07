@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 import path from "path";
 
 const nextConfig = {
+    reactStrictMode: false,
     webpack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,

@@ -171,14 +171,14 @@ function EventCard({ event, view }) {
           sx={{
             fontSize: { xs: "0.75rem", sm: "0.875rem" },
           }}>
-            {t('edit')}
+            {t('button_edit')}
           </BlueButton>
             <RedButton onClick={handleOpen} size="small" startIcon={<DeleteIcon />}
              sx={{
               fontSize: { xs: "0.75rem", sm: "0.875rem" },
             }}
             >
-              {t('delete')}
+              {t('button_delete')}
             </RedButton>
             <Button size="small" onClick={handleOpenInviteListDialog}
             sx={{
