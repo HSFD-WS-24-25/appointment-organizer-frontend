@@ -78,7 +78,6 @@ function UserSettings() {
               <MenuItem value="UTC">{t('select_timezone_option_utc')}</MenuItem>
             </Select>
           </FormControl>
-          <ToggleButton/>
           <Stack direction="row" justifyContent="space-between" spacing={2} mt={2}>
             <RedButton
               onClick={handleGoBackClick}

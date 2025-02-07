@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Grid,
   TextField,
   Table,
   TableBody,
@@ -17,6 +18,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
+  useMediaQuery
 } from "@mui/material";
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
@@ -26,6 +28,7 @@ import { usePutUser } from "@/app/hooks/usePutUser";
 import { useDeleteUser } from "@/app/hooks/useDeleteUser"
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { BlueButton, StyledDeleteButton, StyledEditButton, GreenButton, OrangeButton, RedButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 
 const UserControl = () => {
   const t = useTranslations('UserControl');
@@ -39,6 +42,7 @@ const UserControl = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { data: users, error: fetchError } = useFetchApiData(user, "/api/users", "GET");
   const [error, setError] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 600px)"); // Prüft, ob das Gerät mobil ist
 
   if (isLoading) return <div>{t('text_loading')}</div>;
   if (authError) return <div>{t('text_error_loading_user_data')}{authError.message}</div>;
@@ -118,45 +122,41 @@ const UserControl = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>{t('table_column_id')}</TableCell>
-                <TableCell>{t('table_column_username')}</TableCell>
-                <TableCell>{t('table_column_email')}</TableCell>
+              {!isMobile && <TableCell>{t('table_column_id')}</TableCell>}
+                 {!isMobile &&  <TableCell>{t('table_column_username')}</TableCell>}
+                 {!isMobile && <TableCell>{t('table_column_email')}</TableCell>}
                 <TableCell>{t('table_column_first_name')}</TableCell>
                 <TableCell>{t('table_column_surname')}</TableCell>
-                <TableCell>{t('table_column_phone_number')}</TableCell>
-                <TableCell>{t('table_column_adress')}</TableCell>
-                <TableCell>{t('table_column_role')}</TableCell>
+                {!isMobile && <TableCell>{t('table_column_phone_number')}</TableCell>}
+                {!isMobile && <TableCell>{t('table_column_adress')}</TableCell>}
+                {!isMobile && <TableCell>{t('table_column_role')}</TableCell> }
                 <TableCell>{t('table_column_actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                 {!isMobile && <TableCell>{user.id}</TableCell> }
+                 {!isMobile && <TableCell>{user.username}</TableCell> }
+                 {!isMobile &&<TableCell>{user.email}</TableCell>}
                   <TableCell>{user.first_name}</TableCell>
                   <TableCell>{user.last_name}</TableCell>
-                  <TableCell>{user.telephone}</TableCell>
-                  <TableCell>{user.address}</TableCell>
-                  <TableCell>{getRoleName(user.role_id)}</TableCell>
+                  {!isMobile && <TableCell>{user.telephone}</TableCell>}
+                  {!isMobile && <TableCell>{user.address}</TableCell> }
+                  {!isMobile &&<TableCell>{getRoleName(user.role_id)}</TableCell>}
                   <TableCell>
-                    <Button
-                      variant="outlined"
-                      size="small"
+                    <Grid>
+                    <BlueButton
                       onClick={() => handleEditUser(user)}
                     >
                       {t('table_column_button_edit')}
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="error"
+                    </BlueButton>
+                    <RedButton
                       onClick={() => handleDeleteUser(user)}
-                      sx={{ ml: 1 }}
                     >
-                      {t('table_column_button_delete')}
-                    </Button>
+                      {!isMobile ? t('table_column_button_delete') : t('table_column_button_phone_delete') }
+                    </RedButton>
+                    </Grid>
                   </TableCell>
                 </TableRow>
               ))}
@@ -236,12 +236,12 @@ const UserControl = () => {
             </TextField>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setEditDialogOpen(false)} color="secondary">
+            <RedButton onClick={() => setEditDialogOpen(false)}>
               {t('dialog_edit_user_button_cancel')}
-            </Button>
-            <Button onClick={handleConfirmSave} color="primary">
+            </RedButton>
+            <GreenButton onClick={handleConfirmSave} color="primary">
               {t('dialog_edit_user_button_save')}
-            </Button>
+            </GreenButton>
           </DialogActions>
         </Dialog>
         {/* Bestätigungsdialog für Speichern */}
@@ -251,12 +251,12 @@ const UserControl = () => {
             <Typography>{t('dialog_save_user_description')}</Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setConfirmSaveDialogOpen(false)} color="secondary">
+            <RedButton onClick={() => setConfirmSaveDialogOpen(false)} >
               {t('dialog_save_user_button_no')}
-            </Button>
-            <Button onClick={handleSaveChanges} color="primary">
+            </RedButton>
+            <GreenButton onClick={handleSaveChanges}>
               {t('dialog_save_user_button_yes')}
-            </Button>
+            </GreenButton>
           </DialogActions>
         </Dialog>
 
@@ -267,12 +267,12 @@ const UserControl = () => {
             <Typography>{t('dialog_delete_user_description')}</Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)} color="secondary">
+            <RedButton onClick={() => setDeleteDialogOpen(false)} >
               {t('dialog_delete_user_button_no')}
-            </Button>
-            <Button onClick={confirmDeleteUser} color="error">
+            </RedButton>
+            <BlueButton onClick={confirmDeleteUser} >
               {t('dialog_delete_user_button_yes')}
-            </Button>
+            </BlueButton>
           </DialogActions>
         </Dialog>
 

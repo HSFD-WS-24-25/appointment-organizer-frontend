@@ -22,13 +22,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useMediaQuery
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import "dayjs/locale/de";
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper"
-import { BlueButton, RedButton } from "@/app/[locale]/components/styledComponents/StyledButton";
+import { BlueButton, RedButton, GreenButton, OrangeButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useUserContext } from "@/app/[locale]/context/UserContext"; // Benutzerkontext importieren
 import { useRouter } from '@/i18n/routing';
@@ -41,7 +42,7 @@ const initialData = [
 ];
 
 export default function AdminAnnouncements() {
-  const [announcements, setAnnouncements] = useState(initialData);
+  const [announcements, setAnnouncements] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -53,7 +54,7 @@ export default function AdminAnnouncements() {
     target: "Loginseite",
   });
   const [confirmationOpen, setConfirmationOpen] = useState(false); // State für den Dialog
-
+  const isMobile = useMediaQuery("(max-width: 600px)"); // Erkennt mobile Ansicht
   const t = useTranslations('Announcements');
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
@@ -67,19 +68,68 @@ export default function AdminAnnouncements() {
     }
   }, [userInfo]);
 
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await fetch("/[locale]/aapi/create-announcments", {
+          method: "GET",
+        });
+    
+        if (!response.ok) {
+          throw new Error("Fehler beim Abrufen der Daten");
+        }
+    
+        const data = await response.json();
+        setAnnouncements(data);
+      } catch (error) {
+        console.error("Fehler:", error);
+      }
+    };
+  
+    fetchAnnouncements();
+  }, []);
+  
   const handleDeactivateClick = () => {
     setConfirmationOpen(true); // Öffnet den Bestätigungsdialog
   };
 
-  const handleConfirmDeactivate = () => {
-    setAnnouncements((prev) =>
-      prev.map((ann, index) =>
-        selectedAnnouncements.includes(index) ? { ...ann, status: "Inactive" } : ann
-      )
-    );
-    setSelectedAnnouncements([]); // Auswahl zurücksetzen
-    setConfirmationOpen(false); // Schließt den Dialog
+  const handleConfirmDeactivate = async () => {
+    try {
+      // Für jede ausgewählte Ankündigung eine PUT-Anfrage senden
+      await Promise.all(
+        selectedAnnouncements.map(async (index) => {
+          const announcement = announcements[index];
+          const response = await fetch(`/[locale]/aapi/create-announcments?id=${announcement.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: "Inactive" }), // Neuer Status
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Fehler beim Aktualisieren der Ankündigung mit ID ${announcement.id}`);
+          }
+  
+          const data = await response.json();
+          console.log(`Status aktualisiert:`, data);
+        })
+      );
+  
+      // Lokalen Zustand aktualisieren
+      setAnnouncements((prev) =>
+        prev.map((ann, index) =>
+          selectedAnnouncements.includes(index) ? { ...ann, status: "Inactive" } : ann
+        )
+      );
+  
+      setSelectedAnnouncements([]); // Auswahl zurücksetzen
+      setConfirmationOpen(false); // Dialog schließen
+    } catch (error) {
+      console.error("Fehler beim Aktualisieren des Status:", error);
+    }
   };
+  
 
   const handleCancelDeactivate = () => {
     setConfirmationOpen(false); // Schließt den Dialog ohne Aktion
@@ -105,17 +155,46 @@ export default function AdminAnnouncements() {
     setSelectedAnnouncements([]);
   };
 
-  const handleCreateAnnouncement = () => {
+  const handleCreateAnnouncement = async () => {
     if (!newAnnouncement.title.trim() || !newAnnouncement.type || !newAnnouncement.startDate || !newAnnouncement.endDate) {
       alert(t('alert_please_fill_out_all_fields'));
       return;
     }
-
-    setAnnouncements([...announcements, { ...newAnnouncement, status: "Active" }]);
-    setOpenDialog(false);
-    setNewAnnouncement({ title: "", type: "", startDate: dayjs(), endDate: dayjs(), target: "Loginseite" });
+    try {
+      const response = await fetch("/[locale]/aapi/create-announcments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newAnnouncement,
+          startDate: newAnnouncement.startDate.toISOString(),
+          endDate: newAnnouncement.endDate.toISOString(),
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Fehler beim Hinzufügen der Ankündigung");
+      }
+  
+      const data = await response.json();
+      console.log("Ankündigung hinzugefügt:", data);
+  
+      // Dialog schließen und Zustand zurücksetzen
+      setNewAnnouncement({
+        title: "",
+        type: "",
+        startDate: dayjs(),
+        endDate: dayjs().add(1, "hour"),
+        target: "",
+      });
+      setOpenDialog(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Fehler:", error);
+    }
   };
-
+  
   return (
     <StyledPaper>
       <Box sx={{ padding: 4, color: "black" }}>
@@ -129,6 +208,7 @@ export default function AdminAnnouncements() {
               fullWidth
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              style={{backgroundColor: "white"}}
             />
           </Stack>
         </Box>
@@ -139,11 +219,17 @@ export default function AdminAnnouncements() {
                 <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}> {/* Leicht graue Schrift für Titel */}
                 </TableCell>
                 <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_title')}</TableCell>
+                {!isMobile && (
+          <>
                 <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_type')}</TableCell>
                 <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_start_date')}</TableCell>
                 <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_end_date')}</TableCell>
-                <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_status')}</TableCell>
+
+                </>
+        )}                
+        <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_status')}</TableCell>
                 <TableCell sx={{ backgroundColor: "lightgrey", fontWeight: "bold" }}>{t('table_column_target')}</TableCell>
+        
               </TableRow>
             </TableHead>
             <TableBody>
@@ -156,17 +242,21 @@ export default function AdminAnnouncements() {
                     />
                   </TableCell>
                   <TableCell>{row.title}</TableCell>
-                  <TableCell>{row.type}</TableCell>
-                  <TableCell>{dayjs(row.startDate).format("DD.MM.YYYY HH:mm")}</TableCell>
-                  <TableCell>{dayjs(row.endDate).format("DD.MM.YYYY HH:mm")}</TableCell>
-                  <TableCell
-                    sx={{
-                      color: row.status === "Inactive" ? "gray" : "green", // Grau für Inactive, Grün für Active
-                      fontWeight: "bold", // Status fett hervorheben
-                    }}
-                  >
-                    {row.status}
-                  </TableCell>
+          {!isMobile && (
+            <>
+              <TableCell>{row.type}</TableCell>
+              <TableCell>{dayjs(row.startDate).format("DD.MM.YYYY HH:mm")}</TableCell>
+              <TableCell>{dayjs(row.endDate).format("DD.MM.YYYY HH:mm")}</TableCell>
+            </>
+          )}
+          <TableCell
+            sx={{
+              color: row.status === "Inactive" ? "gray" : "green",
+              fontWeight: "bold",
+            }}
+          >
+            {row.status}
+          </TableCell>
                   <TableCell>{row.target}</TableCell>
                 </TableRow>
               ))}
@@ -249,12 +339,12 @@ export default function AdminAnnouncements() {
 
           {/* Buttons */}
           <DialogActions sx={{ padding: "20px", justifyContent: "center" }}>
-            <Button onClick={() => setOpenDialog(false)} variant="outlined" color="secondary" sx={{ borderRadius: "8px" }}>
+            <RedButton onClick={() => setOpenDialog(false)} variant="outlined" color="secondary" sx={{ borderRadius: "8px" }}>
               {t('dialog_new_announcement_button_cancel')}
-            </Button>
-            <Button onClick={handleCreateAnnouncement} variant="contained" color="primary" sx={{ borderRadius: "8px" }}>
+            </RedButton>
+            <GreenButton onClick={handleCreateAnnouncement} variant="contained" color="primary" sx={{ borderRadius: "8px" }}>
               {t('dialog_new_announcement_button_create')}
-            </Button>
+            </GreenButton>
           </DialogActions>
         </Dialog>
 
@@ -264,12 +354,12 @@ export default function AdminAnnouncements() {
             {t('dialog_button_disable_announcements_description')}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCancelDeactivate} color="secondary">
+            <RedButton onClick={handleCancelDeactivate} color="secondary">
               {t('dialog_button_disable_announcements_button_cancel')}
-            </Button>
-            <Button onClick={handleConfirmDeactivate} color="primary">
+            </RedButton>
+            <GreenButton onClick={handleConfirmDeactivate} color="primary">
               {t('dialog_button_disable_announcements_button_deactivate')}
-            </Button>
+            </GreenButton>
           </DialogActions>
         </Dialog>
       </Box>

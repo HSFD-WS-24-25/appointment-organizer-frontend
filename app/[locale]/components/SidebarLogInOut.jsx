@@ -21,6 +21,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { usePathname, useRouter } from '@/i18n/routing';
 import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useTranslations } from 'next-intl';
+import { BlueButton, RedButton, GreenButton, OrangeButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 
 
 export function SidebarLogInOut({ expanded }) {
@@ -133,12 +134,12 @@ export function LogoutDialog({ open, onClose, onConfirm }) {
                 <DialogContentText>{t('dialog_description')}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary">
+                <RedButton onClick={onClose} color="primary">
                     {t('button_no')}
-                </Button>
-                <Button onClick={onConfirm} color="primary" autoFocus>
+                </RedButton>
+                <GreenButton onClick={onConfirm} color="primary" autoFocus>
                     {t('button_yes')}
-                </Button>
+                </GreenButton>
             </DialogActions>
         </Dialog>
     );

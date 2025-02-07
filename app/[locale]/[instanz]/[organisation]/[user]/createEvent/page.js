@@ -34,6 +34,7 @@ import { generateBasePath } from "@/app/[locale]/components/Sidebar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import "quill/dist/quill.snow.css";
 import QuillCreator from "@/app/[locale]/components/styledComponents/QuillCreator"
+import { BlueButton, RedButton, GreenButton, OrangeButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import { useTranslations } from 'next-intl';
 
 // Setze die deutsche Lokalisierung global
@@ -307,7 +308,7 @@ const InvitationForm = () => {
           fontSize: "16px",
           color: "#333",
           margin: "0",
-          padding: "50px",
+          padding: "20px",
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -322,7 +323,26 @@ const InvitationForm = () => {
             borderRadius: "10px",
           }}
         >
+          <style>
+            {`
+            @media (max-width: 768px) {
+              .mobile-flex {
+                display: flex;
+                flex-direction: column; /* Vertikale Anordnung für mobile Ansicht */
+              }
+              .mobile-map {
+                order: 1; /* Karte zuerst */
+              }
+              .mobile-description {
+                order: 2; /* Beschreibung danach */
+                margin-top: 20px; /* Abstand oberhalb der Beschreibung */
+              }
+            }
+          `}
+          </style>
+
           <div
+            className="mobile-flex"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -340,7 +360,8 @@ const InvitationForm = () => {
               {t('preview_title')}
             </h1>
             <div style={{ display: "flex", gap: "10px" }}>
-              <button
+              <GreenButton
+                className="mobile-full-width"
                 style={{
                   padding: "8px 12px",
                   fontSize: "0.9em",
@@ -352,8 +373,9 @@ const InvitationForm = () => {
                 }}
               >
                 {t('preview_button_participate')}
-              </button>
-              <button
+              </GreenButton>
+              <RedButton
+                className="mobile-full-width"
                 style={{
                   padding: "8px 12px",
                   fontSize: "0.9em",
@@ -365,7 +387,7 @@ const InvitationForm = () => {
                 }}
               >
                 {t('preview_button_do_not_participate')}
-              </button>
+              </RedButton>
             </div>
           </div>
 
@@ -390,6 +412,7 @@ const InvitationForm = () => {
 
           {/* Inhalt */}
           <div
+            className="mobile-flex"
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
@@ -397,53 +420,23 @@ const InvitationForm = () => {
               marginTop: "20px",
             }}
           >
-            <div>
-              <strong>{t('preview_text_start')}</strong>{" "}
+            <div className="mobile-map">
+              <p>
+                <strong>{t('preview_text_start')}</strong>{" "}
+                {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
+              </p>
+              <p>
+                <strong>{t('preview_text_adress')}</strong>
+              </p>
               <div
                 style={{
-                  display: "flex",
-                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                  alignItems: "center",
-                  maxHeight: "160px",
-                  height: "50px",
-                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                  fontSize: "18px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                <p>
-
-                  {formData.startDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
-                </p>
-              </div>
-              <strong>{t('preview_text_adress')}</strong>
-              <div
-                style={{
-                  display: "flex",
-                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                  alignItems: "center",
-                  maxHeight: "160px",
-                  height: "50px",
-                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                  fontSize: "18px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                <p>
-                  {formData.address || t('preview_text_not_available')}
-                </p>
-              </div>
-              <div
-                style={{
+                  border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
                   position: "relative",
                   width: "100%",
                   height: "200px",
                   border: "1px solid #ccc",
                   marginTop: "10px",
                   overflow: "hidden",
-                  fontSize: "16px", // Optional: Schriftgröße anpassen
                 }}
               >
                 {formData.coordinates || formData.address ? (
@@ -465,60 +458,42 @@ const InvitationForm = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       height: "100%",
-                      backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                      border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                      borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
                     }}
                   >
                     {t('preview_text_no_adress_entered')}
                   </div>
                 )}
               </div>
-
             </div>
-            <div>
-              <strong>{t('preview_text_end')}</strong>{" "}
-              <div
-                style={{
-                  display: "flex",
-                  overflowY: "auto", // Scrollbar aktivieren, wenn der Inhalt zu groß ist
-                  alignItems: "center",
-                  maxHeight: "160px",
-                  height: "50px",
-                  backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                  border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                  borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                  fontSize: "18px", // Optional: Schriftgröße anpassen
-                }}
-              >
-                <p>
+            <div className="mobile-description">
+              <p>
+                <strong>{t('preview_text_end')}</strong>{" "}
+                {formData.endDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
+              </p>
 
-                  {formData.endDate?.format("DD.MM.YYYY HH:mm") || t('preview_text_not_available')}
-                </p>
-              </div>
               <div>
-
                 <strong>{t('preview_text_description')}</strong>
                 <div
                   style={{
-                    height: "300px",
-                    maxHeight: "300px", // Maximale Höhe der Vorschau
-                    maxWidth: "500px", // Maximale Breite festlegen
-                    overflowY: "auto", // Scrollbar nur für die Höhe aktivieren
-                    overflowX: "hidden", // Keine Scrollbar für die Breite
-                    border: "1px solid #ccc", // Rahmen zur besseren Sichtbarkeit
-                    padding: "10px", // Innenabstand für den Text
-                    backgroundColor: "#f9f9f9", // Hintergrundfarbe für bessere Lesbarkeit
-                    borderRadius: "4px", // Optional: Abgerundete Ecken für ein moderneres Design
-                    lineHeight: "1.5", // Optional: Zeilenhöhe für bessere Lesbarkeit
-                    margin: "0 auto", // Optional: Zentrierung des Elements horizontal
-                    wordWrap: "break-word", // Zeilenumbruch bei langen Wörtern
-                    overflowWrap: "break-word", // Zusätzliche Unterstützung für Zeilenumbruch
-                    whiteSpace: "normal", // Verhindert horizontales Scrollen durch Inhalte
+                    fontSize: "16px",
+                    fontFamily: "Arial, sans-serif",
+                    fontWeight: "normal",
+                    fontStyle: "normal",
+                    textDecoration: "none",
+                    color: "#333",
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
+                    overflowWrap: "break-word",
+                    maxWidth: "100%",
+                    margin: "0 auto",
+                    maxHeight: "300px", // Höhe festlegen
+                    overflowY: "auto", // Vertikales Scrollen aktivieren
+                    border: "1px solid #ccc", // Optional: Rahmen für bessere Sichtbarkeit
+                    padding: "10px", // Optional: Innenabstand
+                    backgroundColor: "white", // Optional: Hintergrundfarbe
                   }}
-
                   dangerouslySetInnerHTML={{
-                    __html: formData.description || t('preview_text_no_description_given'),
+                    __html: formData.description || "<p>Keine Beschreibung angegeben</p>",
                   }}
                 />
               </div>
@@ -528,7 +503,6 @@ const InvitationForm = () => {
       </div>
     );
   };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -612,11 +586,6 @@ const InvitationForm = () => {
 
       <StyledPaper
         elevation={3}
-        style={{
-          padding: "20px",
-          borderRadius: "10px",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-        }}
       >
 
         {/* Titel */}
@@ -644,8 +613,8 @@ const InvitationForm = () => {
                   onChange={handleEventTypeChange}
                   fullWidth
                   style={{
-                    backgroundColor: "white",
                     height: "56px",
+                    backgroundColor: "white"
                   }}
                 >
                   <MenuItem value="Präsenz">{t('dropdown_option_presence')}</MenuItem>
@@ -678,7 +647,7 @@ const InvitationForm = () => {
                 fullWidth
                 style={{
                   height: "56px",
-                  backgroundColor: "white",
+                  backgroundColor: "white"
                 }}
               />
             </Grid>
@@ -702,8 +671,8 @@ const InvitationForm = () => {
                           {...params}
                           fullWidth
                           style={{
-                            backgroundColor: "white",
                             height: "56px",
+                            backgroundColor: "white"
                           }}
                         />
                       )}
@@ -725,8 +694,8 @@ const InvitationForm = () => {
                           {...params}
                           fullWidth
                           style={{
-                            backgroundColor: "white",
                             height: "56px",
+                            backgroundColor: "white"
                           }}
                         />
                       )}
@@ -747,23 +716,21 @@ const InvitationForm = () => {
                 fullWidth
                 disabled={eventType === "Online"}
                 style={{
-                  backgroundColor: "white",
                   marginTop: "10px", // Optionaler Abstand
+                  backgroundColor: "white"
                 }}
               />
 
               {/* Karte */}
               <Box
                 style={{
-                  backgroundColor: "white",
-                  // padding: "10px",
                   border: "1px solid #ccc",
                   height: "250px", // Höhe der Karte anpassen
                   marginTop: "10px",
                   width: "100%",
-                  // display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  backgroundColor: "white"
                 }}
               >
                 {formData.coordinates ? (
@@ -843,37 +810,38 @@ const InvitationForm = () => {
           </Grid>
 
           {/* Buttons */}
-          <Box display="flex" justifyContent="space-between" marginTop="20px">
-            <Button
+          <Box display="flex"
+            justifyContent="space-between"
+            marginTop="20px"
+            flexDirection={{ xs: "column", sm: "row" }}
+            gap={2} >
+            <RedButton
               variant="contained"
               sx={{
-                backgroundColor: "red",
-                "&:hover": { backgroundColor: "darkred" },
+                width: { xs: "100%", sm: "auto" },
               }}
               onClick={handleClearForm}
             >
               {t('button_clear_form')}
-            </Button>
-            <Button variant="contained" color="primary" onClick={() => handlePreview()}>
-              {t('button_preview')}
-            </Button>
-            <Button
+            </RedButton>
+
+            <BlueButton
               variant="contained"
-              color="secondary"
-              onClick={handleOpenInviteListDialog}
+              color="primary"
+              sx={{ width: { xs: "100%", sm: "auto" } }} // Mobil: volle Breite
+              onClick={handlePreview}
             >
-              {t('button_invitation_list')}
-            </Button>
-            <Button
+              {t('button_preview')}
+            </BlueButton>
+            <GreenButton
               variant="contained"
               sx={{
-                backgroundColor: "green",
-                "&:hover": { backgroundColor: "darkgreen" },
+                width: { xs: "100%", sm: "auto" }, // Mobil: volle Breite
               }}
               onClick={handleOpenPublishDialog}
             >
               {t('button_continue')}
-            </Button>
+            </GreenButton>
           </Box>
         </Box>
       </StyledPaper>
@@ -887,40 +855,23 @@ const InvitationForm = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={() => handleDialogAction("cancel")}>
+          <RedButton onClick={() => handleDialogAction("cancel")}>
             {t('button_cancel')}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
+          </RedButton>
+          <BlueButton
             onClick={() => handleDialogAction("publish")}
           >
             {t('button_publish')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={inviteListDialogOpen}
-        onClose={handleCloseInviteListDialog}
-        fullWidth
-        maxWidth="lg"
-      >
-        <DialogContent>
-          {dialogContent} {/* Dynamischer Inhalt */}
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleCloseInviteListDialog}>
-            {t('button_close')}
-          </Button>
+          </BlueButton>
         </DialogActions>
       </Dialog>
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogContent>
           <Preview formData={formData} backgroundImage={backgroundImage} />
-          <Button variant="outlined" onClick={handleClose}>
+          <BlueButton variant="outlined" onClick={handleClose}>
             {t('button_close')}
-          </Button>
+          </BlueButton>
         </DialogContent>
       </Dialog>
     </div>
