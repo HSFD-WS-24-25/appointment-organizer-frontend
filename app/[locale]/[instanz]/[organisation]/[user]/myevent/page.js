@@ -29,7 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EventIcon from "@mui/icons-material/Event";
 import { useRouter } from '@/i18n/routing';
 import StyledPaper from "@/app/[locale]/components/styledComponents/StyledPaper";
-import { BlueButton, StyledDeleteButton, StyledEditButton } from "@/app/[locale]/components/styledComponents/StyledButton";
+import { BlueButton, StyledDeleteButton, StyledEditButton, GreenButton, OrangeButton, RedButton } from "@/app/[locale]/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/[locale]/components/styledComponents/DesignTitel";
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
 import { useDeleteEvent } from "@/app/hooks/useDeleteEvent"
@@ -103,16 +103,18 @@ function EventCard({ event, view }) {
   if (view === "list") {
     return (
       <ListItem
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 2,
-          marginBottom: 2,
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-        }}
-      >
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: { xs: "column", sm: "row" }, // Vertikal auf mobilen Geräten
+        padding: 2,
+        marginBottom: 2,
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        backgroundColor: "white"
+      }}
+    >
         <ListItemAvatar>
           <Avatar>
             <EventIcon />
@@ -122,27 +124,69 @@ function EventCard({ event, view }) {
         <ListItemText
           primary={event.title || `${t('text_event')} ${event.id}`}
           secondary={`${t('text_participants')} ${event.capacity}`}
-          sx={{ flex: 1, marginRight: 2 }}
+          sx={{
+            flex: 1,
+            marginRight: 2,
+            textAlign: { xs: "center", sm: "left" },
+            wordBreak: "break-word", // Lange Wörter umbrechen
+            overflowWrap: "break-word", // Zusätzliche Absicherung für lange Wörter
+          }}
         />
-        <Box sx={{ textAlign: "left", flex: 9, paddingRight: 2 }}>
-          <p style={{ margin: 0, fontWeight: "bold" }}>{event.name}</p>
+
+              <Box
+        sx={{
+          textAlign: "left",
+          flex: 9,
+          paddingRight: 2,
+          fontSize: { xs: "0.9rem", sm: "1rem" },
+          wordBreak: "break-word", // Lange Wörter umbrechen
+          overflowWrap: "break-word", // Zusätzliche Absicherung
+          lineHeight: "1.4",
+        }}
+      >
+          <p style={{ margin: 0, fontWeight: "bold", fontSize: { xs: "1rem", sm: "1.2rem" } }}>{event.name}</p>
           <div
-            dangerouslySetInnerHTML={{ __html: event.description }}
-          />
+          style={{
+            fontSize: { xs: "0.85rem", sm: "1rem" },
+            lineHeight: "1.4",
+            wordBreak: "break-word", // Lange Wörter umbrechen
+            overflowWrap: "break-word", // Zusätzliche Absicherung
+          }}
+          dangerouslySetInnerHTML={{ __html: event.description }}
+        />
         </Box>
 
 
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
-          <Button size="small" startIcon={<EditIcon />} onClick={handleEditEvent}>
-            {t('button_edit')}
-          </Button>
-          <Box>
-            <Button onClick={handleOpen} size="small" color="error" startIcon={<DeleteIcon />}>
-              {t('button_delete')}
+        <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "row", sm: "column" },
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1,
+          flexWrap: "wrap",
+        }}
+      >
+          <BlueButton size="small" startIcon={<EditIcon />} onClick={handleEditEvent}         
+          sx={{
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+          }}>
+            {t('edit')}
+          </BlueButton>
+            <RedButton onClick={handleOpen} size="small" startIcon={<DeleteIcon />}
+             sx={{
+              fontSize: { xs: "0.75rem", sm: "0.875rem" },
+            }}
+            >
+              {t('delete')}
+            </RedButton>
+            <Button size="small" onClick={handleOpenInviteListDialog}
+            sx={{
+              fontSize: { xs: "0.75rem", sm: "0.875rem" },
+            }}>
+              {t('button_add_guests')}
             </Button>
-            <Button size="small" onClick={handleOpenInviteListDialog}>
-              Gäste hinzufügen
-            </Button>
+
             {/* Dialog */}
             <Dialog
               open={inviteListDialogOpen}
@@ -154,9 +198,9 @@ function EventCard({ event, view }) {
                 {dialogContent} {/* Dynamischer Inhalt */}
               </DialogContent>
               <DialogActions>
-                <Button variant="outlined" onClick={handleCloseInviteListDialog}>
-                  Schließen
-                </Button>
+                <RedButton variant="outlined" onClick={handleCloseInviteListDialog}>
+                {t('button_close')}
+                </RedButton>
               </DialogActions>
             </Dialog>
 
@@ -168,42 +212,41 @@ function EventCard({ event, view }) {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <BlueButton onClick={handleClose} color="primary">
                   {t('button_cancel')}
-                </Button>
-                <Button
+                </BlueButton>
+                <RedButton
                   onClick={handleDelete}
                   color="error"
                   variant="contained"
                   autoFocus
                 >
                   {t('button_delete')}
-                </Button>
+                </RedButton>
               </DialogActions>
             </Dialog>
           </Box>
-        </Box>
       </ListItem>
     );
   }
 
   return (
     <Paper
-      sx={{
-        position: "relative",
-        width: "100%",
-        height: 250,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        border: "1px solid #ddd",
-        borderRadius: 4,
-        padding: 2,
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-      }}
-      elevation={3}
-    >
+    sx={{
+      position: "relative",
+      width: "100%",
+      height: 250,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      border: "1px solid #ddd",
+      borderRadius: 4,
+      padding: 2,
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+    }}
+    elevation={3}
+  >
       <Box sx={{ position: "absolute", top: 8, left: 8 }}>
         <StyledEditButton onClick={handleEditEvent} />
       </Box>
@@ -269,7 +312,6 @@ function EventCard({ event, view }) {
             textAlign: "center",
             padding: 2,
             borderRadius: 2,
-            backgroundColor: "#f5f5f5",
             width: "90%",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -459,17 +501,21 @@ function myEvent() {
     <StyledPaper>
       <Box>
         <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "space-between",
-            alignItems: { xs: "flex-start", sm: "center" },
-            marginBottom: 2,
-            gap: { xs: 1, sm: 0 },
-          }}
-        >
+  sx={{
+    display: "flex",
+    flexDirection: { xs: "column", sm: "row" }, // Spaltenlayout für Mobil, Reihenlayout für größere Geräte
+    justifyContent: "space-between",
+    alignItems: { xs: "flex-start", sm: "center" },
+    marginBottom: 2,
+    gap: { xs: 2, sm: 0 }, // Abstand zwischen Titel und Button in Mobilansicht
+  }}
+>
           <DesignTitel>{t('title')}</DesignTitel>
-          <BlueButton onClick={handleCreateEvent}>{t('button_new_event')}</BlueButton>
+          <BlueButton onClick={handleCreateEvent}
+              sx={{
+                alignSelf: { xs: "center", sm: "flex-end" }, // Zentrierung des Buttons in der Mobilansicht
+              }}
+              >{t('button_new_event')}</BlueButton>
         </Box>
 
         <Box
@@ -501,7 +547,13 @@ function myEvent() {
         </Box>
 
         {view === "grid" ? (
-          <Grid container spacing={2}>
+                    <Grid
+                    container
+                    spacing={2}
+                    sx={{
+                      flexDirection: { xs: "column", sm: "row" },
+                    }}
+                  >
             {events
               ?.slice()
               .sort((a, b) => b.id - a.id) // Sortierung nach ID (höchste zuerst)

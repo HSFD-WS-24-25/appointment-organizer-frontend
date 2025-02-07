@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "asdasd",
+    "type": "Hotfix",
+    "startDate": "2025-02-06T18:27:31.276Z",
+    "endDate": "2025-02-06T18:27:31.276Z",
+    "target": "Loginseite",
+    "status": "Inactive"
+  },
+  {
+    "id": 2,
+    "title": "admin",
+    "type": "Hotfix",
+    "startDate": "2025-02-06T18:31:44.516Z",
+    "endDate": "2025-02-06T18:31:44.516Z",
+    "target": "Loginseite",
+    "status": "Inactive"
+  }
+]

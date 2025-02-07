@@ -11,25 +11,45 @@ export default function RootLayout({ children }) {
   return (
     <Box
       sx={{
-        display: "flex", // Verwende flexibles Layout
-        height: "100vh", // Vollständige Höhe des Viewports
-        width: "100%",   // Vollständige Breite
-        backgroundColor: "#9b9b9b"
+        display: "flex",
+        height: "100vh",
+        width: "100%",
+        background: "linear-gradient(135deg, #121212, #1d1d2b, #0a0a23)",
+        color: "#f5f5f5",
+        padding: "10px",
       }}
     >
       <Box
         sx={{
-          flexShrink: 0, // Sidebar soll sich nicht verkleinern
-          flexGrow: 0,   // Sidebar soll ihre Breite basierend auf dem Inhalt anpassen
+          flexShrink: 0,
+          flexGrow: 0,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "2px 0px",
+          background: "rgba(255, 255, 255, 0.08)",
+          borderRadius: "16px",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.7)",
+          marginRight: "30px"
+          
         }}
       >
+        
         <Sidebar role="admin" />
       </Box>
       <Box
         sx={{
-          flexGrow: 1,  // Hauptinhalt füllt den restlichen Platz
-          p: 2,         // Padding für den Inhalt
-          overflow: "auto", // Scrollen erlauben, falls nötig
+          flexGrow: 1,
+          p: 3,
+          overflow: "auto",
+          background: "rgba(255, 255, 255, 0.07)",
+          borderRadius: "16px",
+          backdropFilter: "blur(15px)",
+          boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.5)",
+          transition: "all 0.3s ease-in-out",
+         // zIndex: -1
         }}
       >
         {children}
