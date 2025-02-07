@@ -23,12 +23,14 @@ import jsPDF from "jspdf"; // Für PDF-Generierung
 import { saveAs } from "file-saver"; // Für .ics-Datei
 import {CustomToolbar, formats, germanMessages} from "@/app/[locale]/components/styledComponents/StyledCalender"
 import { useFetchEvents } from "@/app/hooks/useFetchEvents"
+import { useTranslations } from 'next-intl';
 
 
 
 moment.locale("de");
 
 function AdminDashboard() {
+  const t = useTranslations('Dashboard');
   const localizer = momentLocalizer(moment);
   const [userInfo, setUserInfo] = useState(null); // Benutzerinformationen
   const { user, authError, isLoading, events, fetchError } = useFetchEvents();
@@ -151,7 +153,7 @@ function AdminDashboard() {
     const doc = new jsPDF();
     doc.setFontSize(20);
     doc.setTextColor(0, 0, 0);
-    doc.text("Veranstaltungskalender", 10, 20);
+    doc.text(t('title_pdf'), 10, 20);
   
     let yPosition = 40;
     const lineHeight = 10;
@@ -185,7 +187,7 @@ function AdminDashboard() {
       yPosition += lineHeight * 2;
     });
   
-    doc.save("veranstaltungen.pdf");
+    doc.save(t('name_pdf'));
   };
 
   const handleDownloadICS = () => {
@@ -198,12 +200,12 @@ function AdminDashboard() {
     icsContent += "END:VCALENDAR";
 
     const blob = new Blob([icsContent], { type: "text/calendar" });
-    saveAs(blob, "kalender.ics");
+    saveAs(blob, t('name_ics'));
   };
 
   return (
     <StyledPaper>
-      <DesignTitel>Dashboard</DesignTitel>
+      <DesignTitel>{t('title')}</DesignTitel>
         {/* Pop-up */}
         {showPopup && dashboardAnnouncements.length > 0 && (
       <Box
@@ -221,16 +223,16 @@ function AdminDashboard() {
         }}
       >
         <Typography variant="h6" sx={{ textAlign: 'center', mb: 2 }}>
-          Aktive Ankündigungen
+          {t('text_active_announcements')}
         </Typography>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Titel</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Typ</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Startdatum</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Enddatum</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{t('table_column_title')}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{t('table_column_type')}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{t('table_column_start_date')}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{t('table_column_end_date')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -307,10 +309,10 @@ function AdminDashboard() {
 
       <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
         <BlueButton variant="contained" onClick={handleDownloadPDF}>
-          PDF Download
+          {t('button_download_pdf')}
         </BlueButton>
         <GreenButton variant="contained" onClick={handleDownloadICS}>
-          .ics Download
+          {t('button_ics_download')}
         </GreenButton>
       </Box>
 
@@ -340,7 +342,7 @@ function AdminDashboard() {
     
     <Grid container spacing={2}>
       <Grid item xs={6}>
-        <Typography><strong>Start:</strong></Typography>
+        <Typography><strong>{t('text_start')}</strong></Typography>
         <Box sx={{
           padding: 1,
           backgroundColor: "#f9f9f9",
@@ -351,7 +353,7 @@ function AdminDashboard() {
           {new Date(selectedEvent?.start).toLocaleString()}
         </Box>
 
-        <Typography><strong>Ort:</strong></Typography>
+        <Typography><strong>{t('text_location')}</strong></Typography>
         <Box sx={{
           padding: 1,
           backgroundColor: "#f9f9f9",
@@ -363,7 +365,7 @@ function AdminDashboard() {
       </Grid>
 
       <Grid item xs={6}>
-        <Typography><strong>Ende:</strong></Typography>
+        <Typography><strong>{t('text_end')}</strong></Typography>
         <Box sx={{
           padding: 1,
           backgroundColor: "#f9f9f9",
@@ -374,7 +376,7 @@ function AdminDashboard() {
           {new Date(selectedEvent?.end).toLocaleString()}
         </Box>
 
-        <Typography><strong>Beschreibung:</strong></Typography>
+        <Typography><strong>{t('text_description')}</strong></Typography>
         <Box sx={{
           padding: 1,
           backgroundColor: "#f9f9f9",
@@ -390,7 +392,7 @@ function AdminDashboard() {
 
     <Box sx={{ display: "flex", gap: 2, mt: 3, justifyContent: "flex-end" }}>
       <Button variant="outlined" onClick={() => setEventActionModalOpen(false)}>
-        Schließen
+        {t('button_close')}
       </Button>
     </Box>
   </Box>

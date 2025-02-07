@@ -12,6 +12,24 @@
         "third_subtitle": "Plane, bearbeite und organisiere alle deine Events an einem einzigen Ort – effizient und einfach.",
         "button_login": "Einloggen"
     },
+    "Dashboard": {
+        "title": "Dashboard",
+        "title_pdf": "Veranstaltungskalender",
+        "name_pdf": "veranstaltungen.pdf",
+        "name_ics": "kalender.ics",
+        "text_active_announcements": "Aktive Ankündigungen",
+        "table_column_title": "Titel",
+        "table_column_type": "Typ",
+        "table_column_start_date": "Startdatum",
+        "table_column_end_date": "Enddatum",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics",
+        "text_start": "Start:",
+        "text_location": "Ort:",
+        "text_end": "Ende:",
+        "text_description": "Beschreibung:",
+        "button_close": "Schließen"
+    },
     "Sidebar": {
         "text_settings": "Einstellungen",
         "text_dashboard": "Dashboard",

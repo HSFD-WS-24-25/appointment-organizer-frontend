@@ -12,6 +12,24 @@
         "third_subtitle": "Plan, edit and organise all your events in one place - efficiently and easily.",
         "button_login": "Log in"
     },
+    "Dashboard": {
+        "title": "Dashboard",
+        "title_pdf": "Events calendar",
+        "name_pdf": "events.pdf",
+        "name_ics": "calendar.ics",
+        "text_active_announcements": "Active announcements",
+        "table_column_title": "Title",
+        "table_column_type": "Type",
+        "table_column_start_date": "Start date",
+        "table_column_end_date": "End date",
+        "button_download_pdf": "Download PDF",
+        "button_ics_download": "Download .ics",
+        "text_start": "Start:",
+        "text_location": "Location:",
+        "text_end": "End:",
+        "text_description": "Description:",
+        "button_close": "Close"
+    },
     "Sidebar": {
         "text_settings": "Settings",
         "text_dashboard": "Dashboard",
