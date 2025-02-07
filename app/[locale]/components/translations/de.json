@@ -356,6 +356,7 @@
         "dialog_save_user_description": "Möchten Sie die Änderungen wirklich speichern?",
         "dialog_save_user_button_no": "Nein",
         "dialog_save_user_button_yes": "Ja",
+        "table_column_button_phone_delete": "Löschen",
         "dialog_delete_user_title": "Benutzer löschen",
         "dialog_delete_user_description": "Möchten Sie wirklich den Benutzer löschen?",
         "dialog_delete_user_button_no": "Nein",
