@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -17,31 +15,80 @@ import {
   Checkbox,
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import  StyledPaper  from "@/app/components/styledComponents/StyledPaper";
+import StyledPaper from "@/app/components/styledComponents/StyledPaper";
 import { BlueButton, GreenButton, RedButton } from "@/app/components/styledComponents/StyledButton";
 import DesignTitel from "@/app/components/styledComponents/DesignTitel";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useUserContext } from "@/app/context/UserContext"; // Benutzerkontext importieren
+
+const BackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 function UserDashboard() {
   const [searchText, setSearchText] = useState('');
   const [filterPreviousInvite, setFilterPreviousInvite] = useState(false);
-  const [guests] = useState([
-    { name: "Max Mustermann", email: "max.mustermann@beispiel.de", invited: true, known: true },
-    { name: "Alice Müller", email: "alice.mueller@example.com", invited: false, known: true },
-    { name: "Tom Gast", email: "tom.gast@fakedomain.com", invited: false, known: false },
-    { name: "Julia Schmidt", email: "julia.schmidt@website.net", invited: true, known: true },
-    { name: "Peter Neumann", email: "peter.neumann@anotherdomain.org", invited: true, known: false },
-    { name: "Franz Gast", email: "franz.gast@someplace.co", invited: false, known: false },
-    { name: "Mia Schulze", email: "mia.schulze@randommail.com", invited: false, known: true },
-    { name: "Lena Becker", email: "lena.becker@samplemail.de", invited: false, known: false },
-  ]);
-  const [filteredData, setFilteredData] = useState(guests); // useState für gefilterte Daten
+  const [guests, setGuests] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); // useState für gefilterte Daten
+  const [selectedEmails, setSelectedEmails] = useState([]); // useState für ausgewählte E-Mails
 
   const router = useRouter();
+  const pathname = usePathname();
+  const eventID = pathname.split('/').pop();
   const [basePath, setBasePath] = useState(""); // Dynamischer Basislink
   const { userInfo } = useUserContext(); // Benutzerinformationen aus dem Kontext
-  
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const tokenResponse = await fetch('/api/token');
+        const { accessToken } = await tokenResponse.json();
+        console.log('Token:', accessToken);
+        const response = await fetch(`${BackendUrl}/api/users`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`,
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const guestData = await response.json();
+        setGuests(guestData);
+        setFilteredData(guestData); 
+
+      } catch (error) {
+        console.error('Error fetching guest data:', error);
+        setGuests([]);
+        setFilteredData([]);
+      }
+    };
+
+    fetchUserData();
+  }, [BackendUrl]);
+
+
+  const sendInvitationList = async () => {
+    try {
+      const invitedEmails = selectedEmails;
+      const tokenResponse = await fetch('/api/token');
+      const { accessToken } = await tokenResponse.json();
+      const response = await fetch(`${BackendUrl}/api/participants/${eventID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ invitedEmails }), // Sende die eingeladenen E-Mails
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+    } catch (error) {
+      console.error('Error sending invitation list:', error); 
+    }
+  };
+
   useEffect(() => {
     if (userInfo && userInfo.instanz && userInfo.organisation && userInfo.username) {
       const path = `/${userInfo.instanz}/${userInfo.organisation}/${userInfo.username}`;
@@ -76,6 +123,17 @@ function UserDashboard() {
 
   const handleBackToEventClick = () => {
     router.push(`${basePath}/createEvent`);
+  };
+
+  // Handle Checkbox Change
+  const handleCheckboxChange = (email) => {
+    setSelectedEmails(prevSelectedEmails => {
+      if (prevSelectedEmails.includes(email)) {
+        return prevSelectedEmails.filter(selectedEmail => selectedEmail !== email);
+      } else {
+        return [...prevSelectedEmails, email];
+      }
+    });
   };
 
   return (
@@ -160,7 +218,10 @@ function UserDashboard() {
                     {guest.email}
                   </TableCell>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
-                    <input type="checkbox" />
+                    <Checkbox
+                      checked={selectedEmails.includes(guest.email)}
+                      onChange={() => handleCheckboxChange(guest.email)}
+                    />
                   </TableCell>
                   <TableCell sx={{ border: '1px solid #ddd' }}>
                     <input type="checkbox" checked={guest.invited} readOnly />
@@ -185,7 +246,7 @@ function UserDashboard() {
           <RedButton>
             Abbrechen
           </RedButton>
-          <BlueButton>
+          <BlueButton onClick={sendInvitationList}>
             Einladung Schicken
           </BlueButton>
           <GreenButton onClick={handleBackToEventClick}>
